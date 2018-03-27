@@ -46,6 +46,7 @@ public class Dog extends Sprite{
 
     public void update(float dt){
         //setPosition(b2body.getPosition().x - getWidth()/2,b2body.getPosition().y - getHeight()/2);
+
         velocity.add(0,GRAVITY);
         b2body.setLinearVelocity(velocity);
         /*
@@ -70,8 +71,7 @@ public class Dog extends Sprite{
     }
 
     public void Fly(){
-        velocity.add(0,250);
-
+        velocity.y = 250;
     }
 
     public void Jump(){

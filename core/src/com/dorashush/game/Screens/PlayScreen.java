@@ -14,6 +14,7 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Sprites.Dog;
 import com.dorashush.game.Sprites.Ground;
 import com.dorashush.game.Sprites.Sky;
+import com.dorashush.game.Tools.WorldContactListener;
 
 /**
  * Created by Dor on 03/27/18.
@@ -46,10 +47,9 @@ private FitViewport gamePort;
         this.game = game;
         gameCam = new OrthographicCamera();
         gameCam.setToOrtho(false, FlappyPug.WIDTH / 2, FlappyPug.HEIGHT / 2);
-       //gamePort  = new FitViewport(FlappyPug.WIDTH,FlappyPug.HEIGHT,gameCam);
 
         world = new World(new Vector2(0,0),true);
-
+        world.setContactListener(new WorldContactListener());
 
         dog  = new Dog(this);
         ground1 = new Ground(this,0);
@@ -72,13 +72,11 @@ private FitViewport gamePort;
         world.step(1/60f,6,2);
         dog.update(dt);
 
-        ground1.update(dt);
-        ground2.update(dt);
-        sky1.update(dt);
-        sky2.update(dt);
 
-        updateGround();
-        updateSky();
+
+
+        updateGround(dt);
+        updateSky(dt);
     //    game.batch.begin();
   //      dog.draw(game.batch);
 //        game.batch.end();
@@ -133,7 +131,10 @@ private FitViewport gamePort;
         return manager;
     }
 
-    private void updateGround(){
+    private void updateGround(float dt){
+        ground1.update(dt);
+        ground2.update(dt);
+
         if(gameCam.position.x - (gameCam.viewportWidth / 2) > ground1.getPoisition() + ground1.getWidth())
          ground1.setPos(ground1.getWidth()*2);
 
@@ -141,7 +142,10 @@ private FitViewport gamePort;
             ground2.setPos(ground2.getWidth()*2);
     }
 
-    private void updateSky(){
+    private void updateSky(float dt){
+        sky1.update(dt);
+        sky2.update(dt);
+
         if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky1.getPoisition() + sky1.getWidth())
             sky1.setPos(sky1.getWidth()*2);
 

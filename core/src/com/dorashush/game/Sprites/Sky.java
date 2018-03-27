@@ -38,7 +38,7 @@ public class Sky extends Sprite {
         velocity = new Vector2(0,0);
 
         bodyUserData = new BodyUserData();
-        bodyUserData.collisionType = BodyUserData.CollisionType.DOG;
+        bodyUserData.collisionType = BodyUserData.CollisionType.SKY;
         b2body.setUserData(bodyUserData);
 
 
@@ -54,7 +54,6 @@ public class Sky extends Sprite {
     public void defineSky(){
         BodyDef bdef = new BodyDef();
         bdef.position.set(offSet, FlappyPug.HEIGHT/2-getHeight()); //temp need to think of better way
-        Gdx.app.log("HERE",""+getHeight());
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
@@ -63,6 +62,8 @@ public class Sky extends Sprite {
         poly.setAsBox(480,10);
 
         fdef.shape = poly;
+        fdef.isSensor = true;
+
         b2body.createFixture(fdef).setUserData(this);
     }
 

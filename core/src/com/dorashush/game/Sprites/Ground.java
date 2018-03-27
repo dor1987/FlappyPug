@@ -40,7 +40,7 @@ public class Ground extends Sprite {
         velocity = new Vector2(0,0);
 
         bodyUserData = new BodyUserData();
-        bodyUserData.collisionType = BodyUserData.CollisionType.DOG;
+        bodyUserData.collisionType = BodyUserData.CollisionType.GROUND;
         b2body.setUserData(bodyUserData);
 
 
@@ -65,7 +65,9 @@ public class Ground extends Sprite {
         poly.setAsBox(480,10);
 
         fdef.shape = poly;
+        fdef.isSensor = true;
         b2body.createFixture(fdef).setUserData(this);
+
     }
 
     public float getPoisition(){
