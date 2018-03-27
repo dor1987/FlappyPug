@@ -12,6 +12,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Sprites.Dog;
+import com.dorashush.game.Sprites.Ground;
+import com.dorashush.game.Sprites.Sky;
 
 /**
  * Created by Dor on 03/27/18.
@@ -28,7 +30,10 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer b2dr;
     private Dog dog;
     private Texture backGround;
-    private Texture bottom,top;
+    //private Texture bottom,top;
+    private Ground ground1 , ground2;
+    private Sky sky1, sky2;
+
     private Vector2 groundPos1, groundPos2;
     private OrthographicCamera gameCam;
 
@@ -47,13 +52,19 @@ private FitViewport gamePort;
 
 
         dog  = new Dog(this);
+        ground1 = new Ground(this,0);
+        ground2 = new Ground(this,480);
+        sky1 = new Sky(this,0);
+        sky2 = new Sky(this,480);
+
         b2dr = new Box2DDebugRenderer();
 
     }
 
 
     public void handleInput(float dt){
-
+        if(Gdx.input.justTouched())
+            dog.Fly();
     }
 
     public void update(float dt){
@@ -61,6 +72,13 @@ private FitViewport gamePort;
         world.step(1/60f,6,2);
         dog.update(dt);
 
+        ground1.update(dt);
+        ground2.update(dt);
+        sky1.update(dt);
+        sky2.update(dt);
+
+        updateGround();
+        updateSky();
     //    game.batch.begin();
   //      dog.draw(game.batch);
 //        game.batch.end();
@@ -77,6 +95,7 @@ private FitViewport gamePort;
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
+        game.batch.setProjectionMatrix(gameCam.combined);
         b2dr.render(world,gameCam.combined);
 
     }
@@ -112,6 +131,22 @@ private FitViewport gamePort;
 
     public AssetManager getManager() {
         return manager;
+    }
+
+    private void updateGround(){
+        if(gameCam.position.x - (gameCam.viewportWidth / 2) > ground1.getPoisition() + ground1.getWidth())
+         ground1.setPos(ground1.getWidth()*2);
+
+        if(gameCam.position.x - (gameCam.viewportWidth / 2) > ground2.getPoisition() + ground2.getWidth())
+            ground2.setPos(ground2.getWidth()*2);
+    }
+
+    private void updateSky(){
+        if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky1.getPoisition() + sky1.getWidth())
+            sky1.setPos(sky1.getWidth()*2);
+
+        if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky2.getPoisition() + sky2.getWidth())
+            sky2.setPos(sky2.getWidth()*2);
     }
 
 }
