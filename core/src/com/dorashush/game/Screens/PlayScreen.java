@@ -9,10 +9,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
 import com.dorashush.game.Sprites.Ground;
+import com.dorashush.game.Sprites.TopObstcale;
 import com.dorashush.game.Sprites.Sky;
 import com.dorashush.game.Tools.WorldContactListener;
 
@@ -22,25 +25,23 @@ import com.dorashush.game.Tools.WorldContactListener;
 
 public class PlayScreen implements Screen {
     private FlappyPug game;
-   /*
-    private static final int TUBE_SPACING = 125;
-    private static final int TUBE_COUNT = 4;
-    */
-    private static final int GROUND_Y_OFFSET = -50;
+
+    private static final int TUBE_SPACING = 150;
+    private static final int TUBE_COUNT = 2;
+    private static final int START_POSITION_SPACING = 400;
+
     private World world;
     private Box2DDebugRenderer b2dr;
     private Dog dog;
-    private Texture backGround;
-    //private Texture bottom,top;
+
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
-
-    private Vector2 groundPos1, groundPos2;
     private OrthographicCamera gameCam;
 
-    //private Array<Obstacle> obstacle;
+    private Array<TopObstcale> topObstacles;
+    private Array<BottomObstcale> bottomObstcales;
+
     private AssetManager manager;
-private FitViewport gamePort;
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -56,6 +57,17 @@ private FitViewport gamePort;
         ground2 = new Ground(this,480);
         sky1 = new Sky(this,0);
         sky2 = new Sky(this,480);
+
+        topObstacles = new Array<TopObstcale>();
+        bottomObstcales = new Array<BottomObstcale>();
+
+        for(int i = 0 ; i< TUBE_COUNT ; i++){
+            topObstacles.add(new TopObstcale(this,START_POSITION_SPACING+i*(TUBE_SPACING+TopObstcale.TUBE_WIDTH)));
+            bottomObstcales.add(new BottomObstcale(this,START_POSITION_SPACING+i*(TUBE_SPACING+BottomObstcale.TUBE_WIDTH),topObstacles.get(i).getPoisitionY()));
+        }
+
+
+
 
         b2dr = new Box2DDebugRenderer();
 
@@ -77,6 +89,10 @@ private FitViewport gamePort;
 
         updateGround(dt);
         updateSky(dt);
+        updateObstcale(dt);
+
+
+
     //    game.batch.begin();
   //      dog.draw(game.batch);
 //        game.batch.end();
@@ -151,6 +167,24 @@ private FitViewport gamePort;
 
         if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky2.getPoisition() + sky2.getWidth())
             sky2.setPos(sky2.getWidth()*2);
+    }
+
+    private void updateObstcale(float dt){
+
+        for(int i  = 0 ; i<topObstacles.size ; i++) {
+            TopObstcale topObstcale = topObstacles.get(i);
+            BottomObstcale bottomObstcale = bottomObstcales.get(i);
+
+            topObstcale.update(dt);
+            bottomObstcale.update(dt);
+
+            if(gameCam.position.x - (gameCam.viewportWidth / 2) > topObstcale.getPoisitionX() + topObstcale.getWidth()){
+                topObstcale.reposition((TUBE_SPACING+TopObstcale.TUBE_WIDTH)*TUBE_COUNT);
+                bottomObstcale.reposition((TUBE_SPACING+BottomObstcale.TUBE_WIDTH)*TUBE_COUNT,topObstcale.getPoisitionY());
+            }
+
+        }
+
     }
 
 }
