@@ -1,5 +1,6 @@
 package com.dorashush.game.Sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -8,10 +9,13 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
 import java.util.Random;
+
+import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
 
 /**
  * Created by Dor on 03/28/18.
@@ -35,7 +39,7 @@ public class BottomObstcale extends Sprite {
         this.manager=  screen.getManager();
         this.x = x;
         this.topObstcaleY = topObstcaleY;
-        setBounds(getX(), getY(), TUBE_WIDTH , 150 );
+        setBounds(getX(), getY(), TUBE_WIDTH /FlappyPug.PPM, 150/FlappyPug.PPM );
         rand = new Random();
         defineObstcale();
         velocity = new Vector2(0,0);
@@ -49,7 +53,7 @@ public class BottomObstcale extends Sprite {
 
 
     public void update(float dt){
-        velocity.add(-1f,0);
+        velocity.add(SPEED_MODIFIER,0);
         b2body.setLinearVelocity(velocity);
 
     }
@@ -57,13 +61,13 @@ public class BottomObstcale extends Sprite {
 
     public void defineObstcale(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(x,topObstcaleY - TUBE_GAP - 150); //temp need to think of better way
+        bdef.position.set(x/ FlappyPug.PPM,topObstcaleY -(TUBE_GAP + 150)/FlappyPug.PPM); //temp need to think of better way
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(TUBE_WIDTH,150);
+        poly.setAsBox(TUBE_WIDTH/FlappyPug.PPM,150/FlappyPug.PPM);
 
         fdef.shape = poly;
         fdef.isSensor = true;
@@ -83,7 +87,7 @@ public class BottomObstcale extends Sprite {
     }
 
     public void reposition(float x,float y){
-        b2body.setTransform(new Vector2(x,y - TUBE_GAP - 150),b2body.getAngle());
+        b2body.setTransform(new Vector2(x/FlappyPug.PPM,y - (TUBE_GAP + 150)/FlappyPug.PPM),b2body.getAngle());
 
     }
 

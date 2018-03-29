@@ -14,6 +14,8 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
+import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
+
 /**
  * Created by Dor on 03/27/18.
  */
@@ -32,7 +34,7 @@ public class Sky extends Sprite {
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.offSet = offSet;
-        setBounds(getX(), getY(), 480 , 10 );
+        setBounds(getX(), getY(), 480/FlappyPug.PPM , 10/FlappyPug.PPM );
 
         defineSky();
         velocity = new Vector2(0,0);
@@ -46,20 +48,20 @@ public class Sky extends Sprite {
 
 
     public void update(float dt){
-        velocity.add(-1f,0);
+        velocity.add(SPEED_MODIFIER,0);
         b2body.setLinearVelocity(velocity);
     }
 
 
     public void defineSky(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(offSet, FlappyPug.HEIGHT/2-getHeight()); //temp need to think of better way
+        bdef.position.set(offSet, (FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight())); //temp need to think of better way
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(480,10);
+        poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
 
         fdef.shape = poly;
         fdef.isSensor = true;
@@ -71,7 +73,7 @@ public class Sky extends Sprite {
         return b2body.getPosition().x;
     }
     public void setPos(float x){
-        b2body.setTransform(new Vector2(x,FlappyPug.HEIGHT/2-getHeight()),b2body.getAngle());
+        b2body.setTransform(new Vector2(x,(FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight())),b2body.getAngle());
     }
 
 }

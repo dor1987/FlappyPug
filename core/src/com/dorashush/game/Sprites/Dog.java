@@ -19,7 +19,7 @@ import com.dorashush.game.Tools.BodyUserData;
  */
 
 public class Dog extends Sprite{
-    private static final int GRAVITY = -15;
+    private static final float GRAVITY = (float)-0.18;
     private static final int MOVEMENT = 100;
     private Vector2 position;
     private Vector2 velocity;
@@ -58,20 +58,20 @@ public class Dog extends Sprite{
 
     public void defineDog(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(FlappyPug.WIDTH/5,FlappyPug.HEIGHT/4-getHeight()/2);
+        bdef.position.set(FlappyPug.WIDTH/5/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(20);
+        shape.setRadius(20/FlappyPug.PPM);
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
     }
 
     public void Fly(){
-        velocity.y = 250;
+        velocity.y = (float)2.5;
     }
 
     public void Jump(){

@@ -14,6 +14,8 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
+import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
+
 /**
  * Created by Dor on 03/27/18.
  */
@@ -34,7 +36,7 @@ public class Ground extends Sprite {
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.offSet = offSet;
-        setBounds(getX(), getY(), 480 , 10 );
+        setBounds(getX(), getY(), 480 /FlappyPug.PPM, 10/FlappyPug.PPM );
 
         defineGround();
         velocity = new Vector2(0,0);
@@ -48,7 +50,7 @@ public class Ground extends Sprite {
 
 
     public void update(float dt){
-        velocity.add(-1f,0);
+        velocity.add(SPEED_MODIFIER,0);
         b2body.setLinearVelocity(velocity);
 
     }
@@ -62,7 +64,7 @@ public class Ground extends Sprite {
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(480,10);
+        poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
 
         fdef.shape = poly;
         fdef.isSensor = true;

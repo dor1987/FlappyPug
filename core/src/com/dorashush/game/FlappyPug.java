@@ -12,6 +12,9 @@ import com.dorashush.game.Screens.PlayScreen;
 public class FlappyPug extends Game {
 	public static final int WIDTH = 480;
 	public static final int HEIGHT = 800;
+	public static final float PPM = 100;
+	public static final float SPEED_MODIFIER = (float)-0.002;
+
 	private AssetManager manager = new AssetManager();
 
 	public SpriteBatch batch;
