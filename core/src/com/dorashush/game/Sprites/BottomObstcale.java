@@ -16,12 +16,14 @@ import com.dorashush.game.Tools.BodyUserData;
 import java.util.Random;
 
 import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
+import static com.dorashush.game.FlappyPug.SPEED_TIME_JUMP;
+import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
 
 /**
  * Created by Dor on 03/28/18.
  */
 
-public class BottomObstcale extends Sprite {
+public class BottomObstcale extends Enemy {
     public static final int TUBE_WIDTH = 40;
     private static final int TUBE_GAP = 250;
 
@@ -31,7 +33,7 @@ public class BottomObstcale extends Sprite {
     private BodyUserData bodyUserData;
     private AssetManager manager;
     public World world;
-    public float x,topObstcaleY;
+    public float x,topObstcaleY,timer;
     private Random rand;
 
     public BottomObstcale(PlayScreen screen, float x , float topObstcaleY){
@@ -42,19 +44,24 @@ public class BottomObstcale extends Sprite {
         setBounds(getX(), getY(), TUBE_WIDTH /FlappyPug.PPM, 150/FlappyPug.PPM );
         rand = new Random();
         defineObstcale();
-        velocity = new Vector2(0,0);
+        velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
         bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
         b2body.setUserData(bodyUserData);
-
+        timer = 0;
+        b2body.setLinearVelocity(velocity);
 
     }
 
 
     public void update(float dt){
-        velocity.add(SPEED_MODIFIER,0);
-        b2body.setLinearVelocity(velocity);
+        timer+=dt;
+        if(timer >= SPEED_TIME_JUMP) {
+            velocity.add(SPEED_MODIFIER, 0);
+            b2body.setLinearVelocity(velocity);
+            timer=0;
+        }
 
     }
 
@@ -68,6 +75,11 @@ public class BottomObstcale extends Sprite {
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
         poly.setAsBox(TUBE_WIDTH/FlappyPug.PPM,150/FlappyPug.PPM);
+
+        //Bits Testing
+        fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
+        fdef.filter.maskBits = FlappyPug.DOG_BIT;
+
 
         fdef.shape = poly;
         fdef.isSensor = true;

@@ -13,10 +13,19 @@ public class FlappyPug extends Game {
 	public static final int WIDTH = 480;
 	public static final int HEIGHT = 800;
 	public static final float PPM = 100;
-	public static final float SPEED_MODIFIER = (float)-0.002;
+	public static final float SPEED_MODIFIER = (float)-0.25;
+	public static final float SPEED_TIME_JUMP = (float)5;
+
+
+	//Box2D Collision Bits
+	public static final short NOTHING_BIT = 0;
+	public static final short ENEMY_BIT = 1;
+	public static final short DOG_BIT = 2;
+	public static final short POWER_UP_BIT = 4;
+	public static final short DESTROYED_BIT = 8;
+
 
 	private AssetManager manager = new AssetManager();
-
 	public SpriteBatch batch;
 
 	@Override

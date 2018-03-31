@@ -30,7 +30,8 @@ public class PlayScreen implements Screen {
     private static final int TUBE_SPACING = 150;
     private static final int TUBE_COUNT = 2;
     private static final int START_POSITION_SPACING = 300;
-
+    public static final float STARTING_SPEED = (float)-0.5;
+    public static boolean SPEED_BOOST = false;
     private World world;
     private Box2DDebugRenderer b2dr;
     private Dog dog;
@@ -39,8 +40,10 @@ public class PlayScreen implements Screen {
     private Sky sky1, sky2;
     private OrthographicCamera gameCam;
 
+
     private Array<TopObstcale> topObstacles;
     private Array<BottomObstcale> bottomObstacles;
+
 
     private AssetManager manager;
 
@@ -79,8 +82,12 @@ public class PlayScreen implements Screen {
 
 
     public void handleInput(float dt){
-        if(Gdx.input.justTouched())
-            dog.Fly();
+
+        if(dog.currentState != Dog.State.DEAD) {
+            if (Gdx.input.justTouched())
+                dog.Fly();
+        }
+
     }
 
     public void update(float dt){
@@ -116,6 +123,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         b2dr.render(world,gameCam.combined);
         hud.stage.draw();
+
+
+        if(gameOver()){
+            //Todo change to Game over screen when Implmented
+            game.setScreen(new PlayScreen(game));
+            dispose();
+        }
+
     }
 
     @Override
@@ -140,7 +155,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        world.dispose();
+        hud.dispose();
     }
 
     public World getWorld(){
@@ -193,4 +209,10 @@ public class PlayScreen implements Screen {
 
     }
 
+    public boolean gameOver(){
+        if(dog.currentState == Dog.State.DEAD && dog.getStateTimer() > 2){
+            return true;
+        }
+        return false;
+    }
 }

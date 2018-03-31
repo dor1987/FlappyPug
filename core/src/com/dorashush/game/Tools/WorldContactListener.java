@@ -1,11 +1,17 @@
 package com.dorashush.game.Tools;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Sprites.Dog;
+import com.dorashush.game.Sprites.Enemy;
+
+import static com.dorashush.game.Screens.PlayScreen.SPEED_BOOST;
 
 /**
  * Created by Dor on 03/27/18.
@@ -16,8 +22,21 @@ public class WorldContactListener implements ContactListener {
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-    }
 
+        int cDef = fixtureA.getFilterData().categoryBits | fixtureB.getFilterData().categoryBits;
+
+        switch (cDef){
+            case FlappyPug.DOG_BIT | FlappyPug.ENEMY_BIT:
+                if(fixtureA.getFilterData().categoryBits == FlappyPug.DOG_BIT)
+                    ((Dog) fixtureA.getUserData()).die();
+                else
+                    ((Dog) fixtureB.getUserData()).die();
+                break;
+
+        }
+
+
+    }
     @Override
     public void endContact(Contact contact) {
 

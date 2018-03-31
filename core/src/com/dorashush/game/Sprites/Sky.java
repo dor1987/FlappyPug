@@ -15,12 +15,14 @@ import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
 import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
+import static com.dorashush.game.FlappyPug.SPEED_TIME_JUMP;
+import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
 
 /**
  * Created by Dor on 03/27/18.
  */
 
-public class Sky extends Sprite {
+public class Sky extends Enemy {
     private Vector2 position;
     private Vector2 velocity;
     private Rectangle bounds;
@@ -28,7 +30,7 @@ public class Sky extends Sprite {
     private BodyUserData bodyUserData;
     private AssetManager manager;
     public World world;
-    public float offSet;
+    public float offSet,timer;
 
     public Sky(PlayScreen screen,float offSet){
         this.world = screen.getWorld();
@@ -37,19 +39,24 @@ public class Sky extends Sprite {
         setBounds(getX(), getY(), 480/FlappyPug.PPM , 10/FlappyPug.PPM );
 
         defineSky();
-        velocity = new Vector2(0,0);
+        velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
-        bodyUserData.collisionType = BodyUserData.CollisionType.SKY;
+        bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
         b2body.setUserData(bodyUserData);
-
+        timer = 0;
+        b2body.setLinearVelocity(velocity);
 
     }
 
 
     public void update(float dt){
-        velocity.add(SPEED_MODIFIER,0);
-        b2body.setLinearVelocity(velocity);
+        timer+=dt;
+        if(timer >= SPEED_TIME_JUMP) {
+            velocity.add(SPEED_MODIFIER, 0);
+            b2body.setLinearVelocity(velocity);
+            timer=0;
+        }
     }
 
 
@@ -62,6 +69,10 @@ public class Sky extends Sprite {
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
         poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
+
+        //Bits Testing
+        fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
+        fdef.filter.maskBits = FlappyPug.DOG_BIT;
 
         fdef.shape = poly;
         fdef.isSensor = true;
