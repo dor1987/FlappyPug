@@ -8,7 +8,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.BottomObstcale;
@@ -30,7 +36,7 @@ public class PlayScreen implements Screen {
     private static final int TUBE_SPACING = 150;
     private static final int TUBE_COUNT = 2;
     private static final int START_POSITION_SPACING = 300;
-    public static final float STARTING_SPEED = (float)-0.5;
+    public static final float STARTING_SPEED = (float)-1;
     public static boolean SPEED_BOOST = false;
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -49,9 +55,18 @@ public class PlayScreen implements Screen {
 
     private Hud hud;
 
+    private Skin skin;
+    private Label testLabel;
+    private Table testTable;
+    private Stage stage;
+    private FitViewport viewport;
+
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
         this.game = game;
+
+        //skin = manager.get("assets/textSkin/glassy-ui.json");
+        skin = new Skin(Gdx.files.internal("textSkin/glassy-ui.json"));
         gameCam = new OrthographicCamera();
         gameCam.setToOrtho(false, FlappyPug.WIDTH / 2 /FlappyPug.PPM, FlappyPug.HEIGHT / 2/FlappyPug.PPM);
 
@@ -74,8 +89,6 @@ public class PlayScreen implements Screen {
         }
 
 
-
-
         b2dr = new Box2DDebugRenderer();
 
     }
@@ -91,18 +104,18 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float dt){
-        handleInput(dt);
-        world.step(1/60f,6,2);
-        dog.update(dt);
         hud.update(dt);
-
-
-
         updateGround(dt);
         updateSky(dt);
-        updateObstcale(dt);
 
+        if(hud.getCountDownTimer()<=0) {
+            handleInput(dt);
+            world.step(1 / 60f, 6, 2);
+            dog.update(dt);
 
+            updateObstcale(dt);
+
+        }
 
     //    game.batch.begin();
   //      dog.draw(game.batch);
@@ -123,14 +136,13 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         b2dr.render(world,gameCam.combined);
         hud.stage.draw();
-
+        //stage.draw();
 
         if(gameOver()){
             //Todo change to Game over screen when Implmented
             game.setScreen(new PlayScreen(game));
             dispose();
         }
-
     }
 
     @Override
@@ -210,9 +222,19 @@ public class PlayScreen implements Screen {
     }
 
     public boolean gameOver(){
+        if(dog.currentState == Dog.State.DEAD){
+            //Stoping the hud score coutner
+            hud.setGameOver();
+        }
+
         if(dog.currentState == Dog.State.DEAD && dog.getStateTimer() > 2){
             return true;
         }
         return false;
     }
+
+    private void showGameOverMenu(){
+
+    }
+
 }
