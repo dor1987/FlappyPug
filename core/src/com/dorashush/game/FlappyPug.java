@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.dorashush.game.Screens.PlayScreen;
 
@@ -35,7 +36,7 @@ public class FlappyPug extends Game {
 		batch = new SpriteBatch();
 		manager = new AssetManager();
 		AssetsLoad();
-		skin = new Skin(Gdx.files.internal("textSkin/glassy-ui.json"));
+		skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
 		setScreen(new PlayScreen(this));
 	}
 
@@ -51,7 +52,8 @@ public class FlappyPug extends Game {
 	}
 
 	public void AssetsLoad(){
-		//manager.load("assets/textSkin/glassy-ui.json",Skin.class);
+		manager.load("images/fireon.png", Texture.class);
+		manager.load("images/fireoff.png", Texture.class);
 	}
 
 	public AssetManager getManager() {

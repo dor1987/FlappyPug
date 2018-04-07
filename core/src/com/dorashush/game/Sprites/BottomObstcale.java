@@ -2,7 +2,9 @@ package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -35,15 +37,24 @@ public class BottomObstcale extends Enemy {
     public World world;
     public float x,topObstcaleY,timer;
     private Random rand;
+    private TextureRegion obstacleTexture;
+
 
     public BottomObstcale(PlayScreen screen, float x , float topObstcaleY){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.x = x;
         this.topObstcaleY = topObstcaleY;
-        setBounds(getX(), getY(), TUBE_WIDTH /FlappyPug.PPM, 150/FlappyPug.PPM );
+
+        obstacleTexture = new TextureRegion(new Texture("images/wall.png"));
         rand = new Random();
+
         defineObstcale();
+
+        setBounds(0, 0, TUBE_WIDTH*2 /FlappyPug.PPM, 150*2/FlappyPug.PPM );
+        setRegion(obstacleTexture);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+
         velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
@@ -57,6 +68,9 @@ public class BottomObstcale extends Enemy {
 
     public void update(float dt){
         timer+=dt;
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);

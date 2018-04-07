@@ -1,6 +1,8 @@
 package com.dorashush.game.Sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,17 +40,24 @@ public class Dog extends Sprite{
     private AssetManager manager;
     private boolean dogIsDead,flyAnimation;
     private  float stateTimer;
-
+    private TextureRegion dogFall,dogFly;
 
     public Dog(PlayScreen screen){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
+
+        dogFly = new TextureRegion(new Texture("images/fireon.png"));
+        dogFall = new TextureRegion(new Texture("images/fireoff.png"));
 
         defineDog();
         velocity = new Vector2(0,0);
 
         dogIsDead = false;
         flyAnimation = false;
+        setBounds(0,0,60/FlappyPug.PPM,60/FlappyPug.PPM);
+        setRegion(dogFall);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+
 
         stateTimer = 0;
 
@@ -61,13 +70,16 @@ public class Dog extends Sprite{
 
 
     public void update(float dt){
-        //setPosition(b2body.getPosition().x - getWidth()/2,b2body.getPosition().y - getHeight()/2);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(dt));
+        //setRegion(dogFall);
 
         velocity.add(0,GRAVITY);
         b2body.setLinearVelocity(velocity);
 
         //Todo move this to Get Texturse when implmented
         currentState = getState();
+
         stateTimer = currentState == previousState ? stateTimer + dt : 0;
         previousState = currentState;
     }
@@ -75,10 +87,12 @@ public class Dog extends Sprite{
     public State getState(){
         if(dogIsDead)
             return State.DEAD;
-        else if(flyAnimation)
+        else if(b2body.getLinearVelocity().y>0) {
             return State.FLYING;
-        else
+        }
+        else {
             return State.FALLING;
+        }
     }
 
 
@@ -92,18 +106,20 @@ public class Dog extends Sprite{
         //ToDo enter Frame control according to state && remove null from region
         switch(currentState){
             case DEAD:
+                region =  dogFall;
                 break;
             case FLYING:
+                region =  dogFly;
 
                 break;
             case FALLING:
+                region =  dogFall;
                 break;
 
             default:
-
+                region =  dogFall;
                 break;
         }
-
 
         //if the current state is the same as the previous state increase the state timer.
         //otherwise the state has changed and we need to reset timer.

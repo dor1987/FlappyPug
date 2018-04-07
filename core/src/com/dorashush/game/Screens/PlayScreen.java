@@ -5,16 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.BottomObstcale;
@@ -23,8 +19,6 @@ import com.dorashush.game.Sprites.Ground;
 import com.dorashush.game.Sprites.TopObstcale;
 import com.dorashush.game.Sprites.Sky;
 import com.dorashush.game.Tools.WorldContactListener;
-
-import java.lang.reflect.Modifier;
 
 /**
  * Created by Dor on 03/27/18.
@@ -45,7 +39,7 @@ public class PlayScreen implements Screen {
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
     private OrthographicCamera gameCam;
-
+    private TextureRegion backGround;
 
     private Array<TopObstcale> topObstacles;
     private Array<BottomObstcale> bottomObstacles;
@@ -55,18 +49,13 @@ public class PlayScreen implements Screen {
 
     private Hud hud;
 
-    private Skin skin;
-    private Label testLabel;
-    private Table testTable;
-    private Stage stage;
-    private FitViewport viewport;
+
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
         this.game = game;
 
         //skin = manager.get("assets/textSkin/glassy-ui.json");
-        skin = new Skin(Gdx.files.internal("textSkin/glassy-ui.json"));
         gameCam = new OrthographicCamera();
         gameCam.setToOrtho(false, FlappyPug.WIDTH / 2 /FlappyPug.PPM, FlappyPug.HEIGHT / 2/FlappyPug.PPM);
 
@@ -79,6 +68,7 @@ public class PlayScreen implements Screen {
         ground2 = new Ground(this,480/FlappyPug.PPM);
         sky1 = new Sky(this,0);
         sky2 = new Sky(this,480/FlappyPug.PPM);
+        backGround = new TextureRegion(new Texture("images/background.png"));
 
         topObstacles = new Array<TopObstcale>();
         bottomObstacles = new Array<BottomObstcale>();
@@ -133,10 +123,22 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
-        game.batch.setProjectionMatrix(gameCam.combined);
         b2dr.render(world,gameCam.combined);
-        hud.stage.draw();
         //stage.draw();
+        game.batch.setProjectionMatrix(gameCam.combined);
+        game.batch.begin();
+        game.batch.draw(backGround,0,0,FlappyPug.WIDTH/2f/FlappyPug.PPM,FlappyPug.HEIGHT/2f/FlappyPug.PPM);
+
+        for(int i  = 0 ; i<topObstacles.size ; i++) {
+            (topObstacles.get(i)).draw(game.batch);
+            (bottomObstacles.get(i)).draw(game.batch);
+        }
+        dog.draw(game.batch);
+
+
+        game.batch.end();
+
+        hud.stage.draw();
 
         if(gameOver()){
             //Todo change to Game over screen when Implmented

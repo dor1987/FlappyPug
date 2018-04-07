@@ -1,7 +1,9 @@
 package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -26,7 +28,7 @@ import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
 public class TopObstcale extends Enemy {
     public static final int TUBE_WIDTH = 40;
     private static final int FLUCTUATION = 130;
-    private static final int TUBE_GAP = 250;
+    private static final int TUBE_GAP = 200;
     private static final int LOWEST_OPENING = 150;
 
     private Vector2 velocity;
@@ -37,14 +39,20 @@ public class TopObstcale extends Enemy {
     public World world;
     public float x,timer;
     private Random rand;
+    private TextureRegion obstacleTexture;
 
     public TopObstcale(PlayScreen screen, float x){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.x = x;
-        setBounds(getX(), getY(), TUBE_WIDTH/FlappyPug.PPM , 150/FlappyPug.PPM );
+        obstacleTexture = new TextureRegion(new Texture("images/wall.png"));
+
         rand = new Random();
         defineObstcale();
+        setBounds(0, 0, TUBE_WIDTH*2/FlappyPug.PPM , 150*2/FlappyPug.PPM );
+        setRegion(obstacleTexture);
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+
         velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
@@ -58,6 +66,8 @@ public class TopObstcale extends Enemy {
 
     public void update(float dt){
         timer+=dt;
+        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);

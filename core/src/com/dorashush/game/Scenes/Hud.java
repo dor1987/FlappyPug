@@ -33,7 +33,7 @@ public class Hud implements Disposable {
 
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
         stage = new Stage(viewPort,sb);
-        skin = new Skin(Gdx.files.internal("textSkin/glassy-ui.json"));
+        skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
         countDownTimer = 3;
         timeCount = 0;
         initLabels();
@@ -45,8 +45,8 @@ public class Hud implements Disposable {
     }
 
     public void initLabels(){
-        scoreLabel= new Label(String.format("%06.4f",score),new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        testLabel = new Label(String.format("%d",countDownTimer), skin);
+        scoreLabel= new Label(String.format("%06.4f",score),skin);
+        testLabel = new Label(String.format("%d",countDownTimer), skin,"title");
     }
     public void initTable(){
         table =new Table();
