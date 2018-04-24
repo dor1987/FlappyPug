@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Scenes.EndGameMenu;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
@@ -54,7 +55,7 @@ public class PlayScreen implements Screen ,InputProcessor{
     private boolean screenPressed;
    // GestureDetector gestureDetector;
 
-    private TextureRegion restartBtn;
+    private EndGameMenu endGameMenu;
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -87,6 +88,7 @@ public class PlayScreen implements Screen ,InputProcessor{
             bottomObstacles.add(new BottomObstcale(this,START_POSITION_SPACING+i*(TUBE_SPACING+BottomObstcale.TUBE_WIDTH),topObstacles.get(i).getPoisitionY()));
         }
 
+        endGameMenu = new EndGameMenu(this, game.batch);
 
         b2dr = new Box2DDebugRenderer();
 
@@ -156,15 +158,31 @@ public class PlayScreen implements Screen ,InputProcessor{
         }
         dog.draw(game.batch);
 
-
         game.batch.end();
 
         hud.stage.draw();
+
         b2dr.render(world,gameCam.combined);
+
 
         if(gameOver()){
             //Todo change to Game over screen when Implmented
+            showGameOverMenu(delta);
+            handleMenuTouch();
+            //dispose();
+            //game.setScreen(new PlayScreen(game));
+            //dispose();
+        }
+    }
+
+    private void handleMenuTouch(){
+        if(endGameMenu.isPlayPressed()){
             game.setScreen(new PlayScreen(game));
+            dispose();
+        }
+
+        else if(endGameMenu.isHomePressed()){
+            game.setScreen(new MainMenuScreen(game));
             dispose();
         }
     }
@@ -194,6 +212,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+        endGameMenu.dispose();
     }
 
     public World getWorld(){
@@ -258,11 +277,18 @@ public class PlayScreen implements Screen ,InputProcessor{
         return false;
     }
 
-    private void showGameOverMenu(){
-        restartBtn = new TextureRegion(manager.get("images/restartbtn.png",Texture.class));
-       //todo add btn functionality
+    private void showGameOverMenu(float dt){
+
+       // restartBtn = new TextureRegion(manager.get("images/replaybtn.png",Texture.class));
+        //scoreIcon = new TextureRegion(manager.get("images/score.png",Texture.class));
+       endGameMenu.setScore(hud.getScore());
+        endGameMenu.draw(dt);
+
+        //todo add btn functionality
+
 
     }
+
 
     @Override
     public boolean keyDown(int keycode) {

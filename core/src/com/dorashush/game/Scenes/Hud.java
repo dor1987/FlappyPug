@@ -49,7 +49,7 @@ public class Hud implements Disposable {
         testLabel = new Label(String.format("%d",countDownTimer), skin,"title");
     }
     public void initTable(){
-        table =new Table();
+        table = new Table();
         table.top().left();
         table.setFillParent(true);
         table.add(scoreLabel).expandX().padBottom(25f);

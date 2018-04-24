@@ -68,12 +68,20 @@ public class FlappyPug extends Game {
 	}
 
 	public void AssetsLoad(){
+		manager.load("images/openingscreen.png", Texture.class);
+		manager.load("images/mainscreentitle.png", Texture.class);
+		manager.load("images/play.png", Texture.class);
+		manager.load("images/settings.png", Texture.class);
+		manager.load("images/highscore.png", Texture.class);
+
+
 		manager.load("images/fireon.png", Texture.class);
 		manager.load("images/fireoff.png", Texture.class);
 		manager.load("images/wall.png", Texture.class);
 		manager.load("images/background.png", Texture.class);
-		manager.load("images/restartbtn.png", Texture.class);
-
+		manager.load("images/replaybtn.png", Texture.class);
+		manager.load("images/score.png", Texture.class);
+		manager.load("images/homebtn.png", Texture.class);
 
 	}
 
