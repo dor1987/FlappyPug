@@ -1,12 +1,15 @@
 package com.dorashush.game.Screens;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -24,7 +27,7 @@ import com.dorashush.game.Tools.WorldContactListener;
  * Created by Dor on 03/27/18.
  */
 
-public class PlayScreen implements Screen {
+public class PlayScreen implements Screen ,InputProcessor{
     private FlappyPug game;
 
     private static final int TUBE_SPACING = 150;
@@ -48,8 +51,10 @@ public class PlayScreen implements Screen {
     private AssetManager manager;
 
     private Hud hud;
+    private boolean screenPressed;
+   // GestureDetector gestureDetector;
 
-
+    private TextureRegion restartBtn;
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -63,12 +68,16 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
         hud = new Hud(game.batch);
 
+       // gestureDetector = new GestureDetector(this);
+        //Gdx.input.setInputProcessor(gestureDetector);
+        Gdx.input.setInputProcessor(this);
+
         dog  = new Dog(this);
         ground1 = new Ground(this,0);
         ground2 = new Ground(this,480/FlappyPug.PPM);
         sky1 = new Sky(this,0);
         sky2 = new Sky(this,480/FlappyPug.PPM);
-        backGround = new TextureRegion(new Texture("images/background.png"));
+        backGround = new TextureRegion(manager.get("images/background.png",Texture.class));
 
         topObstacles = new Array<TopObstcale>();
         bottomObstacles = new Array<BottomObstcale>();
@@ -87,8 +96,19 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt){
 
         if(dog.currentState != Dog.State.DEAD) {
-            if (Gdx.input.justTouched())
+/*
+            if (Gdx.input.justTouched()) {
+               //dog.Fly();
+                screenPressed = true;
+            }
+
+            else{
+                screenPressed = false;
+            }
+            */
+            if(screenPressed){
                 dog.Fly();
+            }
         }
 
     }
@@ -107,6 +127,7 @@ public class PlayScreen implements Screen {
 
         }
 
+
     //    game.batch.begin();
   //      dog.draw(game.batch);
 //        game.batch.end();
@@ -123,7 +144,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
-        b2dr.render(world,gameCam.combined);
+        //b2dr.render(world,gameCam.combined);
         //stage.draw();
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
@@ -139,6 +160,7 @@ public class PlayScreen implements Screen {
         game.batch.end();
 
         hud.stage.draw();
+        b2dr.render(world,gameCam.combined);
 
         if(gameOver()){
             //Todo change to Game over screen when Implmented
@@ -170,6 +192,7 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         world.dispose();
+        b2dr.dispose();
         hud.dispose();
     }
 
@@ -236,7 +259,50 @@ public class PlayScreen implements Screen {
     }
 
     private void showGameOverMenu(){
+        restartBtn = new TextureRegion(manager.get("images/restartbtn.png",Texture.class));
+       //todo add btn functionality
 
     }
 
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        screenPressed= true;
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        screenPressed = false;
+        return true;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
+    }
 }

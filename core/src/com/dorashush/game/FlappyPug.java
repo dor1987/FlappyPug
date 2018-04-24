@@ -5,10 +5,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.dorashush.game.Screens.LoadingScreen;
 import com.dorashush.game.Screens.PlayScreen;
 
 public class FlappyPug extends Game {
@@ -27,33 +29,52 @@ public class FlappyPug extends Game {
 	public static final short DESTROYED_BIT = 8;
 
 
-	private AssetManager manager = new AssetManager();
+	public AssetManager manager = new AssetManager();
 	public SpriteBatch batch;
 	public Skin skin;
+	public OrthographicCamera camera;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		manager = new AssetManager();
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, FlappyPug.WIDTH / 2 /FlappyPug.PPM, FlappyPug.HEIGHT / 2/FlappyPug.PPM);
+
+
+
 		AssetsLoad();
 		skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
-		setScreen(new PlayScreen(this));
+
+		//setScreen(new PlayScreen(this));
+		setScreen(new LoadingScreen(this));
+
 	}
 
 	@Override
 	public void render () {
 		super.render();
-		manager.update();
+		if(manager.update()){
+			Gdx.app.log("manager status"," loaded");
+		}
 	}
-	
+
+
 	@Override
 	public void dispose () {
 		batch.dispose();
+		manager.dispose();
 	}
 
 	public void AssetsLoad(){
 		manager.load("images/fireon.png", Texture.class);
 		manager.load("images/fireoff.png", Texture.class);
+		manager.load("images/wall.png", Texture.class);
+		manager.load("images/background.png", Texture.class);
+		manager.load("images/restartbtn.png", Texture.class);
+
+
 	}
 
 	public AssetManager getManager() {

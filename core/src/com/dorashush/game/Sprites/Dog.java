@@ -46,15 +46,17 @@ public class Dog extends Sprite{
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
 
-        dogFly = new TextureRegion(new Texture("images/fireon.png"));
-        dogFall = new TextureRegion(new Texture("images/fireoff.png"));
+        //dogFly = new TextureRegion(new Texture("images/fireon.png"));
+        //dogFall = new TextureRegion(new Texture("images/fireoff.png"));
+        dogFly = new TextureRegion(manager.get("images/fireon.png",Texture.class));
+        dogFall = new TextureRegion(manager.get("images/fireoff.png",Texture.class));
 
         defineDog();
         velocity = new Vector2(0,0);
 
         dogIsDead = false;
         flyAnimation = false;
-        setBounds(0,0,60/FlappyPug.PPM,60/FlappyPug.PPM);
+        setBounds(0,0,78/FlappyPug.PPM,78/FlappyPug.PPM);
         setRegion(dogFall);
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
@@ -139,7 +141,7 @@ public class Dog extends Sprite{
 
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
-        shape.setRadius(20/FlappyPug.PPM);
+        shape.setRadius(23/FlappyPug.PPM);
 
         //Bits Testing
         fdef.filter.categoryBits = FlappyPug.DOG_BIT;
@@ -151,7 +153,9 @@ public class Dog extends Sprite{
     }
 
     public void Fly(){
-        velocity.y = (float)2.5;
+       // velocity.y = (float)2.5;
+        velocity.y = (float)1.5;
+
     }
 
     public void die() {
@@ -182,4 +186,5 @@ public class Dog extends Sprite{
     public float getStateTimer(){
         return stateTimer;
     }
+
 }

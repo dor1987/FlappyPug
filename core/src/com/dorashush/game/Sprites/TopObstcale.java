@@ -26,10 +26,10 @@ import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
  */
 
 public class TopObstcale extends Enemy {
-    public static final int TUBE_WIDTH = 40;
+    public static final int TUBE_WIDTH = 30;
     private static final int FLUCTUATION = 130;
-    private static final int TUBE_GAP = 200;
-    private static final int LOWEST_OPENING = 150;
+    private static final int TUBE_GAP = 250;
+    private static final int LOWEST_OPENING = 100;
 
     private Vector2 velocity;
     //private Rectangle bounds;
@@ -45,7 +45,7 @@ public class TopObstcale extends Enemy {
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.x = x;
-        obstacleTexture = new TextureRegion(new Texture("images/wall.png"));
+        obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
 
         rand = new Random();
         defineObstcale();
@@ -109,6 +109,10 @@ public class TopObstcale extends Enemy {
     public void reposition(float x){
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,(rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING)/FlappyPug.PPM),b2body.getAngle());
 
+
+    }
+
+    public void endGameMenu(){
 
     }
 

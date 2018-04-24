@@ -26,7 +26,7 @@ import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
  */
 
 public class BottomObstcale extends Enemy {
-    public static final int TUBE_WIDTH = 40;
+    public static final int TUBE_WIDTH = 30;
     private static final int TUBE_GAP = 250;
 
     private Vector2 velocity;
@@ -46,7 +46,8 @@ public class BottomObstcale extends Enemy {
         this.x = x;
         this.topObstcaleY = topObstcaleY;
 
-        obstacleTexture = new TextureRegion(new Texture("images/wall.png"));
+        obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+
         rand = new Random();
 
         defineObstcale();
