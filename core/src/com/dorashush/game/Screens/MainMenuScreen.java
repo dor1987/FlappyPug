@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
 import com.dorashush.game.Tools.ActionMoveCircular;
@@ -29,7 +30,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
  * Created by Dor on 04/01/18.
  */
 //Todo - Full implmention and adjusment needed
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen extends ScreenWithPopUps {
     private Game game;
     private OrthographicCamera camera;
     private Stage stage,backStage;
@@ -40,7 +41,7 @@ public class MainMenuScreen implements Screen {
     private ExtendViewport viewPort,backViewPort;
 
     //Name windows
-    private boolean isNameWindowOn;
+    private boolean isNameWindowOn,playPressed;
     private NameWindow nameWindow;
     private Skin skin;
 
@@ -62,8 +63,8 @@ public class MainMenuScreen implements Screen {
         addListeners();
 
         nameWindow = new NameWindow(this, game.batch);
-        isNameWindowOn= false;
-
+        isNameWindowOn = false;
+        playPressed = false;
     }
 
     public void menuInit(){
@@ -72,8 +73,14 @@ public class MainMenuScreen implements Screen {
         optionsBtn = new Image(manager.get("images/settings.png",Texture.class));
         leaderBoardBtn = new Image(manager.get("images/highscore.png",Texture.class));
         menuTitle  = new Image(manager.get("images/mainscreentitle.png",Texture.class));
-        hiLabel = new Label("Hello "+FlappyPug.NAME, skin,"big");
 
+        if(FlappyPug.NAME.compareTo("No name stored")!=0) {
+            hiLabel = new Label("Hello " + FlappyPug.NAME, skin, "big");
+        }
+        else{
+            hiLabel = new Label("Hello... " , skin, "big");
+
+        }
 
         table.center();
         table.setFillParent(true);
@@ -110,6 +117,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                playPressed=true;
                 dog.clearActions();
                 Runnable transitionRunnable = new Runnable() {
                     @Override
@@ -118,7 +126,7 @@ public class MainMenuScreen implements Screen {
                         dispose();
                     }
                 };
-
+                Gdx.input.setInputProcessor(null);
                 dog.addAction(sequence(parallel(
                         moveBy(FlappyPug.WIDTH, FlappyPug.HEIGHT /2, 1.5f, Interpolation.swing)),run(transitionRunnable)));
 
@@ -180,8 +188,12 @@ public class MainMenuScreen implements Screen {
         if(FlappyPug.NAME.compareTo("No name stored")==0 || isNameWindowOn){
             nameWindow.draw(delta);
         }
+        else{
+            hiLabel.setText("Hello " + FlappyPug.NAME);
+        }
 
-        if(!isNameWindowOn){
+
+        if(!isNameWindowOn && !playPressed){
             Gdx.input.setInputProcessor(stage);
         }
 
@@ -215,7 +227,7 @@ public class MainMenuScreen implements Screen {
 
         backStage.dispose();
         stage.dispose();
-
+        nameWindow.dispose();
     }
 
     public AssetManager getManager() {
@@ -224,6 +236,5 @@ public class MainMenuScreen implements Screen {
 
     public void nameWindowControl(boolean openWindow){
         isNameWindowOn = openWindow;
-
     }
 }

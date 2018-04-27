@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.MainMenuScreen;
 import com.dorashush.game.Screens.PlayScreen;
@@ -49,9 +50,9 @@ public class NameWindow implements Disposable {
     private boolean firstdraw;
     private TextArea userNameTextArea;
     private Image backGroundPanel;
-    private MainMenuScreen screen;
+    private ScreenWithPopUps screen;
 
-    public NameWindow(MainMenuScreen screen, SpriteBatch sb){
+    public NameWindow(ScreenWithPopUps screen, SpriteBatch sb){
         this.manager=  screen.getManager();
         this.screen = screen;
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
@@ -84,6 +85,7 @@ public class NameWindow implements Disposable {
                     FlappyPug.flappyDogPreferences.putString("name",FlappyPug.NAME);
                     FlappyPug.flappyDogPreferences.flush();
 
+                    Gdx.input.setOnscreenKeyboardVisible(false);
 
                     Runnable closeNameWindow = new Runnable() {
                         @Override
@@ -112,7 +114,7 @@ public class NameWindow implements Disposable {
     whatYourNameLabel2 = new Label("Your Name?", skin,"big");
     submitBtn = new TextButton("Submit",skin);
     userNameTextArea = new TextArea("Click Here!", skin);
-    userNameTextArea.setMaxLength(10);
+    userNameTextArea.setMaxLength(6);
     }
     public void initBackGroundPanel(){
         backGroundPanel = new Image(manager.get("images/windowpanel.png",Texture.class));
@@ -153,7 +155,7 @@ public class NameWindow implements Disposable {
         stage.act(dt);
 
 
-        Gdx.input.setInputProcessor(stage);
+      //  Gdx.input.setInputProcessor(stage);
         stage.draw();
 
     }

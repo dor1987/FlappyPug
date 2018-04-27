@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
 
@@ -28,7 +29,7 @@ import com.dorashush.game.Scenes.NameWindow;
  * Created by Dor on 04/01/18.
  */
 
-public class OptionMenu implements Screen{
+public class OptionMenu extends ScreenWithPopUps{
     private Viewport viewPort;
     private Stage stage,backStage;
     private Game game;
@@ -51,7 +52,6 @@ public class OptionMenu implements Screen{
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
         stage = new Stage(viewPort,(game.batch));
         skin = new Skin(Gdx.files.internal("textSkin/uiskin.json"));
-        isNameWindowOn= false;
 
         //nameWindow = new NameWindow(this, game.batch,manager);
         initBackground();
@@ -59,6 +59,10 @@ public class OptionMenu implements Screen{
 
         initTabels();
         addListeners();
+
+        nameWindow = new NameWindow(this, game.batch);
+        isNameWindowOn= false;
+
     }
 
     public void addListeners(){
@@ -70,6 +74,14 @@ public class OptionMenu implements Screen{
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 returnToMenu();
+            }
+        });
+
+        changeNameBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                nameWindowControl(true);
             }
         });
 
@@ -223,6 +235,10 @@ public class OptionMenu implements Screen{
             nameWindow.draw(delta);
         }
 
+        else{
+            nameCheckLabel.setText("Not "+FlappyPug.NAME+"?");
+        }
+
         if(!isNameWindowOn){
             Gdx.input.setInputProcessor(stage);
         }
@@ -268,4 +284,13 @@ public class OptionMenu implements Screen{
         FlappyPug.VOLUME = temp/100;
     }
 
+    @Override
+    public void nameWindowControl(boolean openWindow) {
+        isNameWindowOn = openWindow;
+    }
+
+    @Override
+    public AssetManager getManager() {
+        return manager;
+    }
 }

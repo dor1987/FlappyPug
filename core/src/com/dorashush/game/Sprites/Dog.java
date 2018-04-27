@@ -31,6 +31,7 @@ public class Dog extends Sprite{
     public World world;
 
     private static final float GRAVITY = (float)-0.18;
+
     private static final int MOVEMENT = 100;
     private Vector2 position;
     private Vector2 velocity;

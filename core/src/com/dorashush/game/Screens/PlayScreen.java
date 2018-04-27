@@ -71,6 +71,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
        // gestureDetector = new GestureDetector(this);
         //Gdx.input.setInputProcessor(gestureDetector);
+        //Gdx.input.setInputProcessor(this);
         Gdx.input.setInputProcessor(this);
 
         dog  = new Dog(this);
@@ -138,6 +139,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     @Override
     public void show() {
+
     }
 
     @Override
@@ -146,6 +148,9 @@ public class PlayScreen implements Screen ,InputProcessor{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
 
+        if(dog.currentState!=Dog.State.DEAD){
+            Gdx.input.setInputProcessor(this);
+        }
         //b2dr.render(world,gameCam.combined);
         //stage.draw();
         game.batch.setProjectionMatrix(gameCam.combined);

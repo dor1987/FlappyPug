@@ -131,6 +131,7 @@ public class EndGameMenu implements Disposable{
     public void draw(float dt){
 
         if(firstdraw) {
+
             table.addAction(sequence(scaleTo(.1f, .1f), parallel(fadeIn(2f, Interpolation.pow2), scaleTo(1.2f, 1.2f, 1.5f, Interpolation.pow5),
                     moveTo(FlappyPug.WIDTH / 2 / FlappyPug.PPM, FlappyPug.HEIGHT /4, 1.5f, Interpolation.swing))));
 
@@ -140,6 +141,7 @@ public class EndGameMenu implements Disposable{
 
             firstdraw= false;
             Gdx.input.setInputProcessor(stage);
+
         }
 
             table.act(dt);
