@@ -3,6 +3,7 @@ package com.dorashush.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,6 +29,12 @@ public class FlappyPug extends Game {
 	public static final short POWER_UP_BIT = 4;
 	public static final short DESTROYED_BIT = 8;
 
+	//Preferencses
+	public static Preferences flappyDogPreferences;
+	public static String NAME;
+	public static float VOLUME = 1;
+	public static boolean VIBRATION = true;
+
 
 	public AssetManager manager = new AssetManager();
 	public SpriteBatch batch;
@@ -49,6 +56,8 @@ public class FlappyPug extends Game {
 
 		//setScreen(new PlayScreen(this));
 		setScreen(new LoadingScreen(this));
+		flappyDogPreferences =Gdx.app.getPreferences("flappyDogPreferences");
+		NAME = flappyDogPreferences.getString("name","No name stored");
 
 	}
 
@@ -73,6 +82,8 @@ public class FlappyPug extends Game {
 		manager.load("images/play.png", Texture.class);
 		manager.load("images/settings.png", Texture.class);
 		manager.load("images/highscore.png", Texture.class);
+		manager.load("images/windowpanel.png", Texture.class);
+
 
 
 		manager.load("images/fireon.png", Texture.class);

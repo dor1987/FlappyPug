@@ -90,8 +90,8 @@ public class EndGameMenu implements Disposable{
         tableForBtns.setSize(250,150);
         tableForBtns.setTransform(true);
         tableForBtns.setOrigin(tableForBtns.getWidth()/2,tableForBtns.getHeight()/2);
-        tableForBtns.add(restartBtn).padBottom(20f);
         tableForBtns.add(homeBtn).padBottom(20f);
+        tableForBtns.add(restartBtn).padBottom(20f);
 
     }
 
@@ -131,11 +131,11 @@ public class EndGameMenu implements Disposable{
     public void draw(float dt){
 
         if(firstdraw) {
-            table.addAction(sequence(scaleTo(.1f, .1f), parallel(fadeIn(2f, Interpolation.pow2), scaleTo(1.2f, 1.2f, 2.5f, Interpolation.pow5),
-                    moveTo(FlappyPug.WIDTH / 2 / FlappyPug.PPM, FlappyPug.HEIGHT /4, 2.5f, Interpolation.swing)), delay(1f)));
+            table.addAction(sequence(scaleTo(.1f, .1f), parallel(fadeIn(2f, Interpolation.pow2), scaleTo(1.2f, 1.2f, 1.5f, Interpolation.pow5),
+                    moveTo(FlappyPug.WIDTH / 2 / FlappyPug.PPM, FlappyPug.HEIGHT /4, 1.5f, Interpolation.swing))));
 
 
-            tableForBtns.addAction(sequence(scaleTo(.1f, .1f), parallel( scaleTo(1f, 1f, 2.5f, Interpolation.pow5)), delay(2f)));
+            tableForBtns.addAction(sequence(scaleTo(.1f, .1f), parallel( scaleTo(1f, 1f, 1.5f, Interpolation.pow5)), delay(1f)));
 
 
             firstdraw= false;

@@ -11,11 +11,15 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Scenes.NameWindow;
 import com.dorashush.game.Tools.ActionMoveCircular;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -29,10 +33,16 @@ public class MainMenuScreen implements Screen {
     private Game game;
     private OrthographicCamera camera;
     private Stage stage,backStage;
-    private Table table;
+    private Table table,nameTable;
     private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog;
+    private Label hiLabel;
     private AssetManager manager;
     private ExtendViewport viewPort,backViewPort;
+
+    //Name windows
+    private boolean isNameWindowOn;
+    private NameWindow nameWindow;
+    private Skin skin;
 
 
     public MainMenuScreen(FlappyPug game) {
@@ -40,17 +50,19 @@ public class MainMenuScreen implements Screen {
         this.game = game;
         this.manager =game.getManager();;
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
-
-
-
+        skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
+        //skin can be deleted if Name window moved
 
         //camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
         stage = new Stage(viewPort, game.batch);
-       initDog();
+        initDog();
         initBackground();
         menuInit();
         addListeners();
+
+        nameWindow = new NameWindow(this, game.batch);
+        isNameWindowOn= false;
 
     }
 
@@ -60,12 +72,15 @@ public class MainMenuScreen implements Screen {
         optionsBtn = new Image(manager.get("images/settings.png",Texture.class));
         leaderBoardBtn = new Image(manager.get("images/highscore.png",Texture.class));
         menuTitle  = new Image(manager.get("images/mainscreentitle.png",Texture.class));
+        hiLabel = new Label("Hello "+FlappyPug.NAME, skin,"big");
 
 
         table.center();
         table.setFillParent(true);
 
         table.add(menuTitle);
+        table.row();
+        table.add(hiLabel);
         table.row();
         table.add(playBtn);
         table.row();
@@ -83,10 +98,11 @@ public class MainMenuScreen implements Screen {
 
     public void initDog(){
         dog  = new Image(manager.get("images/fireon.png",Texture.class));
-        dog.setSize(100,90);
+        dog.setSize(100,110);
         dog.setPosition(0,FlappyPug.HEIGHT/3);
 
     }
+
 
     public void addListeners(){
 
@@ -94,22 +110,35 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                game.setScreen(new PlayScreen((FlappyPug) game));
-                dispose();
+                dog.clearActions();
+                Runnable transitionRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        game.setScreen(new PlayScreen((FlappyPug) game));
+                        dispose();
+                    }
+                };
+
+                dog.addAction(sequence(parallel(
+                        moveBy(FlappyPug.WIDTH, FlappyPug.HEIGHT /2, 1.5f, Interpolation.swing)),run(transitionRunnable)));
+
+                //game.setScreen(new PlayScreen((FlappyPug) game));
+
+                //dispose();
             }
         });
-/*
+
         optionsBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 //Add option Screen
-                game.setScreen(new OptionScreen(game,manager));
+                game.setScreen(new OptionMenu((FlappyPug) game));
 
                 dispose();
             }
         });
-*/
+
 /*
         leaderBoardBtn.addListener(new ClickListener() {
             @Override
@@ -133,9 +162,10 @@ public class MainMenuScreen implements Screen {
         stage.addActor(dog);
 
 
-        dog.addAction(forever(ActionMoveCircular.actionEllipse(70, 290, 90, 70, 1, false, 6)));
+        dog.addAction(forever(ActionMoveCircular.actionEllipse(70, 280, 90, 70, 1, false, 6)));
 
-    }
+
+        }
 
     @Override
     public void render(float delta) {
@@ -146,6 +176,14 @@ public class MainMenuScreen implements Screen {
         stage.draw();
 
         dog.act(delta);
+
+        if(FlappyPug.NAME.compareTo("No name stored")==0 || isNameWindowOn){
+            nameWindow.draw(delta);
+        }
+
+        if(!isNameWindowOn){
+            Gdx.input.setInputProcessor(stage);
+        }
 
     }
 
@@ -180,5 +218,12 @@ public class MainMenuScreen implements Screen {
 
     }
 
+    public AssetManager getManager() {
+        return manager;
+    }
 
+    public void nameWindowControl(boolean openWindow){
+        isNameWindowOn = openWindow;
+
+    }
 }
