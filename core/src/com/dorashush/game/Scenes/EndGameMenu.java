@@ -28,14 +28,13 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
  */
 
 public class EndGameMenu implements Disposable{
-    private static Integer amountOfBombs,amountOfSpeeds;
     private Viewport viewPort;
     private Stage stage;
     boolean playPressed, firstdraw,homePressed;
     private Table table,tableForBtns;
     private Image restartBtn,scoreIcon,homeBtn;
     private AssetManager manager;
-    private static Label scoreLabel;
+    private static Label scoreLabel,currentHighScore,currentHighScoreTitle;
     private Skin skin;
 
     public EndGameMenu(PlayScreen screen,SpriteBatch sb){
@@ -55,6 +54,7 @@ public class EndGameMenu implements Disposable{
     }
 
     public void initPauseMenu(){
+        initHighScoreLabels();
         initPauseBtns();
         initPauseScore();
         initPauseMenuListener();
@@ -83,6 +83,10 @@ public class EndGameMenu implements Disposable{
         table.add(scoreIcon);
         table.row();
         table.add(scoreLabel);
+        table.row();
+        table.add(currentHighScoreTitle);
+        table.row();
+        table.add(currentHighScore);
 
 
         tableForBtns = new Table();
@@ -126,9 +130,12 @@ public class EndGameMenu implements Disposable{
 
     }
 
+    public void update(float dt){
 
+    }
 
     public void draw(float dt){
+        update(dt);
 
         if(firstdraw) {
 
@@ -163,10 +170,34 @@ public class EndGameMenu implements Disposable{
 
     public void setScore(float score){
         scoreLabel.setText(String.format("%06.4f", score));
+        checkAndUpdateHighScore(score);
+
     }
 
     @Override
     public void dispose() {
         stage.dispose();
     }
+
+    public void initHighScoreLabels(){
+        currentHighScoreTitle = new Label("highest Score:",skin,"alt");
+        currentHighScore = new Label(FlappyPug.HIGH_SCORE_NAME+ " "+ FlappyPug.HIGH_SCORE,skin,"alt");
+    }
+    public void checkAndUpdateHighScore(float score){
+        if(score>FlappyPug.HIGH_SCORE){
+            currentHighScore.setText(FlappyPug.NAME+ " "+ String.format("%06.4f", score));
+
+            FlappyPug.HIGH_SCORE_NAME = FlappyPug.NAME;
+            FlappyPug.flappyDogPreferences.putString("highScoreName",FlappyPug.HIGH_SCORE_NAME);
+            FlappyPug.flappyDogPreferences.flush();
+
+            FlappyPug.HIGH_SCORE = score;
+            FlappyPug.flappyDogPreferences.putFloat("highScore",FlappyPug.HIGH_SCORE);
+            FlappyPug.flappyDogPreferences.flush();
+
+        }
+
+    }
+
 }
+

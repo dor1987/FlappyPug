@@ -34,6 +34,8 @@ public class FlappyPug extends Game {
 	public static String NAME;
 	public static float VOLUME = 1;
 	public static boolean VIBRATION = true;
+	public static float HIGH_SCORE;
+	public static String HIGH_SCORE_NAME;
 
 
 	public AssetManager manager = new AssetManager();
@@ -54,10 +56,11 @@ public class FlappyPug extends Game {
 		AssetsLoad();
 		skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
 
+
 		//setScreen(new PlayScreen(this));
 		setScreen(new LoadingScreen(this));
-		flappyDogPreferences =Gdx.app.getPreferences("flappyDogPreferences");
-		NAME = flappyDogPreferences.getString("name","No name stored");
+
+		loadPreferences();
 
 	}
 
@@ -100,4 +103,13 @@ public class FlappyPug extends Game {
 		return manager;
 	}
 
+
+	public void loadPreferences(){
+		flappyDogPreferences = Gdx.app.getPreferences("flappyDogPreferences");
+		NAME = flappyDogPreferences.getString("name","No name stored");
+		VOLUME = flappyDogPreferences.getFloat("volume",0.5f);
+		VIBRATION = flappyDogPreferences.getBoolean("vibration",true);
+		HIGH_SCORE = flappyDogPreferences.getFloat("highScore",0f);
+		HIGH_SCORE_NAME = flappyDogPreferences.getString("highScoreName","");
+	}
 }
