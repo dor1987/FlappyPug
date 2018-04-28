@@ -96,6 +96,7 @@ public class FlappyPug extends Game {
 		manager.load("images/replaybtn.png", Texture.class);
 		manager.load("images/score.png", Texture.class);
 		manager.load("images/homebtn.png", Texture.class);
+		manager.load("images/backgroundfull.png", Texture.class);
 
 	}
 

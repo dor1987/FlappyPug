@@ -1,15 +1,11 @@
 package com.dorashush.game.Screens;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -17,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.EndGameMenu;
 import com.dorashush.game.Scenes.Hud;
+import com.dorashush.game.Sprites.Background;
 import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
 import com.dorashush.game.Sprites.Ground;
@@ -42,8 +39,10 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
+    private Background background1,background2;
+
     private OrthographicCamera gameCam;
-    private TextureRegion backGround;
+    //private TextureRegion backGround;
 
     private Array<TopObstcale> topObstacles;
     private Array<BottomObstcale> bottomObstacles;
@@ -79,7 +78,11 @@ public class PlayScreen implements Screen ,InputProcessor{
         ground2 = new Ground(this,480/FlappyPug.PPM);
         sky1 = new Sky(this,0);
         sky2 = new Sky(this,480/FlappyPug.PPM);
-        backGround = new TextureRegion(manager.get("images/background.png",Texture.class));
+        //backGround = new TextureRegion(manager.get("images/background1.png",Texture.class));
+
+        background1 = new Background(this,0);
+        background2 = new Background(this,769/FlappyPug.PPM);
+
 
         topObstacles = new Array<TopObstcale>();
         bottomObstacles = new Array<BottomObstcale>();
@@ -117,6 +120,7 @@ public class PlayScreen implements Screen ,InputProcessor{
     }
 
     public void update(float dt){
+        updateBackground(dt);
         hud.update(dt);
         updateGround(dt);
         updateSky(dt);
@@ -151,23 +155,27 @@ public class PlayScreen implements Screen ,InputProcessor{
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
         }
-        //b2dr.render(world,gameCam.combined);
+        b2dr.render(world,gameCam.combined);
         //stage.draw();
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
-        game.batch.draw(backGround,0,0,FlappyPug.WIDTH/2f/FlappyPug.PPM,FlappyPug.HEIGHT/2f/FlappyPug.PPM);
+
+       // game.batch.draw(backGround,0,0,FlappyPug.WIDTH/2f/FlappyPug.PPM,FlappyPug.HEIGHT/2f/FlappyPug.PPM);
+        background1.draw(game.batch);
+        background2.draw(game.batch);
 
         for(int i  = 0 ; i<topObstacles.size ; i++) {
             (topObstacles.get(i)).draw(game.batch);
             (bottomObstacles.get(i)).draw(game.batch);
         }
+
         dog.draw(game.batch);
 
         game.batch.end();
 
         hud.stage.draw();
 
-        b2dr.render(world,gameCam.combined);
+        //b2dr.render(world,gameCam.combined);
 
 
         if(gameOver()){
@@ -252,6 +260,18 @@ public class PlayScreen implements Screen ,InputProcessor{
             sky2.setPos(sky2.getWidth()*2);
     }
 
+    private void updateBackground(float dt){
+        background1.update(dt);
+        background2.update(dt);
+
+        if(gameCam.position.x  - (gameCam.viewportWidth/2) > background1.getPoisition() + background1.getWidth()) {
+            background1.setPos(background2.getX()+background2.getWidth());
+
+        }
+
+        if(gameCam.position.x - (gameCam.viewportWidth/2 ) > background2.getPoisition() + background2.getWidth())
+            background2.setPos(background1.getX()+background1.getWidth());
+    }
     private void updateObstcale(float dt){
 
         for(int i  = 0 ; i<topObstacles.size ; i++) {
