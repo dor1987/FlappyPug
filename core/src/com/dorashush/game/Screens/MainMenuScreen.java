@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
+import com.dorashush.game.Scenes.WelcomeWindow;
 import com.dorashush.game.Tools.ActionMoveCircular;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
@@ -41,12 +42,13 @@ public class MainMenuScreen extends ScreenWithPopUps {
     private ExtendViewport viewPort,backViewPort;
 
     //Name windows
-    private boolean isNameWindowOn,playPressed;
+    private boolean isNameWindowOn,playPressed,isWelcomeWindowOn,isInitalStart;
     private NameWindow nameWindow;
+    private WelcomeWindow welcomeWindow;
     private Skin skin;
 
 
-    public MainMenuScreen(FlappyPug game) {
+    public MainMenuScreen(FlappyPug game,boolean isInitalStart) {
 
         this.game = game;
         this.manager =game.getManager();;
@@ -62,9 +64,12 @@ public class MainMenuScreen extends ScreenWithPopUps {
         menuInit();
         addListeners();
 
+        welcomeWindow = new WelcomeWindow(this, game.batch);
         nameWindow = new NameWindow(this, game.batch);
         isNameWindowOn = false;
+        isWelcomeWindowOn = false;
         playPressed = false;
+        this.isInitalStart = isInitalStart;
     }
 
     public void menuInit(){
@@ -74,6 +79,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         leaderBoardBtn = new Image(manager.get("images/highscore.png",Texture.class));
         menuTitle  = new Image(manager.get("images/mainscreentitle.png",Texture.class));
 
+        /*
         if(FlappyPug.NAME.compareTo("No name stored")!=0) {
             hiLabel = new Label("Hello " + FlappyPug.NAME, skin, "big");
         }
@@ -81,6 +87,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
             hiLabel = new Label("Hello... " , skin, "big");
 
         }
+        */
+
 
         table.center();
         table.setFillParent(true);
@@ -184,18 +192,37 @@ public class MainMenuScreen extends ScreenWithPopUps {
         stage.draw();
 
         dog.act(delta);
-
-        if(FlappyPug.NAME.compareTo("No name stored")==0 || isNameWindowOn){
+/*
+        if(FlappyPug.NAME.compareTo("No name stored")==0 || nameWindow.isStatus()|| isNameWindowOn){
             nameWindow.draw(delta);
         }
-        else{
-            hiLabel.setText("Hello " + FlappyPug.NAME);
+        else if (welcomeWindow.isStatus()&& isInitalStart ||isWelcomeWindowOn && isInitalStart){
+          //  hiLabel.setText("Hello " + FlappyPug.NAME);
+            welcomeWindow.draw(delta);
         }
 
-
-        if(!isNameWindowOn && !playPressed){
+        if(!isNameWindowOn&& !isWelcomeWindowOn && !playPressed){
             Gdx.input.setInputProcessor(stage);
         }
+*/
+
+        if(FlappyPug.NAME.compareTo("No name stored")==0 || nameWindow.isStatus() || welcomeWindow.openNameWindow()){
+            nameWindow.draw(delta);
+            welcomeWindow.openNameWindowControl();
+            //nameWindow.setStatus(true);
+            isInitalStart = false;
+        }
+
+        else if(isInitalStart || welcomeWindow.isStatus()){
+            welcomeWindow.draw(delta);
+            //welcomeWindow.setStatus(true);
+            isInitalStart = false;
+
+        }
+        else if(!nameWindow.isStatus()&& !welcomeWindow.isStatus() && !playPressed){
+            Gdx.input.setInputProcessor(stage);
+        }
+        Gdx.app.log("CheckHere","Name Status "+ !nameWindow.isStatus() + " Welcome Status " +!welcomeWindow.isStatus() +" playPressdStatus "+ !playPressed );
 
     }
 
@@ -234,7 +261,10 @@ public class MainMenuScreen extends ScreenWithPopUps {
         return manager;
     }
 
-    public void nameWindowControl(boolean openWindow){
-        isNameWindowOn = openWindow;
+    public void popUpWindowControl(String popUpName,boolean openWindow){
+        if(popUpName.compareTo("NameWindow")==0)
+             isNameWindowOn = openWindow;
+        else if(popUpName.compareTo("WelcomeWindow")==0)
+            isWelcomeWindowOn = openWindow;
     }
 }

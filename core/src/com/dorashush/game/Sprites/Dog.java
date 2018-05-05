@@ -3,6 +3,7 @@ package com.dorashush.game.Sprites;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,9 +16,12 @@ import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
+
+import javax.swing.plaf.synth.Region;
 
 /**
  * Created by Dor on 03/27/18.
@@ -43,23 +47,59 @@ public class Dog extends Sprite{
     private  float stateTimer;
     private TextureRegion dogFall,dogFly;
 
-    public Dog(PlayScreen screen){
+    //animation
+    private Animation flyAnim,fallAnim,deathAnim,startingAnim;
+    private Array<TextureRegion> frames;
+
+    public Dog(PlayScreen screen) {
         this.world = screen.getWorld();
-        this.manager=  screen.getManager();
+        this.manager = screen.getManager();
+
+
+        //animations
+        frames = new Array<TextureRegion>();
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("fire1"), 0, 0, 700, 557));
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("fire2"), 0, 0, 700, 557));
+            frames.add(new TextureRegion(screen.getAtlas().findRegion("fire3"), 0, 0, 700, 557));
+
+        flyAnim = new Animation(0.3f, frames);
+
+        frames.clear();
+
+
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("falling1"), 0, 0, 700, 557));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("falling2"), 0, 0, 700, 557));
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("falling3"), 0, 0, 700, 557));
+
+        fallAnim = new Animation(0.3f, frames);
+
+        frames.clear();
+
+
+        frames.add(new TextureRegion(screen.getAtlas().findRegion("death"), 0, 0, 700, 557));
+
+        deathAnim = new Animation(0.2f, frames);
+
+        frames.clear();
+
 
         //dogFly = new TextureRegion(new Texture("images/fireon.png"));
         //dogFall = new TextureRegion(new Texture("images/fireoff.png"));
-        dogFly = new TextureRegion(manager.get("images/fireon.png",Texture.class));
-        dogFall = new TextureRegion(manager.get("images/fireoff.png",Texture.class));
+        //dogFly = new TextureRegion(manager.get("images/fireon.png",Texture.class));
+       // dogFall = new TextureRegion(manager.get("images/fireoff.png",Texture.class));
 
         defineDog();
         velocity = new Vector2(0,0);
 
         dogIsDead = false;
         flyAnimation = false;
-        setBounds(0,0,78/FlappyPug.PPM,78/FlappyPug.PPM);
-        setRegion(dogFall);
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        setBounds(0,0,78/FlappyPug.PPM,60/FlappyPug.PPM);
+        TextureRegion tempRegion = (TextureRegion) fallAnim.getKeyFrame(stateTimer,true);
+        if(!tempRegion.isFlipX())
+            tempRegion.flip(true,false);
+        setRegion(tempRegion);
+
+       setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
 
         stateTimer = 0;
@@ -109,20 +149,26 @@ public class Dog extends Sprite{
         //ToDo enter Frame control according to state && remove null from region
         switch(currentState){
             case DEAD:
-                region =  dogFall;
+                //region =  dogFall;
+                region = (TextureRegion) deathAnim.getKeyFrame(stateTimer,true);
                 break;
             case FLYING:
-                region =  dogFly;
-
+               // region =  dogFly;
+                region = (TextureRegion) flyAnim.getKeyFrame(stateTimer,true);
                 break;
             case FALLING:
-                region =  dogFall;
+               // region =  dogFall;
+                region = (TextureRegion) fallAnim.getKeyFrame(stateTimer,true);
                 break;
 
             default:
-                region =  dogFall;
+                region = (TextureRegion) fallAnim.getKeyFrame(stateTimer,true);
                 break;
         }
+
+
+        if(!region.isFlipX())
+            region.flip(true,false);
 
         //if the current state is the same as the previous state increase the state timer.
         //otherwise the state has changed and we need to reset timer.

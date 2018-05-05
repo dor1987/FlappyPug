@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.dorashush.game.Screens.LoadingScreen;
@@ -88,7 +89,7 @@ public class FlappyPug extends Game {
 		manager.load("images/windowpanel.png", Texture.class);
 
 
-
+		manager.load("atlas/animations", TextureAtlas.class);
 		manager.load("images/fireon.png", Texture.class);
 		manager.load("images/fireoff.png", Texture.class);
 		manager.load("images/wall.png", Texture.class);

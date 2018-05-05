@@ -9,7 +9,7 @@ import com.badlogic.gdx.assets.AssetManager;
 
 public abstract class ScreenWithPopUps implements Screen {
 
-    public abstract void nameWindowControl(boolean openWindow);
+    public abstract void popUpWindowControl(String popUpName ,boolean openWindow);
     public abstract AssetManager getManager();
 
 }

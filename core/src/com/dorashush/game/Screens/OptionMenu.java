@@ -3,7 +3,6 @@ package com.dorashush.game.Screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -81,7 +80,9 @@ public class OptionMenu extends ScreenWithPopUps{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                nameWindowControl(true);
+               // popUpWindowControl("NameWindow",true);
+                nameWindow.setStatus(true);
+
             }
         });
 
@@ -231,7 +232,7 @@ public class OptionMenu extends ScreenWithPopUps{
             returnToMenu();
         }
 
-        if(isNameWindowOn){
+        if(nameWindow.isStatus()){
             nameWindow.draw(delta);
         }
 
@@ -239,7 +240,7 @@ public class OptionMenu extends ScreenWithPopUps{
             nameCheckLabel.setText("Not "+FlappyPug.NAME+"?");
         }
 
-        if(!isNameWindowOn){
+        if(!nameWindow.isStatus()){
             Gdx.input.setInputProcessor(stage);
         }
 
@@ -274,7 +275,7 @@ public class OptionMenu extends ScreenWithPopUps{
     }
 
     public void returnToMenu(){
-        game.setScreen(new MainMenuScreen((FlappyPug) game));
+        game.setScreen(new MainMenuScreen((FlappyPug) game,false));
         dispose();
     }
 
@@ -284,8 +285,13 @@ public class OptionMenu extends ScreenWithPopUps{
         FlappyPug.VOLUME = temp/100;
     }
 
+
+
     @Override
-    public void nameWindowControl(boolean openWindow) {
+    public void popUpWindowControl(String popUpName, boolean openWindow) {
+        if(popUpName.compareTo("NameWindow")==0)
+            isNameWindowOn = openWindow;
+
         isNameWindowOn = openWindow;
     }
 

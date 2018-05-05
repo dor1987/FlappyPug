@@ -1,7 +1,8 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
 	button: {
-		file: font-button-export.fnt
+		file: font-export.fnt
+		//font-button-export.fnt <- if u wanna go back to big writing
 	}
 	font: {
 		file: font-export.fnt

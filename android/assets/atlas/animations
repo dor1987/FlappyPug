@@ -1,0 +1,55 @@
+
+animations.png
+size: 4096,2048
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+death
+  rotate: false
+  xy: 2, 1120
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+falling1
+  rotate: false
+  xy: 704, 561
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+falling2
+  rotate: false
+  xy: 1406, 1120
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+falling3
+  rotate: false
+  xy: 704, 2
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+fire1
+  rotate: false
+  xy: 2, 561
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+fire2
+  rotate: false
+  xy: 704, 1120
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+fire3
+  rotate: false
+  xy: 2, 2
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1

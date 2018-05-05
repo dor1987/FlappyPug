@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -56,8 +57,16 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     private EndGameMenu endGameMenu;
 
+
+    //animations
+    private TextureAtlas atlas;
+
+
+
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
+        atlas = manager.get("atlas/animations",TextureAtlas.class);
+
         this.game = game;
 
         //skin = manager.get("assets/textSkin/glassy-ui.json");
@@ -155,7 +164,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
         }
-        b2dr.render(world,gameCam.combined);
+        //b2dr.render(world,gameCam.combined);
         //stage.draw();
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
@@ -195,7 +204,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         }
 
         else if(endGameMenu.isHomePressed()){
-            game.setScreen(new MainMenuScreen(game));
+            game.setScreen(new MainMenuScreen(game,false));
             dispose();
         }
     }
@@ -314,6 +323,9 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     }
 
+    public TextureAtlas getAtlas(){
+        return atlas;
+    }
 
     @Override
     public boolean keyDown(int keycode) {

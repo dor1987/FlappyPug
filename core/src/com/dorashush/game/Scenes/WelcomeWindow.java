@@ -22,33 +22,29 @@ import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleTo;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 /**
- * Created by Dor on 04/27/18.
+ * Created by Dor on 04/30/18.
  */
 
-public class NameWindow implements Disposable {
+public class WelcomeWindow implements Disposable {
     private Viewport viewPort;
     private Stage stage;
     private Table table;
-    private TextButton submitBtn;
+    private TextButton continueBtn,changeNameBtn;
+    private Label welcomeLabel,nameLabel;
     private AssetManager manager;
-    private static Label whatYourNameLabel;
-    private static Label whatYourNameLabel2;
 
     private Skin skin;
-    private boolean firstdraw,status;
-    private TextArea userNameTextArea;
+    private boolean firstdraw,status,openNameWindow;
     private Image backGroundPanel;
     private ScreenWithPopUps screen;
 
-    public NameWindow(ScreenWithPopUps screen, SpriteBatch sb){
+    public WelcomeWindow(ScreenWithPopUps screen, SpriteBatch sb){
         this.manager=  screen.getManager();
         this.screen = screen;
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
@@ -56,6 +52,7 @@ public class NameWindow implements Disposable {
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
         firstdraw = true;
         status = false;
+        openNameWindow = false;
         // Gdx.input.setInputProcessor(stage);
         initNameWindow();
         initStage();
@@ -74,45 +71,49 @@ public class NameWindow implements Disposable {
     }
 
     public void initListeners(){
-        submitBtn.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    super.clicked(event, x, y);
-                    FlappyPug.NAME = userNameTextArea.getText();
-                    FlappyPug.flappyDogPreferences.putString("name",FlappyPug.NAME);
-                    FlappyPug.flappyDogPreferences.flush();
-
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-
-                    Runnable closeNameWindow = new Runnable() {
-                        @Override
-                        public void run() {
-                            //screen.popUpWindowControl("NameWindow",false);
-                            status=false;
-                            dispose();
-                        }
-                    };
-                    stage.addAction(sequence(parallel( scaleTo(.01f, .01f, 0.5f, Interpolation.pow5)),run(closeNameWindow)));
-
-                }
-            });
-
-        userNameTextArea.addListener(new ClickListener(){
-
+        continueBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                userNameTextArea.setText("");
+                Runnable closeNameWindow = new Runnable() {
+                    @Override
+                    public void run() {
+                       // screen.popUpWindowControl("WelcomeWindow",false);
+                      status= false;
+                        dispose();
+                    }
+                };
+                stage.addAction(sequence(parallel( scaleTo(.01f, .01f, 0.5f, Interpolation.pow5)),run(closeNameWindow)));
+
+            }
+        });
+
+        changeNameBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                Runnable closeNameWindow = new Runnable() {
+                    @Override
+                    public void run() {
+                        //screen.popUpWindowControl("WelcomeWindow",false);
+                        status = false;
+                        dispose();
+                        //screen.popUpWindowControl("NameWindow",true);
+                        openNameWindow = true;
+
+                    }
+                };
+                stage.addAction(sequence(parallel( scaleTo(.01f, .01f, 0.5f, Interpolation.pow5)),run(closeNameWindow)));
+
             }
         });
     }
 
     public void initNameWindowBtnsAndLabels(){
-    whatYourNameLabel = new Label("What is", skin,"big");
-    whatYourNameLabel2 = new Label("Your Name?", skin,"big");
-    submitBtn = new TextButton("Submit",skin);
-    userNameTextArea = new TextArea("Click Here!", skin);
-    userNameTextArea.setMaxLength(6);
+        welcomeLabel = new Label("Welcome back", skin);
+        nameLabel = new Label(FlappyPug.NAME, skin,"big");
+        continueBtn = new TextButton("Continue",skin);
+        changeNameBtn = new TextButton("Not "+FlappyPug.NAME,skin);
     }
     public void initBackGroundPanel(){
         backGroundPanel = new Image(manager.get("images/windowpanel.png",Texture.class));
@@ -126,13 +127,13 @@ public class NameWindow implements Disposable {
         table.setSize(120,150);
         table.setPosition(backGroundPanel.getX()+table.getWidth()/2,backGroundPanel.getY()+table.getHeight()/2);
         table.setTransform(true);
-        table.add(whatYourNameLabel).expandX();
+        table.add(welcomeLabel).expandX();
         table.row();
-        table.add(whatYourNameLabel2).expandX().padBottom(20f);
+        table.add(nameLabel).expandX().padBottom(40f);
         table.row();
-        table.add(userNameTextArea).expandX().padBottom(20f);
+        table.add(continueBtn).expandX().padBottom(20f);
         table.row();
-        table.add(submitBtn).expandX();
+        table.add(changeNameBtn).expandX();
 
     }
 
@@ -143,10 +144,10 @@ public class NameWindow implements Disposable {
     public void draw(float dt){
 
         if(firstdraw) {
-            stage.addAction(sequence(scaleTo(.1f, .1f), parallel( scaleTo(1f, 1f, 0.5f, Interpolation.pow5)), delay(1f)));
+            stage.addAction(sequence(scaleTo(.1f, .1f), parallel( scaleTo(1f, 1f, 1f, Interpolation.pow5)), delay(1f)));
 
-            status=true;
-            //screen.popUpWindowControl("NameWindow",true);
+            //screen.popUpWindowControl("WelcomeWindow",true);
+            status = true;
             firstdraw= false;
             Gdx.input.setInputProcessor(stage);
         }
@@ -154,7 +155,7 @@ public class NameWindow implements Disposable {
         stage.act(dt);
 
 
-      //  Gdx.input.setInputProcessor(stage);
+        //  Gdx.input.setInputProcessor(stage);
         stage.draw();
 
     }
@@ -177,4 +178,15 @@ public class NameWindow implements Disposable {
     public void setStatus(boolean status) {
         this.status = status;
     }
+    public boolean openNameWindow(){
+        //to open name window from welcome window
+    return openNameWindow;
+    }
+
+    public void openNameWindowControl(){
+        openNameWindow = false;
+    }
 }
+
+
+
