@@ -124,7 +124,7 @@ public class LeaderBoardScreen implements Screen {
         String[] temp412 = new String[testtemp.size()];
 
         for(int i = 0; i< testtemp.size(); i++){
-            temp412[i] = (i+1)+". "+(testtemp.get(i).toString());
+            temp412[i] = String.format("%4d",(i+1))+". "+(testtemp.get(i).toString());
         }
 
 
@@ -139,7 +139,7 @@ public class LeaderBoardScreen implements Screen {
         menuTitle  = new Image(manager.get("images/highscore.png",Texture.class));
         playBtn = new Image(manager.get("images/homebtn.png",Texture.class));
 
-        scoreTable =new Table();
+        scoreTable =new Table(skin);
         scrollPane = new ScrollPane(list,skin);
 
 
@@ -151,6 +151,8 @@ public class LeaderBoardScreen implements Screen {
 
         //table.add(menuTitle);
         scoreTable.add(menuTitle).height(75f);
+        scoreTable.row();
+        scoreTable.add(String.format("%-13s %s","Name","Score"));
         scoreTable.row();
         scoreTable.add(scrollPane).fill().expand();
         scoreTable.row();
