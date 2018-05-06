@@ -53,7 +53,7 @@ public class Background extends Sprite{
 
 
 
-        velocity = new Vector2(STARTING_SPEED*1.5f,0);
+        velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
        // bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
@@ -70,7 +70,7 @@ public class Background extends Sprite{
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
 
         if(timer >= SPEED_TIME_JUMP) {
-            velocity.add(-0.15f, 0); //todo put X on Constant
+            velocity.add(SPEED_MODIFIER, 0); //todo put X on Constant
             b2body.setLinearVelocity(velocity);
             timer=0;
         }

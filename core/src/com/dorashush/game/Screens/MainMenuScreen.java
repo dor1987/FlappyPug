@@ -155,17 +155,17 @@ public class MainMenuScreen extends ScreenWithPopUps {
             }
         });
 
-/*
+
         leaderBoardBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 //Add leaderbaord Screen
-                game.setScreen(new LeaderBoardScreen(game,manager));
+                game.setScreen(new LeaderBoardScreen((FlappyPug)game));
                 dispose();
             }
         });
-        */
+
     }
 
 

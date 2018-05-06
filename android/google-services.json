@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "543356732151",
+    "firebase_url": "https://pugproject-5c2e6.firebaseio.com",
+    "project_id": "pugproject-5c2e6",
+    "storage_bucket": "pugproject-5c2e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543356732151:android:17bea20b4719645d",
+        "android_client_info": {
+          "package_name": "com.dorashush.game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543356732151-32qlcmgc6bq494qcjb4u5cr5vhq9re76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3_EnRtIRAAa6bD3mDfm26w0R91RSJQco"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

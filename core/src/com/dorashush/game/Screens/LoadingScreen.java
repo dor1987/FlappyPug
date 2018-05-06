@@ -47,6 +47,8 @@ public class LoadingScreen implements Screen {
         if (game.getManager().update() && progress >= game.getManager().getProgress() - .001f) {
           //  game.setScreen(new PlayScreen(game));
             game.setScreen(new MainMenuScreen(game,true));
+            //game.setScreen(new LeaderBoardScreen(game));
+
         }
     }
 

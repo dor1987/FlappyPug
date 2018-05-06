@@ -30,7 +30,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 public class EndGameMenu implements Disposable{
     private Viewport viewPort;
     private Stage stage;
-    boolean playPressed, firstdraw,homePressed;
+    boolean playPressed, firstdraw,homePressed,scoreUpdated;
     private Table table,tableForBtns;
     private Image restartBtn,scoreIcon,homeBtn;
     private AssetManager manager;
@@ -43,6 +43,7 @@ public class EndGameMenu implements Disposable{
         stage = new Stage(viewPort,sb);
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
         firstdraw = true;
+        scoreUpdated = false;
        // Gdx.input.setInputProcessor(stage);
         initPauseMenu();
         initStage();
@@ -130,6 +131,13 @@ public class EndGameMenu implements Disposable{
 
     }
 
+    public void updateOnlineDataBase(float score){
+        if(!scoreUpdated) {
+            FlappyPug.handler.addPlayerScoreToDataBase(FlappyPug.NAME, score);
+            scoreUpdated = true;
+        }
+    }
+
     public void update(float dt){
 
     }
@@ -171,7 +179,7 @@ public class EndGameMenu implements Disposable{
     public void setScore(float score){
         scoreLabel.setText(String.format("%06.4f", score));
         checkAndUpdateHighScore(score);
-
+        updateOnlineDataBase(score);
     }
 
     @Override

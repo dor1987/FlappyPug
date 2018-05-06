@@ -44,6 +44,12 @@ public class FlappyPug extends Game {
 	public Skin skin;
 	public OrthographicCamera camera;
 
+	public static LeaderBoardHandler handler;
+
+	public FlappyPug(LeaderBoardHandler handler) {
+		this.handler = handler;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
