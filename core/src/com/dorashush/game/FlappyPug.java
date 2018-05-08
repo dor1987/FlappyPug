@@ -29,6 +29,8 @@ public class FlappyPug extends Game {
 	public static final short DOG_BIT = 2;
 	public static final short POWER_UP_BIT = 4;
 	public static final short DESTROYED_BIT = 8;
+	public static final short INVISABLE_BIT = 16;
+	public static final short BORDERS_BIT = 32;
 
 	//Preferencses
 	public static Preferences flappyDogPreferences;
@@ -37,6 +39,7 @@ public class FlappyPug extends Game {
 	public static boolean VIBRATION = true;
 	public static float HIGH_SCORE;
 	public static String HIGH_SCORE_NAME;
+	public static boolean SCORE_AS_TIME;
 
 
 	public AssetManager manager = new AssetManager();
@@ -104,7 +107,14 @@ public class FlappyPug extends Game {
 		manager.load("images/score.png", Texture.class);
 		manager.load("images/homebtn.png", Texture.class);
 		manager.load("images/backgroundfull.png", Texture.class);
-
+		manager.load("images/coulds.png", Texture.class);
+		manager.load("images/ground.png", Texture.class);
+		manager.load("images/p.png", Texture.class);
+		manager.load("images/u.png", Texture.class);
+		manager.load("images/g.png", Texture.class);
+		manager.load("images/pnobubble.png", Texture.class);
+		manager.load("images/unobubble.png", Texture.class);
+		manager.load("images/gnobbuble.png", Texture.class);
 	}
 
 	public AssetManager getManager() {
@@ -119,5 +129,6 @@ public class FlappyPug extends Game {
 		VIBRATION = flappyDogPreferences.getBoolean("vibration",true);
 		HIGH_SCORE = flappyDogPreferences.getFloat("highScore",0f);
 		HIGH_SCORE_NAME = flappyDogPreferences.getString("highScoreName","");
+		SCORE_AS_TIME = flappyDogPreferences.getBoolean("scoreAsTime",true);
 	}
 }

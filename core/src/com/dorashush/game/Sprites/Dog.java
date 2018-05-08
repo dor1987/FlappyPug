@@ -18,6 +18,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
@@ -43,13 +44,14 @@ public class Dog extends Sprite{
     private Body b2body;
     private BodyUserData bodyUserData;
     private AssetManager manager;
-    private boolean dogIsDead,flyAnimation;
-    private  float stateTimer;
+    private boolean dogIsDead,flyAnimation,gotP,gotU,gotG;
+    private  float stateTimer,invisibaleTimer;
     private TextureRegion dogFall,dogFly;
 
     //animation
     private Animation flyAnim,fallAnim,deathAnim,startingAnim;
     private Array<TextureRegion> frames;
+    private float alpha;
 
     public Dog(PlayScreen screen) {
         this.world = screen.getWorld();
@@ -108,6 +110,11 @@ public class Dog extends Sprite{
         bodyUserData.collisionType = BodyUserData.CollisionType.DOG;
         b2body.setUserData(bodyUserData);
 
+        invisibaleTimer = 0;
+        gotP = false;
+        gotU = false;
+        gotG = false;
+        alpha =.0f;
 
     }
 
@@ -116,6 +123,20 @@ public class Dog extends Sprite{
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(dt));
         //setRegion(dogFall);
+        if(checkIfAllLettersCought()){
+            activateMegaPowerup();
+        }
+
+        if(invisibaleTimer>0){
+            invisibaleTimer-=dt;
+            if(invisibaleTimer<=3){
+                alpha+=dt;
+                this.setAlpha(+5f*(float)Math.sin(alpha) + .5f);
+            }
+        }
+        else{
+            invisable(false);
+        }
 
         velocity.add(0,GRAVITY);
         b2body.setLinearVelocity(velocity);
@@ -192,7 +213,7 @@ public class Dog extends Sprite{
 
         //Bits Testing
         fdef.filter.categoryBits = FlappyPug.DOG_BIT;
-        fdef.filter.maskBits = FlappyPug.ENEMY_BIT | FlappyPug.POWER_UP_BIT;
+        fdef.filter.maskBits = FlappyPug.ENEMY_BIT | FlappyPug.POWER_UP_BIT |FlappyPug.BORDERS_BIT;
 
 
         fdef.shape = shape;
@@ -225,6 +246,27 @@ public class Dog extends Sprite{
             //b2body.applyLinearImpulse(new Vector2(-2, 2.5f), b2body.getWorldCenter(), true);
         }
     }
+    public void invisable(boolean isInvisable) {
+        Filter filter = new Filter();
+        filter.categoryBits = FlappyPug.DOG_BIT;
+
+      if(isInvisable) {
+          //Will be used as a powerup
+          invisibaleTimer = 10;
+          this.setAlpha(0.5f);
+          filter.maskBits =  FlappyPug.BORDERS_BIT;
+      }
+
+      else{
+          filter.maskBits = FlappyPug.POWER_UP_BIT | FlappyPug.BORDERS_BIT | FlappyPug.ENEMY_BIT;
+            this.setAlpha(1f);
+      }
+            //doesnt have to be a list, but incase i'll make dog more than 1 body
+            for (Fixture fixture : b2body.getFixtureList()) {
+                fixture.setFilterData(filter);
+            }
+
+    }
 
     public boolean isDead(){
         return dogIsDead;
@@ -232,6 +274,37 @@ public class Dog extends Sprite{
 
     public float getStateTimer(){
         return stateTimer;
+    }
+
+    public void onLetterCought(char value){
+        switch(value){
+            case 'p':
+                gotP = true;
+                break;
+            case 'u':
+                gotU = true;
+                break;
+            case 'g':
+                gotG = true;
+                break;
+        }
+        Hud.onLetterChangedStatus(true,value);
+
+
+    }
+    public boolean checkIfAllLettersCought(){
+        if(gotP&&gotU&&gotG)
+            return true;
+        else
+            return false;
+    }
+
+    public void activateMegaPowerup(){
+        invisable(true);
+        gotP = false;
+        gotU = false;
+        gotG = false;
+        Hud.hideAllLetters();
     }
 
 }

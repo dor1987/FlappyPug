@@ -17,10 +17,19 @@ import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.Background;
 import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
+import com.dorashush.game.Sprites.GLetterPowerUp;
 import com.dorashush.game.Sprites.Ground;
+import com.dorashush.game.Sprites.PLetterPowerUp;
+import com.dorashush.game.Sprites.PowerUp;
 import com.dorashush.game.Sprites.TopObstcale;
 import com.dorashush.game.Sprites.Sky;
+import com.dorashush.game.Sprites.ULetterPowerUp;
 import com.dorashush.game.Tools.WorldContactListener;
+
+import java.util.Random;
+
+import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
+import static com.dorashush.game.FlappyPug.SPEED_TIME_JUMP;
 
 /**
  * Created by Dor on 03/27/18.
@@ -37,7 +46,6 @@ public class PlayScreen implements Screen ,InputProcessor{
     private World world;
     private Box2DDebugRenderer b2dr;
     private Dog dog;
-
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
     private Background background1,background2;
@@ -61,7 +69,12 @@ public class PlayScreen implements Screen ,InputProcessor{
     //animations
     private TextureAtlas atlas;
 
+    private float gameSpeed,timer;
 
+    //powerups
+    private float powerUpTimeCount,timeBetweenPowerUps;
+    private Array<PowerUp> powerUpArray;
+    private float alpha;
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -75,20 +88,27 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         world = new World(new Vector2(0,0),true);
         world.setContactListener(new WorldContactListener());
-        hud = new Hud(game.batch);
+        hud = new Hud(game.batch,this);
 
        // gestureDetector = new GestureDetector(this);
         //Gdx.input.setInputProcessor(gestureDetector);
         //Gdx.input.setInputProcessor(this);
         Gdx.input.setInputProcessor(this);
+        gameSpeed =STARTING_SPEED;
+        timer = 0;
 
         dog  = new Dog(this);
         ground1 = new Ground(this,0);
-        ground2 = new Ground(this,480/FlappyPug.PPM);
-        sky1 = new Sky(this,0);
-        sky2 = new Sky(this,480/FlappyPug.PPM);
-        //backGround = new TextureRegion(manager.get("images/background1.png",Texture.class));
+//        ground2 = new Ground(this,480/FlappyPug.PPM);
+        ground2 = new Ground(this,769/FlappyPug.PPM);
 
+        sky1 = new Sky(this,0);
+//        sky2 = new Sky(this,480/FlappyPug.PPM);
+        sky2 = new Sky(this,769/FlappyPug.PPM);
+
+
+
+        //backGround = new TextureRegion(manager.get("images/background1.png",Texture.class));
         background1 = new Background(this,0);
         background2 = new Background(this,769/FlappyPug.PPM);
 
@@ -102,6 +122,11 @@ public class PlayScreen implements Screen ,InputProcessor{
         }
 
         endGameMenu = new EndGameMenu(this, game.batch);
+
+        //Powerups
+        powerUpTimeCount = 0;
+        timeBetweenPowerUps = 8+generateNumber(1);
+        powerUpArray = new Array<PowerUp>();
 
         b2dr = new Box2DDebugRenderer();
 
@@ -134,13 +159,17 @@ public class PlayScreen implements Screen ,InputProcessor{
         updateGround(dt);
         updateSky(dt);
 
+        powerUpsAdder(dt);
+        powerUpsupdate(dt);
+
+
+
         if(hud.getCountDownTimer()<=0) {
             handleInput(dt);
             world.step(1 / 60f, 6, 2);
             dog.update(dt);
 
             updateObstcale(dt);
-
         }
 
 
@@ -163,6 +192,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
+            speedControl(delta);
         }
         //b2dr.render(world,gameCam.combined);
         //stage.draw();
@@ -173,18 +203,28 @@ public class PlayScreen implements Screen ,InputProcessor{
         background1.draw(game.batch);
         background2.draw(game.batch);
 
+
+
         for(int i  = 0 ; i<topObstacles.size ; i++) {
             (topObstacles.get(i)).draw(game.batch);
             (bottomObstacles.get(i)).draw(game.batch);
         }
+        ground1.draw(game.batch);
+        ground2.draw(game.batch);
+        sky1.draw(game.batch);
+        sky2.draw(game.batch);
+
 
         dog.draw(game.batch);
+
+
+        powerUpRemoveControl();
 
         game.batch.end();
 
         hud.stage.draw();
 
-        //b2dr.render(world,gameCam.combined);
+        b2dr.render(world,gameCam.combined);
 
 
         if(gameOver()){
@@ -249,25 +289,39 @@ public class PlayScreen implements Screen ,InputProcessor{
         ground1.update(dt);
         ground2.update(dt);
 
+/*
         if(gameCam.position.x - (gameCam.viewportWidth / 2)> ground1.getPoisition() + ground1.getWidth())
          ground1.setPos(ground1.getWidth()*2);
 
         if(gameCam.position.x - (gameCam.viewportWidth / 2)> ground2.getPoisition() + ground2.getWidth())
             ground2.setPos(ground2.getWidth()*2);
+*/
 
+        if(gameCam.position.x  - (gameCam.viewportWidth/2) > ground1.getPoisition() + ground1.getWidth()) {
+            ground1.setPos(ground2.getX()+ground2.getWidth());
+        }
+        if(gameCam.position.x - (gameCam.viewportWidth/2 ) > ground2.getPoisition() + ground2.getWidth())
+            ground2.setPos(ground1.getX()+ground1.getWidth());
     }
 
     private void updateSky(float dt){
         sky1.update(dt);
         sky2.update(dt);
-
+/*
         if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky1.getPoisition() + sky1.getWidth()) {
             sky1.setPos(sky1.getWidth() * 2);
         }
 
         if(gameCam.position.x - (gameCam.viewportWidth / 2) > sky2.getPoisition() + sky2.getWidth())
             sky2.setPos(sky2.getWidth()*2);
+*/
+        if(gameCam.position.x  - (gameCam.viewportWidth/2) > sky1.getPoisition() + sky1.getWidth()) {
+            sky1.setPos(sky2.getX()+sky2.getWidth());
+        }
+        if(gameCam.position.x - (gameCam.viewportWidth/2 ) > sky2.getPoisition() + sky2.getWidth())
+            sky2.setPos(sky1.getX()+sky1.getWidth());
     }
+
 
     private void updateBackground(float dt){
         background1.update(dt);
@@ -275,7 +329,6 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         if(gameCam.position.x  - (gameCam.viewportWidth/2) > background1.getPoisition() + background1.getWidth()) {
             background1.setPos(background2.getX()+background2.getWidth());
-
         }
 
         if(gameCam.position.x - (gameCam.viewportWidth/2 ) > background2.getPoisition() + background2.getWidth())
@@ -315,12 +368,73 @@ public class PlayScreen implements Screen ,InputProcessor{
 
        // restartBtn = new TextureRegion(manager.get("images/replaybtn.png",Texture.class));
         //scoreIcon = new TextureRegion(manager.get("images/score.png",Texture.class));
-       endGameMenu.setScore(hud.getScore());
+       endGameMenu.setScore(hud.getTime());
         endGameMenu.draw(dt);
 
         //todo add btn functionality
 
+    }
 
+    private void speedControl(float dt){
+        timer+=dt;
+        if(timer >= SPEED_TIME_JUMP) {
+            gameSpeed += SPEED_MODIFIER;
+            timer=0;
+        }
+        hud.setSpeed(gameSpeed);
+    }
+    public int generateNumber(int maxNum) {
+        Random random = new Random();
+        int result = random.nextInt(maxNum+1); //to avoid maxnum been 0
+        return result;
+    }
+
+    public void powerUpsAdder(float dt){
+        powerUpTimeCount += dt;
+        if (powerUpTimeCount >= timeBetweenPowerUps) {
+            powerUpArray.add(initlizePowerUp());
+            powerUpTimeCount = 0;
+            timeBetweenPowerUps = 1 + generateNumber(10);
+        }
+
+    }
+    public void powerUpsupdate(float dt){
+
+        for (PowerUp powerUp : powerUpArray) {
+            powerUp.update(dt);
+        }
+    }
+    public void powerUpRemoveControl(){
+        for (PowerUp powerUp : powerUpArray) {
+            if (powerUp.removed)
+                powerUpArray.removeValue(powerUp, true);
+
+            if (powerUp != null) {
+                powerUp.draw(game.batch);
+            }
+        }
+    }
+    public PowerUp initlizePowerUp(){
+        PowerUp powerUp;
+        int powerUpToInitilize = generateNumber(3);
+        switch (powerUpToInitilize){
+            case 0:
+                powerUp = new PLetterPowerUp(this);
+                break;
+            case 1:
+                powerUp = new ULetterPowerUp(this);
+                break;
+
+            case 2:
+                powerUp = new GLetterPowerUp(this);
+                break;
+
+            default:
+                powerUp = new PLetterPowerUp(this);
+                break;
+        }
+
+        return powerUp;
     }
 
     public TextureAtlas getAtlas(){

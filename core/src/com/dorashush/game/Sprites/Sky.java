@@ -2,7 +2,9 @@ package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -29,6 +31,8 @@ public class Sky extends Enemy {
     private Body b2body;
     private BodyUserData bodyUserData;
     private AssetManager manager;
+    private TextureRegion sky;
+
     public World world;
     public float offSet,timer;
 
@@ -36,9 +40,16 @@ public class Sky extends Enemy {
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.offSet = offSet;
-        setBounds(getX(), getY(), 480/FlappyPug.PPM , 10/FlappyPug.PPM );
+        sky = new TextureRegion(manager.get("images/coulds.png",Texture.class));
+
+       // setBounds(getX(), getY(), 480/FlappyPug.PPM , 10/FlappyPug.PPM );
+        setBounds(getX(), getY(), 769 / FlappyPug.PPM, 30/FlappyPug.PPM );
 
         defineSky();
+        setRegion(sky);
+        setPosition(b2body.getPosition().x, b2body.getPosition().y-getHeight()/2);
+
+
         velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
@@ -52,6 +63,8 @@ public class Sky extends Enemy {
 
     public void update(float dt){
         timer+=dt;
+        setPosition(b2body.getPosition().x, b2body.getPosition().y-getHeight()/2);
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
@@ -62,17 +75,18 @@ public class Sky extends Enemy {
 
     public void defineSky(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(offSet, (FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight())); //temp need to think of better way
+        bdef.position.set(offSet, (FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight()/3)); //temp need to think of better way
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
+        //poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
+        poly.setAsBox(768/FlappyPug.PPM,10/FlappyPug.PPM);
 
         //Bits Testing
-        fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
-        fdef.filter.maskBits = FlappyPug.DOG_BIT;
+        fdef.filter.categoryBits = FlappyPug.BORDERS_BIT;
+        fdef.filter.maskBits =  FlappyPug.POWER_UP_BIT | FlappyPug.DOG_BIT ;
 
         fdef.shape = poly;
         fdef.isSensor = true;
@@ -84,7 +98,9 @@ public class Sky extends Enemy {
         return b2body.getPosition().x;
     }
     public void setPos(float x){
-        b2body.setTransform(new Vector2(x,(FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight())),b2body.getAngle());
+        b2body.setTransform(new Vector2(x,(FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight()/3)),b2body.getAngle());
+       // b2body.setTransform(new Vector2(x,0),b2body.getAngle());
+
     }
 
 }

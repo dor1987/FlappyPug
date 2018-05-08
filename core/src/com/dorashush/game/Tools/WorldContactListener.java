@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Sprites.Dog;
 import com.dorashush.game.Sprites.Enemy;
+import com.dorashush.game.Sprites.PowerUp;
 
 import static com.dorashush.game.Screens.PlayScreen.SPEED_BOOST;
 
@@ -32,6 +33,29 @@ public class WorldContactListener implements ContactListener {
                 else
                     ((Dog) fixtureB.getUserData()).die();
                 break;
+
+            case FlappyPug.DOG_BIT | FlappyPug.BORDERS_BIT:
+                if(fixtureA.getFilterData().categoryBits == FlappyPug.DOG_BIT)
+                    ((Dog) fixtureA.getUserData()).die();
+                else
+                    ((Dog) fixtureB.getUserData()).die();
+                break;
+
+            case FlappyPug.DOG_BIT | FlappyPug.POWER_UP_BIT:
+                char tempChar;
+                if(fixtureA.getFilterData().categoryBits == FlappyPug.POWER_UP_BIT) {
+                    tempChar = ((PowerUp) fixtureA.getUserData()).getPowerUpValue();
+                    ((PowerUp) fixtureA.getUserData()).onPlayerCaught();
+                    ((Dog) fixtureB.getUserData()).onLetterCought(tempChar);
+
+                }
+                else {
+                    tempChar = ((PowerUp) fixtureB.getUserData()).getPowerUpValue();
+                    ((PowerUp) fixtureB.getUserData()).onPlayerCaught();
+                    ((Dog) fixtureA.getUserData()).onLetterCought(tempChar);
+                }
+                break;
+
 
         }
 

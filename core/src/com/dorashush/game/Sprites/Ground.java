@@ -1,7 +1,9 @@
 package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -27,6 +29,7 @@ public class Ground extends Enemy  {
     private static final int MOVEMENT = 100;
     private Vector2 position;
     private Vector2 velocity;
+    private TextureRegion ground;
     private Rectangle bounds;
     private Body b2body;
     private BodyUserData bodyUserData;
@@ -38,9 +41,15 @@ public class Ground extends Enemy  {
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.offSet = offSet;
-        setBounds(getX(), getY(), 480 /FlappyPug.PPM, 10/FlappyPug.PPM );
+        ground = new TextureRegion(manager.get("images/ground.png",Texture.class));
+
+        //setBounds(getX(), getY(), 480 /FlappyPug.PPM, 10/FlappyPug.PPM );
+        setBounds(getX(), getY(), 769 / FlappyPug.PPM, 15/FlappyPug.PPM );
 
         defineGround();
+        setRegion(ground);
+        setPosition(b2body.getPosition().x, b2body.getPosition().y);
+
         velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
@@ -54,6 +63,9 @@ public class Ground extends Enemy  {
 
     public void update(float dt){
         timer+=dt;
+
+        setPosition(b2body.getPosition().x, b2body.getPosition().y);
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
@@ -64,17 +76,18 @@ public class Ground extends Enemy  {
 
     public void defineGround(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(offSet,getHeight()); //temp need to think of better way
+        bdef.position.set(offSet,0); //temp need to think of better way
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
+        //poly.setAsBox(480/FlappyPug.PPM,10/FlappyPug.PPM);
+        poly.setAsBox(768/FlappyPug.PPM,10/FlappyPug.PPM);
 
         //Bits Testing
-        fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
-        fdef.filter.maskBits = FlappyPug.DOG_BIT;
+        fdef.filter.categoryBits = FlappyPug.BORDERS_BIT;
+        fdef.filter.maskBits = FlappyPug.POWER_UP_BIT | FlappyPug.DOG_BIT ;
 
 
 
@@ -88,7 +101,7 @@ public class Ground extends Enemy  {
         return b2body.getPosition().x;
     }
     public void setPos(float x){
-        b2body.setTransform(new Vector2(x,getHeight()),b2body.getAngle());
+        b2body.setTransform(new Vector2(x,0),b2body.getAngle());
     }
 
 }

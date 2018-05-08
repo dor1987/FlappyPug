@@ -57,7 +57,7 @@ public class OptionMenu extends ScreenWithPopUps{
         initBackGroundPanel();
 
         initTabels();
-        addListeners();
+
 
         nameWindow = new NameWindow(this, game.batch);
         isNameWindowOn= false;
@@ -86,7 +86,27 @@ public class OptionMenu extends ScreenWithPopUps{
             }
         });
 
+        //temp for testing
+        vibreationOnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                FlappyPug.SCORE_AS_TIME=true;
+                FlappyPug.flappyDogPreferences.putBoolean("scoreAsTime",true);
+                FlappyPug.flappyDogPreferences.flush();
 
+            }
+        });
+
+        vibreationOffButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                FlappyPug.SCORE_AS_TIME=false;
+                FlappyPug.flappyDogPreferences.putBoolean("scoreAsTime",false);
+                FlappyPug.flappyDogPreferences.flush();
+            }
+        });
     }
 
     public void initBackGroundPanel(){
@@ -101,6 +121,7 @@ public class OptionMenu extends ScreenWithPopUps{
         initSliderTable();
         initVibrationTable();
         initHomeButtonTable();
+        addListeners();
     }
 
 
@@ -159,16 +180,16 @@ public class OptionMenu extends ScreenWithPopUps{
         vibrationTable.setSize(197,75);
         vibrationTable.setPosition(volumeTable.getX(),volumeTable.getY()-vibrationTable.getHeight());
 
-        vibrationLabel = new Label("Vibration", skin);
+        vibrationLabel = new Label("Score As Time", skin);
 
         vibreationOnButton = new TextButton("ON", skin,"toggle");
         vibreationOffButton = new TextButton("OFF", skin,"toggle");
         vibreationButtonGroup = new ButtonGroup(vibreationOnButton, vibreationOffButton);
 
 
-        if(FlappyPug.VIBRATION==true)
+        if(FlappyPug.SCORE_AS_TIME==true)
             vibreationButtonGroup.setChecked("ON");
-        else if(FlappyPug.VIBRATION==false){
+        else if(FlappyPug.SCORE_AS_TIME==false){
             vibreationButtonGroup.setChecked("OFF");
         }
 
