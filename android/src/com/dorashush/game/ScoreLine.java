@@ -2,7 +2,7 @@ package com.dorashush.game;
 
 import java.util.Comparator;
 
-class ScoreLine {
+class ScoreLine{
   public String name;
   public float score;
 
@@ -32,7 +32,9 @@ class ScoreLine {
 
     @Override
     public String toString() {
-      return String.format("%-15s %3.2f",name,score) ;
+      //return String.format("%-8s %3.2f",name,score) ;
+        return String.format("%s|%3.2f",name,score) ;
+
         //return   name  + "       " + score ;
     }
 

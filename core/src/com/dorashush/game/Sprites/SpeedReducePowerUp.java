@@ -2,23 +2,24 @@ package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.dorashush.game.FlappyPug;
-import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Screens.PlayScreen;
 
 /**
- * Created by Dor on 05/08/18.
+ * Created by Dor on 05/10/18.
  */
 
-public class PLetterPowerUp extends PowerUp{
+public class SpeedReducePowerUp extends PowerUp {
 
-    public PLetterPowerUp(PlayScreen screen) {
+    public SpeedReducePowerUp(PlayScreen screen) {
         super(screen);
-        powerUpSymbol = new TextureRegion(manager.get("images/p.png",Texture.class));
-        value = 'p';
+        powerUpSymbol = new TextureRegion(manager.get("images/speeddown.png",Texture.class));
+        value = 's';
+
         setRegion(powerUpSymbol);
 
     }
@@ -41,7 +42,7 @@ public class PLetterPowerUp extends PowerUp{
                 world.destroyBody(b2body);
                 removed = true;
             }
-            }
+        }
 
         b2body.setLinearVelocity(velocity);
 
@@ -51,7 +52,7 @@ public class PLetterPowerUp extends PowerUp{
     @Override
     protected void definePowerUp() {
         BodyDef bdef = new BodyDef();
-       // bdef.position.set(240/ FlappyPug.PPM,500/FlappyPug.PPM);//need 2 change to randomly generate at the center
+        // bdef.position.set(240/ FlappyPug.PPM,500/FlappyPug.PPM);//need 2 change to randomly generate at the center
         bdef.position.set(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM);
 
         //bdef.position.set(getX(),getY());
@@ -77,8 +78,6 @@ public class PLetterPowerUp extends PowerUp{
     public void setToRemove() {
 
     }
-
-
 
 
 }

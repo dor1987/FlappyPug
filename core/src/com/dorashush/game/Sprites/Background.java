@@ -68,12 +68,15 @@ public class Background extends Sprite{
         timer+=dt;
        // setPosition(b2body.getPosition().x , b2body.getPosition().y);
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-
+/*
         if(timer >= SPEED_TIME_JUMP) {
-            velocity.add(SPEED_MODIFIER, 0); //todo put X on Constant
+            velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
+  */
+        b2body.setLinearVelocity(velocity);
+
     }
 
 
@@ -102,5 +105,8 @@ public class Background extends Sprite{
     }
     public void setPos(float x){
         b2body.setTransform(new Vector2(x,0),b2body.getAngle());
+    }
+    public void setSpeed(float speedX){
+        velocity.x = speedX;
     }
 }

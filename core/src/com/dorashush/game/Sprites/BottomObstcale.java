@@ -38,6 +38,7 @@ public class BottomObstcale extends Enemy {
     public float x,topObstcaleY,timer;
     private Random rand;
     private TextureRegion obstacleTexture;
+    private TextureRegion obstacleTexture2;
 
 
     public BottomObstcale(PlayScreen screen, float x , float topObstcaleY){
@@ -64,20 +65,30 @@ public class BottomObstcale extends Enemy {
         timer = 0;
         b2body.setLinearVelocity(velocity);
 
+        setToRemove = false;
+        removed = false;
     }
 
 
     public void update(float dt){
         timer+=dt;
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
+        if(setToRemove && !removed){
+            world.destroyBody(b2body);
+            removed = true;
+        }
+        else if(!removed) {
+            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
+/*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
-
+*/
+            b2body.setLinearVelocity(velocity);
+        }
     }
 
 
@@ -109,6 +120,11 @@ public class BottomObstcale extends Enemy {
         return b2body.getPosition().y;
     }
 
+    @Override
+    public void reposition(float x) {
+
+    }
+
     public void setPos(float x){
         b2body.setTransform(new Vector2(x,getHeight()),b2body.getAngle());
     }
@@ -117,5 +133,12 @@ public class BottomObstcale extends Enemy {
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,y - (TUBE_GAP + 150)/FlappyPug.PPM),b2body.getAngle());
 
     }
+    public void setSpeed(float speedX){
+        velocity.x = speedX;
+    }
+    public void setToRemove(){
+        this.setToRemove= true;
+    }
+
 
 }

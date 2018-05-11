@@ -78,12 +78,13 @@ public class NameWindow implements Disposable {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
-                    FlappyPug.NAME = userNameTextArea.getText();
-                    FlappyPug.flappyDogPreferences.putString("name",FlappyPug.NAME);
-                    FlappyPug.flappyDogPreferences.flush();
+                    if(userNameTextArea.getText().compareTo("Click Here!")!=0) {
+                        FlappyPug.NAME = userNameTextArea.getText();
+                        FlappyPug.flappyDogPreferences.putString("name", FlappyPug.NAME);
+                        FlappyPug.flappyDogPreferences.flush();
 
-                    Gdx.input.setOnscreenKeyboardVisible(false);
-
+                        Gdx.input.setOnscreenKeyboardVisible(false);
+                    }
                     Runnable closeNameWindow = new Runnable() {
                         @Override
                         public void run() {
@@ -116,14 +117,14 @@ public class NameWindow implements Disposable {
     }
     public void initBackGroundPanel(){
         backGroundPanel = new Image(manager.get("images/windowpanel.png",Texture.class));
-        backGroundPanel.setSize(240,300);
+        backGroundPanel.setSize(240,250);
         backGroundPanel.setPosition(FlappyPug.WIDTH/2-backGroundPanel.getWidth(),FlappyPug.HEIGHT/2-backGroundPanel.getHeight());
     }
 
 
     public void initNameWindowTable(){
         table= new Table();
-        table.setSize(120,150);
+        table.setSize(120,120);
         table.setPosition(backGroundPanel.getX()+table.getWidth()/2,backGroundPanel.getY()+table.getHeight()/2);
         table.setTransform(true);
         table.add(whatYourNameLabel).expandX();

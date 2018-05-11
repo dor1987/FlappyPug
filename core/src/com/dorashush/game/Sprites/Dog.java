@@ -44,7 +44,7 @@ public class Dog extends Sprite{
     private Body b2body;
     private BodyUserData bodyUserData;
     private AssetManager manager;
-    private boolean dogIsDead,flyAnimation,gotP,gotU,gotG;
+    private boolean dogIsDead,flyAnimation,gotP,gotU,gotG,gotSpeedReduce,gotTimeAdd;
     private  float stateTimer,invisibaleTimer;
     private TextureRegion dogFall,dogFly;
 
@@ -115,7 +115,8 @@ public class Dog extends Sprite{
         gotU = false;
         gotG = false;
         alpha =.0f;
-
+        gotSpeedReduce = false;
+        gotTimeAdd = false;
     }
 
 
@@ -276,6 +277,19 @@ public class Dog extends Sprite{
         return stateTimer;
     }
 
+
+
+    public boolean CheckIfSpeedrecudeCought(){
+        if(gotSpeedReduce){
+            gotSpeedReduce=false;
+            return true;
+        }
+        else{
+            return gotSpeedReduce;
+        }
+    }
+
+
     public void onLetterCought(char value){
         switch(value){
             case 'p':
@@ -287,6 +301,14 @@ public class Dog extends Sprite{
             case 'g':
                 gotG = true;
                 break;
+            case 's': //cought speed reduce
+                gotSpeedReduce = true;
+            break;
+
+            case 't': //cought speed reduce
+                gotTimeAdd = true;
+            break;
+
         }
         Hud.onLetterChangedStatus(true,value);
 

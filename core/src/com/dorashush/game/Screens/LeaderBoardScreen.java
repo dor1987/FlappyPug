@@ -7,19 +7,23 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.dorashush.game.FlappyPug;
-import com.dorashush.game.Scenes.NameWindow;
-import com.dorashush.game.Scenes.WelcomeWindow;
+import com.dorashush.game.Tools.MyList;
+import com.dorashush.game.Tools.MyTextButton;
 
 import java.util.ArrayList;
 
@@ -37,9 +41,11 @@ public class LeaderBoardScreen implements Screen {
     private ExtendViewport viewPort,backViewPort;
     private ScrollPane scrollPane;
     //Name windows
-    private Skin skin;
+    private Skin skin,skin2;
     private List list;
-
+    private MyList myList;
+    private ImageTextButton scoreLine;
+    private Drawable scoreLineImage;
 
     public LeaderBoardScreen(FlappyPug game) {
         this.game = game;
@@ -47,7 +53,10 @@ public class LeaderBoardScreen implements Screen {
 
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
+        skin2 = new Skin(Gdx.files.internal("textSkin/uiskin.json"));
+
         stage = new Stage(viewPort, game.batch);
+        scoreLineImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/testscoreline.png",Texture.class)));
 
 
         initBackground();
@@ -118,18 +127,47 @@ public class LeaderBoardScreen implements Screen {
     public void leaderBoardInit(){
         //todo MUST FIX THIS LEADERBAORD!! IT SHOULDNT WORK LIKE THIS
         initBackGroundPanel();
+       // List.ListStyle listStyle = new List.ListStyle(skin.getFont("font"), Color.BLACK,Color.BLUE,scoreLineImage);
+        //list = new List(skin);
         list = new List(skin);
+        myList = new MyList(skin);
+
         ArrayList testtemp  = FlappyPug.handler.getScoreList();
 
-        String[] temp412 = new String[testtemp.size()];
-
+        //String[] temp412 = new String[testtemp.size()];
+/*
         for(int i = 0; i< testtemp.size(); i++){
             temp412[i] = String.format("%4d",(i+1))+". "+(testtemp.get(i).toString());
         }
+*/
+        MyTextButton[] textButtons = new  MyTextButton[100];
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle(scoreLineImage,scoreLineImage,scoreLineImage,skin.getFont("font"));
+
+        for(int i = 0; i< testtemp.size(); i++) {
+            String[] words = ((String)testtemp.get(i)).split("\\|");
+            //textButtons[i] = new MyTextButton(String.format("%-3d",(i+1))+(testtemp.get(i).toString()),textButtonStyle);
+            textButtons[i] = new MyTextButton((i+1)+".",words[0],words[1],textButtonStyle);
+
+        }
 
 
-        list.setItems(temp412);
-       // list.setItems(new String[]{"dor","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy"});
+            //  ImageTextButton[] temp412 = new ImageTextButton[testtemp.size()];
+        //ImageTextButton.ImageTextButtonStyle tempStyle = new ImageTextButton.ImageTextButtonStyle(scoreLineImage,scoreLineImage,scoreLineImage,skin.getFont("font"));
+/*
+        TextButton.TextButtonStyle tempStyle = new TextButton.TextButtonStyle(scoreLineImage,scoreLineImage,scoreLineImage,skin.getFont("font"));
+
+        Array<TextButton> temp412 = new Array<TextButton>();
+
+        for(int i = 0; i< testtemp.size(); i++){
+            temp412.add(new TextButton("Text",tempStyle));
+        }
+*/
+
+        //list.setItems(temp412);
+        myList.setItems(textButtons);
+      //    list.setItems(tempArrayImage);
+
+        // list.setItems(new String[]{"dor","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy"});
         //list.setItems(FlappyPug.handler.getScoreList());
         //ArrayList tempArrayList = FlappyPug.handler.getScoreList();
         //list.setItems(FlappyPug.handler.getScoreList());
@@ -140,8 +178,8 @@ public class LeaderBoardScreen implements Screen {
         playBtn = new Image(manager.get("images/homebtn.png",Texture.class));
 
         scoreTable =new Table(skin);
-        scrollPane = new ScrollPane(list,skin);
 
+        scrollPane = new ScrollPane(myList,skin);
 
         scoreTable.setBounds(0,0,170,375);
         scoreTable.setPosition(backGroundPanel.getX()+scoreTable.getWidth()/4,backGroundPanel.getY()+scoreTable.getHeight()/11);
@@ -174,4 +212,27 @@ public class LeaderBoardScreen implements Screen {
         game.setScreen(new MainMenuScreen((FlappyPug) game,false));
         dispose();
     }
+/*
+    private void createBasicSkin(){
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Fonts/Cornerstone.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 48;
+        font = generator.generateFont(parameter); // font size 12 pixels
+        generator.dispose(); // don't forget to dispose to avoid memory leaks!
+        skin = new Skin();
+        skin.add("default", font);
+
+        Pixmap pixmap = new Pixmap(width/4,height/10, Pixmap.Format.RGB888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("background", new Texture(pixmap));
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
+        textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
+        textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+    }
+    */
 }

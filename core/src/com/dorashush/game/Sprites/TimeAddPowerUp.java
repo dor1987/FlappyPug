@@ -5,20 +5,26 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.dorashush.game.FlappyPug;
-import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Screens.PlayScreen;
 
+import sun.font.TextLabel;
+
 /**
- * Created by Dor on 05/08/18.
+ * Created by Dor on 05/10/18.
  */
 
-public class PLetterPowerUp extends PowerUp{
+public class TimeAddPowerUp extends PowerUp {
+    private TextureRegion TimeAddImage;
 
-    public PLetterPowerUp(PlayScreen screen) {
+    public TimeAddPowerUp(PlayScreen screen) {
         super(screen);
-        powerUpSymbol = new TextureRegion(manager.get("images/p.png",Texture.class));
-        value = 'p';
+        powerUpSymbol = new TextureRegion(manager.get("images/sandclock.png",Texture.class));
+        TimeAddImage = new TextureRegion(manager.get("images/timeaddtion.png",Texture.class));
+
+        value = 't';
+
         setRegion(powerUpSymbol);
 
     }
@@ -35,13 +41,14 @@ public class PLetterPowerUp extends PowerUp{
         }
 
         else if(coughtByPlayer){
-            setScale(0.8f);
+            setRegion(TimeAddImage);
+            //setScale(0.8f);
 
             if(b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 20 / FlappyPug.PPM) {
                 world.destroyBody(b2body);
                 removed = true;
             }
-            }
+        }
 
         b2body.setLinearVelocity(velocity);
 
@@ -51,7 +58,7 @@ public class PLetterPowerUp extends PowerUp{
     @Override
     protected void definePowerUp() {
         BodyDef bdef = new BodyDef();
-       // bdef.position.set(240/ FlappyPug.PPM,500/FlappyPug.PPM);//need 2 change to randomly generate at the center
+        // bdef.position.set(240/ FlappyPug.PPM,500/FlappyPug.PPM);//need 2 change to randomly generate at the center
         bdef.position.set(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM);
 
         //bdef.position.set(getX(),getY());
@@ -77,8 +84,6 @@ public class PLetterPowerUp extends PowerUp{
     public void setToRemove() {
 
     }
-
-
 
 
 }

@@ -15,12 +15,16 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.EndGameMenu;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.Background;
+import com.dorashush.game.Sprites.BirdEnemy;
 import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
+import com.dorashush.game.Sprites.Enemy;
 import com.dorashush.game.Sprites.GLetterPowerUp;
 import com.dorashush.game.Sprites.Ground;
 import com.dorashush.game.Sprites.PLetterPowerUp;
 import com.dorashush.game.Sprites.PowerUp;
+import com.dorashush.game.Sprites.SpeedReducePowerUp;
+import com.dorashush.game.Sprites.TimeAddPowerUp;
 import com.dorashush.game.Sprites.TopObstcale;
 import com.dorashush.game.Sprites.Sky;
 import com.dorashush.game.Sprites.ULetterPowerUp;
@@ -42,6 +46,7 @@ public class PlayScreen implements Screen ,InputProcessor{
     private static final int TUBE_COUNT = 2;
     private static final int START_POSITION_SPACING = 300;
     public static final float STARTING_SPEED = (float)-1;
+    public static final float POWERUPS_DELAY = 2f;
     public static boolean SPEED_BOOST = false;
     private World world;
     private Box2DDebugRenderer b2dr;
@@ -53,8 +58,9 @@ public class PlayScreen implements Screen ,InputProcessor{
     private OrthographicCamera gameCam;
     //private TextureRegion backGround;
 
-    private Array<TopObstcale> topObstacles;
-    private Array<BottomObstcale> bottomObstacles;
+    private Array<Enemy> topObstacles;
+    private Array<Enemy> bottomObstacles;
+
 
 
     private AssetManager manager;
@@ -69,12 +75,14 @@ public class PlayScreen implements Screen ,InputProcessor{
     //animations
     private TextureAtlas atlas;
 
-    private float gameSpeed,timer;
+    //Phases
+    private float gameSpeed,timer,phaseTimer;
+    private String phaseKind;
+    private boolean phaseChanging;
 
     //powerups
     private float powerUpTimeCount,timeBetweenPowerUps;
     private Array<PowerUp> powerUpArray;
-    private float alpha;
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -96,6 +104,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         Gdx.input.setInputProcessor(this);
         gameSpeed =STARTING_SPEED;
         timer = 0;
+        phaseTimer = 0;
 
         dog  = new Dog(this);
         ground1 = new Ground(this,0);
@@ -113,20 +122,28 @@ public class PlayScreen implements Screen ,InputProcessor{
         background2 = new Background(this,769/FlappyPug.PPM);
 
 
-        topObstacles = new Array<TopObstcale>();
-        bottomObstacles = new Array<BottomObstcale>();
+        topObstacles = new Array<Enemy>();
+        bottomObstacles = new Array<Enemy>();
 
-        for(int i = 0 ; i< TUBE_COUNT ; i++){
-            topObstacles.add(new TopObstcale(this,START_POSITION_SPACING+i*(TUBE_SPACING+TopObstcale.TUBE_WIDTH)));
-            bottomObstacles.add(new BottomObstcale(this,START_POSITION_SPACING+i*(TUBE_SPACING+BottomObstcale.TUBE_WIDTH),topObstacles.get(i).getPoisitionY()));
-        }
 
+
+        addObstacles();
         endGameMenu = new EndGameMenu(this, game.batch);
 
         //Powerups
         powerUpTimeCount = 0;
-        timeBetweenPowerUps = 8+generateNumber(1);
+        timeBetweenPowerUps = 10f;
+
+
         powerUpArray = new Array<PowerUp>();
+        /*
+        powerUpArray.add(initlizePowerUp());
+        powerUpArray.add(initlizePowerUp());
+        powerUpArray.add(initlizePowerUp());
+        powerUpArray.add(initlizePowerUp());
+        powerUpArray.add(initlizePowerUp());
+        powerUpArray.add(initlizePowerUp());
+        */
 
         b2dr = new Box2DDebugRenderer();
 
@@ -162,8 +179,6 @@ public class PlayScreen implements Screen ,InputProcessor{
         powerUpsAdder(dt);
         powerUpsupdate(dt);
 
-
-
         if(hud.getCountDownTimer()<=0) {
             handleInput(dt);
             world.step(1 / 60f, 6, 2);
@@ -192,6 +207,9 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
+            if(dog.CheckIfSpeedrecudeCought()){ //Speed powerup Implment
+                gameSpeed*=0.8;
+            }
             speedControl(delta);
         }
         //b2dr.render(world,gameCam.combined);
@@ -204,11 +222,15 @@ public class PlayScreen implements Screen ,InputProcessor{
         background2.draw(game.batch);
 
 
-
         for(int i  = 0 ; i<topObstacles.size ; i++) {
             (topObstacles.get(i)).draw(game.batch);
             (bottomObstacles.get(i)).draw(game.batch);
         }
+
+
+
+            removeObstacles();
+
         ground1.draw(game.batch);
         ground2.draw(game.batch);
         sky1.draw(game.batch);
@@ -224,7 +246,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         hud.stage.draw();
 
-        b2dr.render(world,gameCam.combined);
+        //b2dr.render(world,gameCam.combined);
 
 
         if(gameOver()){
@@ -335,22 +357,25 @@ public class PlayScreen implements Screen ,InputProcessor{
             background2.setPos(background1.getX()+background1.getWidth());
     }
     private void updateObstcale(float dt){
+        phaseTimer+=dt;
 
         for(int i  = 0 ; i<topObstacles.size ; i++) {
-            TopObstcale topObstcale = topObstacles.get(i);
-            BottomObstcale bottomObstcale = bottomObstacles.get(i);
+            TopObstcale topObstcale = (TopObstcale) topObstacles.get(i);
+            BottomObstcale bottomObstcale = (BottomObstcale) bottomObstacles.get(i);
 
             topObstcale.update(dt);
             bottomObstcale.update(dt);
 
             if(gameCam.position.x - (gameCam.viewportWidth / 2) > topObstcale.getPoisitionX() + topObstcale.getWidth()){
-                topObstcale.reposition((TUBE_SPACING+TopObstcale.TUBE_WIDTH)*TUBE_COUNT);
-                bottomObstcale.reposition((TUBE_SPACING+BottomObstcale.TUBE_WIDTH)*TUBE_COUNT,topObstcale.getPoisitionY());
+                    topObstcale.reposition((TUBE_SPACING + TopObstcale.TUBE_WIDTH) * TUBE_COUNT);
+                    bottomObstcale.reposition((TUBE_SPACING + BottomObstcale.TUBE_WIDTH) * TUBE_COUNT, topObstcale.getPoisitionY());
             }
-
         }
 
     }
+
+
+
 
     public boolean gameOver(){
         if(dog.currentState == Dog.State.DEAD){
@@ -381,7 +406,50 @@ public class PlayScreen implements Screen ,InputProcessor{
             gameSpeed += SPEED_MODIFIER;
             timer=0;
         }
+
         hud.setSpeed(gameSpeed);
+        sky1.setSpeed(gameSpeed);
+        sky2.setSpeed(gameSpeed);
+        ground1.setSpeed(gameSpeed);
+        ground2.setSpeed(gameSpeed);
+        background1.setSpeed(gameSpeed);
+        background2.setSpeed(gameSpeed);
+
+        for(int i  = 0 ; i<topObstacles.size ; i++) {
+            Enemy topObstcale = topObstacles.get(i);
+            Enemy bottomObstcale = bottomObstacles.get(i);
+            topObstcale.setSpeed(gameSpeed);
+            bottomObstcale.setSpeed(gameSpeed);
+        }
+
+    }
+
+    public void addObstacles(){
+                for (int i = 0; i < TUBE_COUNT; i++) {
+                    topObstacles.add(new TopObstcale(this, START_POSITION_SPACING + i * (TUBE_SPACING + TopObstcale.TUBE_WIDTH)));
+                    bottomObstacles.add(new BottomObstcale(this, START_POSITION_SPACING + i * (TUBE_SPACING + BottomObstcale.TUBE_WIDTH), topObstacles.get(i).getPoisitionY()));
+                }
+
+    }
+
+    public void removeObstacles(){
+        for (Enemy enemy : topObstacles) {
+            if (enemy.removed)
+                topObstacles.removeValue(enemy, true);
+
+            if (enemy != null) {
+                enemy.draw(game.batch);
+            }
+        }
+
+        for (Enemy enemy : bottomObstacles) {
+            if (enemy.removed)
+                bottomObstacles.removeValue(enemy, true);
+
+            if (enemy != null) {
+                enemy.draw(game.batch);
+            }
+        }
     }
     public int generateNumber(int maxNum) {
         Random random = new Random();
@@ -394,7 +462,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         if (powerUpTimeCount >= timeBetweenPowerUps) {
             powerUpArray.add(initlizePowerUp());
             powerUpTimeCount = 0;
-            timeBetweenPowerUps = 1 + generateNumber(10);
+            timeBetweenPowerUps = POWERUPS_DELAY+generateNumber(15);
         }
 
     }
@@ -414,9 +482,12 @@ public class PlayScreen implements Screen ,InputProcessor{
             }
         }
     }
+
+
     public PowerUp initlizePowerUp(){
         PowerUp powerUp;
-        int powerUpToInitilize = generateNumber(3);
+        int powerUpToInitilize = generateNumber(5);
+
         switch (powerUpToInitilize){
             case 0:
                 powerUp = new PLetterPowerUp(this);
@@ -427,6 +498,14 @@ public class PlayScreen implements Screen ,InputProcessor{
 
             case 2:
                 powerUp = new GLetterPowerUp(this);
+                break;
+
+            case 3:
+                powerUp = new SpeedReducePowerUp(this);
+                break;
+
+            case 4:
+                powerUp = new TimeAddPowerUp(this);
                 break;
 
             default:

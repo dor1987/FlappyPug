@@ -117,21 +117,21 @@ public class WelcomeWindow implements Disposable {
     }
     public void initBackGroundPanel(){
         backGroundPanel = new Image(manager.get("images/windowpanel.png",Texture.class));
-        backGroundPanel.setSize(240,300);
+        backGroundPanel.setSize(240,250);
         backGroundPanel.setPosition(FlappyPug.WIDTH/2-backGroundPanel.getWidth(),FlappyPug.HEIGHT/2-backGroundPanel.getHeight());
     }
 
 
     public void initNameWindowTable(){
         table= new Table();
-        table.setSize(120,150);
-        table.setPosition(backGroundPanel.getX()+table.getWidth()/2,backGroundPanel.getY()+table.getHeight()/2);
+        table.setSize(120,90);
+        table.setPosition(backGroundPanel.getX()+table.getWidth()/2,backGroundPanel.getY()+table.getHeight());
         table.setTransform(true);
         table.add(welcomeLabel).expandX();
         table.row();
-        table.add(nameLabel).expandX().padBottom(40f);
+        table.add(nameLabel).expandX().padBottom(20f);
         table.row();
-        table.add(continueBtn).expandX().padBottom(20f);
+        table.add(continueBtn).expandX().padBottom(10f);
         table.row();
         table.add(changeNameBtn).expandX();
 

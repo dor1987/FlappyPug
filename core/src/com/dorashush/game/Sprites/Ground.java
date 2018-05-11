@@ -65,12 +65,15 @@ public class Ground extends Enemy  {
         timer+=dt;
 
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-
+    /*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
+    */
+        b2body.setLinearVelocity(velocity);
+
     }
 
 
@@ -103,5 +106,27 @@ public class Ground extends Enemy  {
     public void setPos(float x){
         b2body.setTransform(new Vector2(x,0),b2body.getAngle());
     }
+    public void setSpeed(float speedX){
+        velocity.x = speedX;
+    }
 
+    @Override
+    public float getPoisitionY() {
+        return 0;
+    }
+
+    @Override
+    public void reposition(float x) {
+
+    }
+
+    @Override
+    public float getPoisitionX() {
+        return 0;
+    }
+
+    @Override
+    public void setToRemove() {
+
+    }
 }

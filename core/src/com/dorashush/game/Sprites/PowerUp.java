@@ -11,6 +11,8 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
 
+import java.util.Random;
+
 /**
  * Created by Dor on 05/08/18.
  */
@@ -35,9 +37,7 @@ public abstract class PowerUp extends Sprite{
 
         stateTime = 0;
         definePowerUp();
-        velocity = new Vector2(-0.8f,0.2f); //starting Speed
-        powerUpAngle = (float) (Math.random()*-0.5*Math.PI);//stating angle
-        powerUpVelocity = 1.1f;
+        velocity = new Vector2(-0.8f,getPlustOrMinus()*0.3f); //starting Speed
         coughtByPlayer = false;
         removed = false;
         //Testing for collision
@@ -79,6 +79,15 @@ public abstract class PowerUp extends Sprite{
         coughtByPlayer = true;
         velocity.x = 0;
         velocity.y = 5;
+    }
+
+    public float getPlustOrMinus() {
+        Random random = new Random();
+        int result = random.nextInt(3); //get number between 1-2
+        if(result>=2)
+            return -1;
+        else
+            return 1;
     }
 }
 

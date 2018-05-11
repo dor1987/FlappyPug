@@ -64,12 +64,15 @@ public class Sky extends Enemy {
     public void update(float dt){
         timer+=dt;
         setPosition(b2body.getPosition().x, b2body.getPosition().y-getHeight()/2);
-
+        /*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
+        */
+        b2body.setLinearVelocity(velocity);
+
     }
 
 
@@ -100,6 +103,29 @@ public class Sky extends Enemy {
     public void setPos(float x){
         b2body.setTransform(new Vector2(x,(FlappyPug.HEIGHT/2/FlappyPug.PPM-getHeight()/3)),b2body.getAngle());
        // b2body.setTransform(new Vector2(x,0),b2body.getAngle());
+
+    }
+    public void setSpeed(float speedX){
+        velocity.x = speedX;
+    }
+
+    @Override
+    public float getPoisitionY() {
+        return 0;
+    }
+
+    @Override
+    public void reposition(float x) {
+
+    }
+
+    @Override
+    public float getPoisitionX() {
+        return 0;
+    }
+
+    @Override
+    public void setToRemove() {
 
     }
 

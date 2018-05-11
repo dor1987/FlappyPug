@@ -47,7 +47,7 @@ public class AndroidLauncher extends AndroidApplication implements LeaderBoardHa
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new FlappyPug(this), config);
 
-		mLeaderboardReference.orderByChild("score").addValueEventListener(new ValueEventListener() {
+		mLeaderboardReference.orderByChild("score").limitToLast(100).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				ArrayList<ScoreLine> temp = new ArrayList<ScoreLine>();

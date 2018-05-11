@@ -115,6 +115,13 @@ public class FlappyPug extends Game {
 		manager.load("images/pnobubble.png", Texture.class);
 		manager.load("images/unobubble.png", Texture.class);
 		manager.load("images/gnobbuble.png", Texture.class);
+		manager.load("images/sandclock.png", Texture.class);
+		manager.load("images/speeddown.png", Texture.class);
+		manager.load("images/timeaddtion.png", Texture.class);
+		manager.load("images/testscoreline.png", Texture.class);
+		manager.load("images/wallnoam.png", Texture.class);
+
+
 	}
 
 	public AssetManager getManager() {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -34,7 +35,10 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sizeBy;
 public class Hud implements Disposable {
     public Stage stage;
     private Viewport viewPort;
-    private float timeCount, speed, timePassed, distance;
+    private float timeCount;
+    private float speed;
+    private static float timePassed;
+    private float distance;
     private Integer countDownTimer;
     private static Label timeLabel, distanceLabel, speedLabel, testLabel;
     private static Table lettersTable;
@@ -43,6 +47,7 @@ public class Hud implements Disposable {
     private boolean gameOver;
     private Skin skin;
     private AssetManager manager;
+    //private static Group group;
 
     public Hud(SpriteBatch sb, PlayScreen screen) {
         this.manager = screen.getManager();
@@ -50,7 +55,7 @@ public class Hud implements Disposable {
         distance = 0;
         speed = 0;
         timePassed = 0;
-
+        //group = new Group();
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2, FlappyPug.HEIGHT / 2, new OrthographicCamera());
         stage = new Stage(viewPort, sb);
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
@@ -72,6 +77,10 @@ public class Hud implements Disposable {
         pImage = new Image(manager.get("images/pnobubble.png", Texture.class));
         uImage = new Image(manager.get("images/unobubble.png", Texture.class));
         gImage = new Image(manager.get("images/gnobbuble.png", Texture.class));
+        //group.addActor(pImage);
+        //group.addActor(uImage);
+        //group.addActor(gImage);
+
     }
 
     public void initLabels() {
@@ -88,24 +97,25 @@ public class Hud implements Disposable {
         table.setFillParent(true);
 
         if (FlappyPug.SCORE_AS_TIME)
-            table.add(timeLabel).width(50f).padBottom(25f).padLeft(50f);
+            table.add(timeLabel).width(50f).padTop(5f).padLeft(50f);
         else
             table.add(distanceLabel).expandX().padBottom(25f);
         //table.add(speedLabel).expandX().padBottom(25f);
         lettersTable = new Table();
-       // lettersTable.bottom().center();
-        lettersTable.setBounds(lettersTable.getX(),lettersTable.getY(),60f,20f);
-        lettersTable.setPosition(FlappyPug.WIDTH/2-lettersTable.getWidth()*1.5f,FlappyPug.HEIGHT/2+lettersTable.getHeight()/2);
+        lettersTable.top().right();
+        lettersTable.setFillParent(true);
 
-
-        //lettersTable.setFillParent(true);
+        //lettersTable.setBounds(FlappyPug.WIDTH/3-lettersTable.getWidth()*1.5f,Gdx.graphics.getHeight()/6,60f,20f);
+        //lettersTable.setPosition(,Gdx.graphics.getHeight()/6);
         lettersTable.setTransform(true);
+        //group.setTransform(true);
+
         lettersTable.setOrigin(lettersTable.getWidth()/2,lettersTable.getHeight()/2);
 
         lettersTable.add(pImage).width(20f).height(20f);
         lettersTable.add(uImage).width(20f).height(20f);
         lettersTable.add(gImage).width(20f).height(20f);
-        lettersTable.debug();
+        //lettersTable.debug();
         setLettersViability();
 
         centerOfScreenTable = new Table();
@@ -149,7 +159,11 @@ public class Hud implements Disposable {
                 timeCount = 0;
             }
         }
-        lettersTable.act(dt);
+        //group.act(dt);
+        pImage.act(dt);
+        uImage.act(dt);
+        gImage.act(dt);
+
     }
 
     public Integer getCountDownTimer() {
@@ -186,9 +200,14 @@ public class Hud implements Disposable {
             case 'g':
                 letterVisualControl(visible,gImage);
                 break;
+            case 't':
+                timePassed+=5;
+                break;
         }
 
     }
+
+
 
     public void setLettersViability(){
         letterVisualControl(false,pImage);
@@ -196,16 +215,29 @@ public class Hud implements Disposable {
         letterVisualControl(false,gImage);
     }
     public static void hideAllLetters(){
+        /*
+        letterVisualControl(false,pImage);
+        letterVisualControl(false,uImage);
+        letterVisualControl(false,gImage);
+        */
+
+
         Runnable transitionRunnable = new Runnable() {
             @Override
             public void run() {
                letterVisualControl(false,pImage);
                letterVisualControl(false,uImage);
                letterVisualControl(false,gImage);
-               lettersTable.scaleBy(0.9f);
+               //lettersTable.scaleBy(0.9f);
+
             }
         };
-        lettersTable.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable)));
+
+        //group.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable)));
+        uImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
+        gImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
+        pImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
+
     }
     public static void letterVisualControl(boolean visible, Actor actor) {
         if (lettersTable.getChildren().contains(actor, true)) {

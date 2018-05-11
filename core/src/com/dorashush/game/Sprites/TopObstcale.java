@@ -47,6 +47,8 @@ public class TopObstcale extends Enemy {
         this.x = x;
         obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
 
+
+
         rand = new Random();
         defineObstcale();
         setBounds(0, 0, TUBE_WIDTH*2/FlappyPug.PPM , 150*2/FlappyPug.PPM );
@@ -61,17 +63,29 @@ public class TopObstcale extends Enemy {
         timer =0;
         b2body.setLinearVelocity(velocity);
 
+        setToRemove = false;
+        removed = false;
     }
 
 
     public void update(float dt){
         timer+=dt;
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
+        if(setToRemove && !removed){
+            world.destroyBody(b2body);
+            removed = true;
+        }
+
+        else if(!removed) {
+            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+/*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
+        }
+  */
+            b2body.setLinearVelocity(velocity);
         }
     }
 
@@ -109,11 +123,17 @@ public class TopObstcale extends Enemy {
     public void reposition(float x){
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,(rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING)/FlappyPug.PPM),b2body.getAngle());
 
-
     }
 
     public void endGameMenu(){
 
+    }
+    public void setSpeed(float speedX){
+        velocity.x = speedX;
+    }
+
+    public void setToRemove(){
+    this.setToRemove= true;
     }
 
 }

@@ -4,51 +4,79 @@ size: 4096,2048
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+bird1
+  rotate: false
+  xy: 1406, 642
+  size: 700, 476
+  orig: 700, 476
+  offset: 0, 0
+  index: -1
+bird2
+  rotate: false
+  xy: 2108, 1201
+  size: 700, 476
+  orig: 700, 476
+  offset: 0, 0
+  index: -1
+bird3
+  rotate: false
+  xy: 1406, 164
+  size: 700, 476
+  orig: 700, 476
+  offset: 0, 0
+  index: -1
+bird4
+  rotate: false
+  xy: 2108, 723
+  size: 700, 476
+  orig: 700, 476
+  offset: 0, 0
+  index: -1
 death
-  rotate: false
-  xy: 2, 1120
-  size: 700, 557
-  orig: 700, 557
-  offset: 0, 0
-  index: -1
-falling1
-  rotate: false
-  xy: 704, 561
-  size: 700, 557
-  orig: 700, 557
-  offset: 0, 0
-  index: -1
-falling2
-  rotate: false
-  xy: 1406, 1120
-  size: 700, 557
-  orig: 700, 557
-  offset: 0, 0
-  index: -1
-falling3
   rotate: false
   xy: 704, 2
   size: 700, 557
   orig: 700, 557
   offset: 0, 0
   index: -1
+falling1
+  rotate: false
+  xy: 2, 2
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+falling2
+  rotate: false
+  xy: 704, 561
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
+falling3
+  rotate: false
+  xy: 1406, 1120
+  size: 700, 557
+  orig: 700, 557
+  offset: 0, 0
+  index: -1
 fire1
   rotate: false
-  xy: 2, 561
+  xy: 2, 1120
   size: 700, 557
   orig: 700, 557
   offset: 0, 0
   index: -1
 fire2
   rotate: false
-  xy: 704, 1120
+  xy: 2, 561
   size: 700, 557
   orig: 700, 557
   offset: 0, 0
   index: -1
 fire3
   rotate: false
-  xy: 2, 2
+  xy: 704, 1120
   size: 700, 557
   orig: 700, 557
   offset: 0, 0
