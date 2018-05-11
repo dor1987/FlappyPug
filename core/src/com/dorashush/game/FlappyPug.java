@@ -119,7 +119,6 @@ public class FlappyPug extends Game {
 		manager.load("images/speeddown.png", Texture.class);
 		manager.load("images/timeaddtion.png", Texture.class);
 		manager.load("images/testscoreline.png", Texture.class);
-		manager.load("images/wallnoam.png", Texture.class);
 
 
 	}
