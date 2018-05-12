@@ -102,6 +102,11 @@ public class FlappyPug extends Game {
 		manager.load("images/fireon.png", Texture.class);
 		manager.load("images/fireoff.png", Texture.class);
 		manager.load("images/wall.png", Texture.class);
+		manager.load("images/wall2.png", Texture.class);
+		manager.load("images/wall3.png", Texture.class);
+		manager.load("images/wall4.png", Texture.class);
+		manager.load("images/wall5.png", Texture.class);
+
 		manager.load("images/background.png", Texture.class);
 		manager.load("images/replaybtn.png", Texture.class);
 		manager.load("images/score.png", Texture.class);

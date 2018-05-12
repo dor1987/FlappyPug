@@ -11,9 +11,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
+import com.dorashush.game.Tools.SkinsController;
 
 import java.util.Random;
 
@@ -40,13 +42,17 @@ public class TopObstcale extends Enemy {
     public float x,timer;
     private Random rand;
     private TextureRegion obstacleTexture;
+    private SkinsController skinsController;
 
     public TopObstcale(PlayScreen screen, float x){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.x = x;
-        obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        skinsController = new SkinsController(manager);
+        timer =0;
 
+        //obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        obstacleTexture = skinsController.getCurrentobstacleTexture(timer);
 
 
         rand = new Random();
@@ -60,7 +66,6 @@ public class TopObstcale extends Enemy {
         bodyUserData = new BodyUserData();
         bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
         b2body.setUserData(bodyUserData);
-        timer =0;
         b2body.setLinearVelocity(velocity);
 
         setToRemove = false;
@@ -122,7 +127,7 @@ public class TopObstcale extends Enemy {
 
     public void reposition(float x){
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,(rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING)/FlappyPug.PPM),b2body.getAngle());
-
+        setRegion(skinsController.getCurrentobstacleTexture(timer));
     }
 
     public void endGameMenu(){

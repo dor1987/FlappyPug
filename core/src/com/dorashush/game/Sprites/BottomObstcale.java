@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
+import com.dorashush.game.Tools.SkinsController;
 
 import java.util.Random;
 
@@ -38,17 +39,18 @@ public class BottomObstcale extends Enemy {
     public float x,topObstcaleY,timer;
     private Random rand;
     private TextureRegion obstacleTexture;
-    private TextureRegion obstacleTexture2;
-
+    private SkinsController skinsController;
 
     public BottomObstcale(PlayScreen screen, float x , float topObstcaleY){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.x = x;
         this.topObstcaleY = topObstcaleY;
+        skinsController = new SkinsController(manager);
+        timer = 0;
 
-        obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
-
+        //obstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        obstacleTexture = skinsController.getCurrentobstacleTexture(timer);
         rand = new Random();
 
         defineObstcale();
@@ -62,7 +64,6 @@ public class BottomObstcale extends Enemy {
         bodyUserData = new BodyUserData();
         bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
         b2body.setUserData(bodyUserData);
-        timer = 0;
         b2body.setLinearVelocity(velocity);
 
         setToRemove = false;
@@ -131,7 +132,7 @@ public class BottomObstcale extends Enemy {
 
     public void reposition(float x,float y){
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,y - (TUBE_GAP + 150)/FlappyPug.PPM),b2body.getAngle());
-
+        setRegion(skinsController.getCurrentobstacleTexture(timer));
     }
     public void setSpeed(float speedX){
         velocity.x = speedX;
