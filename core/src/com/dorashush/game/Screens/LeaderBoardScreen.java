@@ -21,7 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Scenes.NoInternetWindow;
 import com.dorashush.game.Tools.MyList;
 import com.dorashush.game.Tools.MyTextButton;
 
@@ -31,7 +33,7 @@ import java.util.ArrayList;
  * Created by Dor on 05/05/18.
  */
 
-public class LeaderBoardScreen implements Screen {
+public class LeaderBoardScreen extends ScreenWithPopUps {
     private Game game;
     private OrthographicCamera camera;
     private Stage stage,backStage;
@@ -46,6 +48,7 @@ public class LeaderBoardScreen implements Screen {
     private MyList myList;
     private ImageTextButton scoreLine;
     private Drawable scoreLineImage;
+    private NoInternetWindow noInternetWindow;
 
     public LeaderBoardScreen(FlappyPug game) {
         this.game = game;
@@ -57,7 +60,7 @@ public class LeaderBoardScreen implements Screen {
 
         stage = new Stage(viewPort, game.batch);
         scoreLineImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/testscoreline.png",Texture.class)));
-
+        noInternetWindow = new NoInternetWindow(this,game.batch);
 
         initBackground();
         leaderBoardInit();
@@ -87,6 +90,13 @@ public class LeaderBoardScreen implements Screen {
         backStage.draw();
         stage.act(delta);
         stage.draw();
+
+        if(noInternetWindow.isStatus()){
+            noInternetWindow.draw(delta);
+        }
+        if(noInternetWindow.isBackToMainMenu())
+            returnToMenu();
+
     }
 
     @Override
@@ -134,6 +144,7 @@ public class LeaderBoardScreen implements Screen {
 
         ArrayList testtemp  = FlappyPug.handler.getScoreList();
 
+
         //String[] temp412 = new String[testtemp.size()];
 /*
         for(int i = 0; i< testtemp.size(); i++){
@@ -142,14 +153,23 @@ public class LeaderBoardScreen implements Screen {
 */
         MyTextButton[] textButtons = new  MyTextButton[100];
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle(scoreLineImage,scoreLineImage,scoreLineImage,skin.getFont("font"));
+        if(testtemp.size()!=0){
+            for(int i = 0; i< testtemp.size(); i++) {
+                String[] words = ((String)testtemp.get(i)).split("\\|");
+                //textButtons[i] = new MyTextButton(String.format("%-3d",(i+1))+(testtemp.get(i).toString()),textButtonStyle);
+                textButtons[i] = new MyTextButton((i+1)+".",words[0],words[1],textButtonStyle);
 
-        for(int i = 0; i< testtemp.size(); i++) {
-            String[] words = ((String)testtemp.get(i)).split("\\|");
-            //textButtons[i] = new MyTextButton(String.format("%-3d",(i+1))+(testtemp.get(i).toString()),textButtonStyle);
-            textButtons[i] = new MyTextButton((i+1)+".",words[0],words[1],textButtonStyle);
-
+            }
         }
 
+        else{
+            for(int i = 0; i< 100; i++) {
+                //textButtons[i] = new MyTextButton(String.format("%-3d",(i+1))+(testtemp.get(i).toString()),textButtonStyle);
+                textButtons[i] = new MyTextButton((i+1)+".","","",textButtonStyle);
+            }
+            noInternetWindow.setStatus(true);
+
+        }
 
             //  ImageTextButton[] temp412 = new ImageTextButton[testtemp.size()];
         //ImageTextButton.ImageTextButtonStyle tempStyle = new ImageTextButton.ImageTextButtonStyle(scoreLineImage,scoreLineImage,scoreLineImage,skin.getFont("font"));
@@ -165,6 +185,8 @@ public class LeaderBoardScreen implements Screen {
 
         //list.setItems(temp412);
         myList.setItems(textButtons);
+
+
       //    list.setItems(tempArrayImage);
 
         // list.setItems(new String[]{"dor","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy","tal","guy"});
@@ -211,6 +233,16 @@ public class LeaderBoardScreen implements Screen {
     public void returnToMenu(){
         game.setScreen(new MainMenuScreen((FlappyPug) game,false));
         dispose();
+    }
+
+    @Override
+    public void popUpWindowControl(String popUpName, boolean openWindow) {
+
+    }
+
+    @Override
+    public AssetManager getManager() {
+        return manager;
     }
 /*
     private void createBasicSkin(){

@@ -245,7 +245,12 @@ public class MyList<T> extends Widget implements Cullable {
 
         items.clear();
         items.addAll(newItems);
+
         selection.validate();
+
+
+
+
 
         invalidate();
         if (oldPrefWidth != getPrefWidth() || oldPrefHeight != getPrefHeight()) invalidateHierarchy();
