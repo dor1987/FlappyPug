@@ -19,7 +19,7 @@ import java.util.Random;
 
 public abstract class PowerUp extends Sprite{
     protected World world;
-    protected Vector2 velocity;
+    protected Vector2 velocity,velocityBeforeCatch,velocityAfterCatch;
     protected Body b2body;
     protected BodyUserData bodyUserData;
     protected AssetManager manager;
@@ -37,7 +37,9 @@ public abstract class PowerUp extends Sprite{
 
         stateTime = 0;
         definePowerUp();
-        velocity = new Vector2(-0.8f,getPlustOrMinus()*0.3f); //starting Speed
+        velocityBeforeCatch = new Vector2(-0.8f,getPlustOrMinus()*0.3f); //starting Speed
+        velocityAfterCatch = new Vector2(0,5); //starting Speed
+
         coughtByPlayer = false;
         removed = false;
         //Testing for collision
@@ -77,8 +79,7 @@ public abstract class PowerUp extends Sprite{
 
     public void onPlayerCaught() {
         coughtByPlayer = true;
-        velocity.x = 0;
-        velocity.y = 5;
+        velocity = velocityAfterCatch;
     }
 
     public float getPlustOrMinus() {
@@ -89,6 +90,15 @@ public abstract class PowerUp extends Sprite{
         else
             return 1;
     }
+    
+    public void setToAppear() {
+        b2body.setTransform(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM,b2body.getAngle());
+        removed =false;
+        velocity = velocityBeforeCatch;
+        setScale(1f);
+        coughtByPlayer = false;
+    }
+
 }
 
 

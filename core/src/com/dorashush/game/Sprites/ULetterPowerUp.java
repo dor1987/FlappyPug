@@ -42,7 +42,7 @@ public class ULetterPowerUp  extends PowerUp{
             setScale(0.8f);
 
             if(b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 20 / FlappyPug.PPM) {
-                world.destroyBody(b2body);
+                //world.destroyBody(b2body);
                 removed = true;
             }
         }
@@ -56,7 +56,7 @@ public class ULetterPowerUp  extends PowerUp{
     protected void definePowerUp() {
         BodyDef bdef = new BodyDef();
         // bdef.position.set(240/ FlappyPug.PPM,500/FlappyPug.PPM);//need 2 change to randomly generate at the center
-        bdef.position.set(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM);
+        //bdef.position.set(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM);
 
         //bdef.position.set(getX(),getY());
 
@@ -79,6 +79,7 @@ public class ULetterPowerUp  extends PowerUp{
 
     @Override
     public void setToRemove() {
+        removed = true;
 
     }
 

@@ -83,6 +83,9 @@ public class PlayScreen implements Screen ,InputProcessor{
     //powerups
     private float powerUpTimeCount,timeBetweenPowerUps;
     private Array<PowerUp> powerUpArray;
+    private PowerUp pLetterPowerUp,uLetterPowerUp,gLetterPowerUp,speedReducePowerUp,timeAddPowerUp;
+
+
 
     public PlayScreen(FlappyPug game) {
         this.manager = game.getManager();
@@ -136,14 +139,14 @@ public class PlayScreen implements Screen ,InputProcessor{
 
 
         powerUpArray = new Array<PowerUp>();
-        /*
-        powerUpArray.add(initlizePowerUp());
-        powerUpArray.add(initlizePowerUp());
-        powerUpArray.add(initlizePowerUp());
-        powerUpArray.add(initlizePowerUp());
-        powerUpArray.add(initlizePowerUp());
-        powerUpArray.add(initlizePowerUp());
-        */
+
+        pLetterPowerUp = new PLetterPowerUp(this);
+        uLetterPowerUp = new ULetterPowerUp(this);
+        gLetterPowerUp = new GLetterPowerUp(this);
+        speedReducePowerUp = new SpeedReducePowerUp(this);
+        timeAddPowerUp = new TimeAddPowerUp(this);
+
+
 
         b2dr = new Box2DDebugRenderer();
 
@@ -229,7 +232,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
 
 
-            removeObstacles();
+            //removeObstacles();
 
         ground1.draw(game.batch);
         ground2.draw(game.batch);
@@ -416,10 +419,8 @@ public class PlayScreen implements Screen ,InputProcessor{
         background2.setSpeed(gameSpeed);
 
         for(int i  = 0 ; i<topObstacles.size ; i++) {
-            Enemy topObstcale = topObstacles.get(i);
-            Enemy bottomObstcale = bottomObstacles.get(i);
-            topObstcale.setSpeed(gameSpeed);
-            bottomObstcale.setSpeed(gameSpeed);
+            (topObstacles.get(i)).setSpeed(gameSpeed);
+            (bottomObstacles.get(i)).setSpeed(gameSpeed);
         }
 
     }
@@ -469,6 +470,8 @@ public class PlayScreen implements Screen ,InputProcessor{
     public void powerUpsupdate(float dt){
 
         for (PowerUp powerUp : powerUpArray) {
+            if(gameCam.position.x - (gameCam.viewportWidth / 2) > powerUp.getX() + powerUp.getWidth())
+                powerUp.setToRemove();
             powerUp.update(dt);
         }
     }
@@ -486,30 +489,37 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     public PowerUp initlizePowerUp(){
         PowerUp powerUp;
+
         int powerUpToInitilize = generateNumber(5);
 
         switch (powerUpToInitilize){
             case 0:
-                powerUp = new PLetterPowerUp(this);
+                pLetterPowerUp.setToAppear();
+                powerUp = pLetterPowerUp;
                 break;
             case 1:
-                powerUp = new ULetterPowerUp(this);
+                uLetterPowerUp.setToAppear();
+                powerUp = uLetterPowerUp;
                 break;
 
             case 2:
-                powerUp = new GLetterPowerUp(this);
+                gLetterPowerUp.setToAppear();
+                powerUp = gLetterPowerUp;
                 break;
 
             case 3:
-                powerUp = new SpeedReducePowerUp(this);
+                speedReducePowerUp.setToAppear();
+                powerUp = speedReducePowerUp;
                 break;
 
             case 4:
-                powerUp = new TimeAddPowerUp(this);
+                timeAddPowerUp.setToAppear();
+                powerUp = timeAddPowerUp;
                 break;
 
             default:
-                powerUp = new PLetterPowerUp(this);
+                pLetterPowerUp.setToAppear();
+                powerUp = pLetterPowerUp;
                 break;
         }
 
