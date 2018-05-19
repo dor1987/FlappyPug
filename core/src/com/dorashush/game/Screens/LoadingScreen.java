@@ -26,6 +26,8 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(final FlappyPug game) {
         this.game = game;
         this.shapeRenderer = new ShapeRenderer();
+
+
     }
 
     private void queueAssets() {

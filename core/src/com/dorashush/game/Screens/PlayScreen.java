@@ -15,12 +15,12 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.EndGameMenu;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Sprites.Background;
-import com.dorashush.game.Sprites.BirdEnemy;
 import com.dorashush.game.Sprites.BottomObstcale;
 import com.dorashush.game.Sprites.Dog;
 import com.dorashush.game.Sprites.Enemy;
 import com.dorashush.game.Sprites.GLetterPowerUp;
 import com.dorashush.game.Sprites.Ground;
+import com.dorashush.game.Sprites.MoneyPowerUp;
 import com.dorashush.game.Sprites.PLetterPowerUp;
 import com.dorashush.game.Sprites.PowerUp;
 import com.dorashush.game.Sprites.SpeedReducePowerUp;
@@ -81,10 +81,11 @@ public class PlayScreen implements Screen ,InputProcessor{
     private boolean phaseChanging;
 
     //powerups
-    private float powerUpTimeCount,timeBetweenPowerUps;
-    private Array<PowerUp> powerUpArray;
-    private PowerUp pLetterPowerUp,uLetterPowerUp,gLetterPowerUp,speedReducePowerUp,timeAddPowerUp;
-
+    private float powerUpTimeCount,timeBetweenPowerUps,hudTimer;
+    private Array<PowerUp> powerUpArray,powerUpToRemove;
+    private PowerUp pLetterPowerUp,uLetterPowerUp,gLetterPowerUp,speedReducePowerUp,timeAddPowerUp,moneyPowerUp;
+    private Random random;
+    private int lastPowerUpChoose;
 
 
     public PlayScreen(FlappyPug game) {
@@ -136,20 +137,22 @@ public class PlayScreen implements Screen ,InputProcessor{
         //Powerups
         powerUpTimeCount = 0;
         timeBetweenPowerUps = 10f;
-
+        hudTimer =0;
 
         powerUpArray = new Array<PowerUp>();
+        powerUpToRemove = new Array<PowerUp>();
 
         pLetterPowerUp = new PLetterPowerUp(this);
         uLetterPowerUp = new ULetterPowerUp(this);
         gLetterPowerUp = new GLetterPowerUp(this);
         speedReducePowerUp = new SpeedReducePowerUp(this);
         timeAddPowerUp = new TimeAddPowerUp(this);
-
+        moneyPowerUp = new MoneyPowerUp(this);
+        random = new Random();
 
 
         b2dr = new Box2DDebugRenderer();
-
+        lastPowerUpChoose = -1;
     }
 
 
@@ -175,12 +178,14 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     public void update(float dt){
         updateBackground(dt);
+
         hud.update(dt);
+
         updateGround(dt);
         updateSky(dt);
 
         powerUpsAdder(dt);
-        powerUpsupdate(dt);
+        powerUpsUpdate(dt);
 
         if(hud.getCountDownTimer()<=0) {
             handleInput(dt);
@@ -211,7 +216,8 @@ public class PlayScreen implements Screen ,InputProcessor{
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
             if(dog.CheckIfSpeedrecudeCought()){ //Speed powerup Implment
-                gameSpeed*=0.8;
+                //gameSpeed*=0.8;
+            onSpeedReducePowerUpTaken();
             }
             speedControl(delta);
         }
@@ -247,6 +253,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         game.batch.end();
 
+
         hud.stage.draw();
 
         //b2dr.render(world,gameCam.combined);
@@ -259,6 +266,21 @@ public class PlayScreen implements Screen ,InputProcessor{
             //dispose();
             //game.setScreen(new PlayScreen(game));
             //dispose();
+        }
+    }
+
+    private void onSpeedReducePowerUpTaken() {
+        //hud.setSpeed(gameSpeed);
+        sky1.speedReducePowerUpTaken();
+        sky2.speedReducePowerUpTaken();
+        ground1.speedReducePowerUpTaken();
+        ground2.speedReducePowerUpTaken();
+        background1.speedReducePowerUpTaken();
+        background2.speedReducePowerUpTaken();
+
+        for(int i  = 0 ; i<topObstacles.size ; i++) {
+            (topObstacles.get(i)).speedReducePowerUpTaken();
+            (bottomObstacles.get(i)).speedReducePowerUpTaken();
         }
     }
 
@@ -409,7 +431,7 @@ public class PlayScreen implements Screen ,InputProcessor{
             gameSpeed += SPEED_MODIFIER;
             timer=0;
         }
-
+        /*
         hud.setSpeed(gameSpeed);
         sky1.setSpeed(gameSpeed);
         sky2.setSpeed(gameSpeed);
@@ -422,7 +444,11 @@ public class PlayScreen implements Screen ,InputProcessor{
             (topObstacles.get(i)).setSpeed(gameSpeed);
             (bottomObstacles.get(i)).setSpeed(gameSpeed);
         }
+    */
+    }
 
+    public float getGameSpeed() {
+        return gameSpeed;
     }
 
     public void addObstacles(){
@@ -453,7 +479,6 @@ public class PlayScreen implements Screen ,InputProcessor{
         }
     }
     public int generateNumber(int maxNum) {
-        Random random = new Random();
         int result = random.nextInt(maxNum+1); //to avoid maxnum been 0
         return result;
     }
@@ -467,31 +492,42 @@ public class PlayScreen implements Screen ,InputProcessor{
         }
 
     }
-    public void powerUpsupdate(float dt){
-
+    public void powerUpsUpdate(float dt){
         for (PowerUp powerUp : powerUpArray) {
             if(gameCam.position.x - (gameCam.viewportWidth / 2) > powerUp.getX() + powerUp.getWidth())
                 powerUp.setToRemove();
             powerUp.update(dt);
         }
+
+
     }
     public void powerUpRemoveControl(){
         for (PowerUp powerUp : powerUpArray) {
-            if (powerUp.removed)
-                powerUpArray.removeValue(powerUp, true);
 
             if (powerUp != null) {
                 powerUp.draw(game.batch);
             }
+
+            if (powerUp.removed)
+                powerUpToRemove.add(powerUp);
+
         }
+
+        for (PowerUp powerUp : powerUpToRemove){
+            powerUpArray.removeValue(powerUp, true);
+        }
+        powerUpToRemove.clear();
     }
 
 
     public PowerUp initlizePowerUp(){
         PowerUp powerUp;
 
-        int powerUpToInitilize = generateNumber(5);
-
+        int powerUpToInitilize = generateNumber(6);
+        while(lastPowerUpChoose == powerUpToInitilize){
+            powerUpToInitilize = generateNumber(6);
+        }
+        lastPowerUpChoose = powerUpToInitilize;
         switch (powerUpToInitilize){
             case 0:
                 pLetterPowerUp.setToAppear();
@@ -516,6 +552,11 @@ public class PlayScreen implements Screen ,InputProcessor{
                 timeAddPowerUp.setToAppear();
                 powerUp = timeAddPowerUp;
                 break;
+            case 5:
+                moneyPowerUp.setToAppear();
+                powerUp = moneyPowerUp;
+                break;
+
 
             default:
                 pLetterPowerUp.setToAppear();
@@ -571,4 +612,6 @@ public class PlayScreen implements Screen ,InputProcessor{
     public boolean scrolled(int amount) {
         return false;
     }
+
+
 }

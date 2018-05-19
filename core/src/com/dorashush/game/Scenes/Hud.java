@@ -93,16 +93,16 @@ public class Hud implements Disposable {
 
     public void initTable() {
         table = new Table();
-        table.top().left();
+        table.center().top();
         table.setFillParent(true);
 
         if (FlappyPug.SCORE_AS_TIME)
-            table.add(timeLabel).width(50f).padTop(5f).padLeft(50f);
+            table.add(timeLabel).width(50f).padTop(5f);
         else
             table.add(distanceLabel).expandX().padBottom(25f);
         //table.add(speedLabel).expandX().padBottom(25f);
         lettersTable = new Table();
-        lettersTable.top().right();
+        lettersTable.center().bottom();
         lettersTable.setFillParent(true);
 
         //lettersTable.setBounds(FlappyPug.WIDTH/3-lettersTable.getWidth()*1.5f,Gdx.graphics.getHeight()/6,60f,20f);

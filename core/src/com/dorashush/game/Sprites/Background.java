@@ -34,7 +34,7 @@ public class Background extends Sprite{
     private BodyUserData bodyUserData;
     private AssetManager manager;
     public World world;
-    public float offSet,timer;
+    public float offSet,timer,gameTimer;
 
     public Background(PlayScreen screen, float offSet){
         this.world = screen.getWorld();
@@ -60,22 +60,23 @@ public class Background extends Sprite{
         b2body.setUserData(bodyUserData);
         timer = 0;
         b2body.setLinearVelocity(velocity);
-
+        gameTimer=0;
     }
 
 
     public void update(float dt){
         timer+=dt;
+        gameTimer+=dt;
        // setPosition(b2body.getPosition().x , b2body.getPosition().y);
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-/*
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
-  */
-        b2body.setLinearVelocity(velocity);
+
+  //      b2body.setLinearVelocity(velocity);
 
     }
 
@@ -108,5 +109,9 @@ public class Background extends Sprite{
     }
     public void setSpeed(float speedX){
         velocity.x = speedX;
+    }
+    public void speedReducePowerUpTaken(){
+        velocity.x*=0.8;
+        b2body.setLinearVelocity(velocity);
     }
 }

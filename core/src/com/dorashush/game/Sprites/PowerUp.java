@@ -92,7 +92,7 @@ public abstract class PowerUp extends Sprite{
     }
     
     public void setToAppear() {
-        b2body.setTransform(FlappyPug.WIDTH/2/FlappyPug.PPM,(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM,b2body.getAngle());
+        b2body.setTransform(FlappyPug.WIDTH/2/FlappyPug.PPM+getWidth(),(FlappyPug.HEIGHT/4-getHeight()/2)/FlappyPug.PPM,b2body.getAngle());
         removed =false;
         velocity = velocityBeforeCatch;
         setScale(1f);

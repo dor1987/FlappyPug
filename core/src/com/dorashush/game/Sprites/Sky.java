@@ -34,10 +34,12 @@ public class Sky extends Enemy {
     private TextureRegion sky;
 
     public World world;
-    public float offSet,timer;
+    public float offSet,timer,gameTimer;
+    private PlayScreen screen;
 
     public Sky(PlayScreen screen,float offSet){
         this.world = screen.getWorld();
+        this.screen = screen;
         this.manager=  screen.getManager();
         this.offSet = offSet;
         sky = new TextureRegion(manager.get("images/coulds.png",Texture.class));
@@ -57,21 +59,24 @@ public class Sky extends Enemy {
         b2body.setUserData(bodyUserData);
         timer = 0;
         b2body.setLinearVelocity(velocity);
-
+        gameTimer=0;
     }
 
 
     public void update(float dt){
         timer+=dt;
+        gameTimer+=dt;
         setPosition(b2body.getPosition().x, b2body.getPosition().y-getHeight()/2);
-        /*
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
-        */
-        b2body.setLinearVelocity(velocity);
+
+//        velocity.x = screen.getGameSpeed();
+
+        //b2body.setLinearVelocity(velocity);
 
     }
 
@@ -128,5 +133,8 @@ public class Sky extends Enemy {
     public void setToRemove() {
 
     }
-
+    public void speedReducePowerUpTaken(){
+        velocity.x*=0.8;
+        b2body.setLinearVelocity(velocity);
+    }
 }

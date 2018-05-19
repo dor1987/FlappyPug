@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.dorashush.game.Screens.BeforeLoadingScreen;
 import com.dorashush.game.Screens.LoadingScreen;
 import com.dorashush.game.Screens.PlayScreen;
 
@@ -63,12 +64,13 @@ public class FlappyPug extends Game {
 
 
 
-		AssetsLoad();
+		//AssetsLoad();
 		skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
 
 
 		//setScreen(new PlayScreen(this));
-		setScreen(new LoadingScreen(this));
+		//setScreen(new LoadingScreen(this));
+		setScreen(new BeforeLoadingScreen(this));
 
 		loadPreferences();
 
@@ -124,7 +126,7 @@ public class FlappyPug extends Game {
 		manager.load("images/speeddown.png", Texture.class);
 		manager.load("images/timeaddtion.png", Texture.class);
 		manager.load("images/testscoreline.png", Texture.class);
-
+		manager.load("images/currencypowerup.png", Texture.class);
 
 	}
 

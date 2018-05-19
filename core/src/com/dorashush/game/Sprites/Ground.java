@@ -35,10 +35,12 @@ public class Ground extends Enemy  {
     private BodyUserData bodyUserData;
     private AssetManager manager;
     public World world;
-    public float offSet,timer;
+    public float offSet,timer,gameTimer;
+    private PlayScreen screen;
 
     public Ground(PlayScreen screen,float offSet){
         this.world = screen.getWorld();
+        this.screen=screen;
         this.manager=  screen.getManager();
         this.offSet = offSet;
         ground = new TextureRegion(manager.get("images/ground.png",Texture.class));
@@ -57,22 +59,23 @@ public class Ground extends Enemy  {
         b2body.setUserData(bodyUserData);
         timer =0;
         b2body.setLinearVelocity(velocity);
-
+        gameTimer=0;
     }
 
 
     public void update(float dt){
         timer+=dt;
-
+        gameTimer+=dt;
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-    /*
+
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
-    */
-        b2body.setLinearVelocity(velocity);
+
+    //    velocity.x = screen.getGameSpeed();
+     //   b2body.setLinearVelocity(velocity);
 
     }
 
@@ -128,5 +131,9 @@ public class Ground extends Enemy  {
     @Override
     public void setToRemove() {
 
+    }
+    public void speedReducePowerUpTaken(){
+        velocity.x*=0.8;
+        b2body.setLinearVelocity(velocity);
     }
 }

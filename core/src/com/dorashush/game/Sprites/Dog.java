@@ -44,7 +44,7 @@ public class Dog extends Sprite{
     private Body b2body;
     private BodyUserData bodyUserData;
     private AssetManager manager;
-    private boolean dogIsDead,flyAnimation,gotP,gotU,gotG,gotSpeedReduce,gotTimeAdd;
+    private boolean dogIsDead,flyAnimation,gotP,gotU,gotG,gotSpeedReduce,gotTimeAdd,gotMoneyAdd;
     private  float stateTimer,invisibaleTimer;
     private TextureRegion dogFall,dogFly;
 
@@ -117,6 +117,7 @@ public class Dog extends Sprite{
         alpha =.0f;
         gotSpeedReduce = false;
         gotTimeAdd = false;
+        gotMoneyAdd = false;
     }
 
 
@@ -289,7 +290,7 @@ public class Dog extends Sprite{
         }
     }
 
-
+//todo i did somthing dumb here, need to fix it, only letters need bool
     public void onLetterCought(char value){
         switch(value){
             case 'p':
@@ -301,18 +302,23 @@ public class Dog extends Sprite{
             case 'g':
                 gotG = true;
                 break;
-            case 's': //cought speed reduce
+            case 's': //caught speed reduce
                 gotSpeedReduce = true;
             break;
-
-            case 't': //cought speed reduce
+            case 't': //caught speed reduce
                 gotTimeAdd = true;
+            break;
+            case 'm': //caught speed reduce
+                gotMoneyAdd = true;
             break;
 
         }
         Hud.onLetterChangedStatus(true,value);
 
-
+        if(gotTimeAdd)
+            gotTimeAdd = false;
+        if(gotMoneyAdd)
+            gotMoneyAdd = false;
     }
     public boolean checkIfAllLettersCought(){
         if(gotP&&gotU&&gotG)

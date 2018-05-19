@@ -18,6 +18,6 @@ public abstract class Enemy extends Sprite{
     public abstract float getPoisitionX();
     public abstract void setToRemove();
     public abstract void update(float dt);
-
+    public abstract void speedReducePowerUpTaken();
 
     }
