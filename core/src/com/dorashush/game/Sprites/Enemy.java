@@ -11,7 +11,7 @@ import com.dorashush.game.Screens.PlayScreen;
 public abstract class Enemy extends Sprite{
     public  boolean removed;
     protected boolean setToRemove;
-
+    public float tempVelocity;
     public abstract void setSpeed(float speedX);
     public abstract float getPoisitionY();
     public abstract void reposition(float x);

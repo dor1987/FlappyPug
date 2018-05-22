@@ -41,6 +41,9 @@ public class FlappyPug extends Game {
 	public static float HIGH_SCORE;
 	public static String HIGH_SCORE_NAME;
 	public static boolean SCORE_AS_TIME;
+	public static int DIAMONDS = 0;
+	public static int MONEY = 0;
+	public static int SPINS = 0;
 
 
 	public AssetManager manager = new AssetManager();
@@ -128,6 +131,7 @@ public class FlappyPug extends Game {
 		manager.load("images/testscoreline.png", Texture.class);
 		manager.load("images/currencypowerup.png", Texture.class);
 
+
 	}
 
 	public AssetManager getManager() {
@@ -143,5 +147,9 @@ public class FlappyPug extends Game {
 		HIGH_SCORE = flappyDogPreferences.getFloat("highScore",0f);
 		HIGH_SCORE_NAME = flappyDogPreferences.getString("highScoreName","");
 		SCORE_AS_TIME = flappyDogPreferences.getBoolean("scoreAsTime",true);
+		MONEY = flappyDogPreferences.getInteger("money",00000);
+		DIAMONDS = flappyDogPreferences.getInteger("diamonds",00000);
+		SPINS = flappyDogPreferences.getInteger("spins",00000);
+
 	}
 }

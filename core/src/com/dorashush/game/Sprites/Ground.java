@@ -67,11 +67,18 @@ public class Ground extends Enemy  {
         timer+=dt;
         gameTimer+=dt;
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-
+/*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
+        }
+*/
+
+        tempVelocity = screen.getGameSpeed();
+        if(tempVelocity!=velocity.x) {
+            velocity.x = screen.getGameSpeed();
+            b2body.setLinearVelocity(velocity);
         }
 
     //    velocity.x = screen.getGameSpeed();

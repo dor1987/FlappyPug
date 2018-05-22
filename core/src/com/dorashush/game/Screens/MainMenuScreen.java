@@ -7,6 +7,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,7 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
@@ -23,6 +28,7 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
 import com.dorashush.game.Scenes.WelcomeWindow;
 import com.dorashush.game.Tools.ActionMoveCircular;
+import com.dorashush.game.Tools.MyCurrencyTextButton;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
@@ -35,11 +41,13 @@ public class MainMenuScreen extends ScreenWithPopUps {
     private Game game;
     private OrthographicCamera camera;
     private Stage stage,backStage;
-    private Table table,nameTable;
-    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog;
+    private Table table,nameTable,countersTable;
+    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog,spinBtn,freeSpinBtn,spinTheWheel;
     private Label hiLabel;
     private AssetManager manager;
     private ExtendViewport viewPort,backViewPort;
+    private Drawable coinCounterImage,dimondCounterImage,wheelCounterImage;
+    private MyCurrencyTextButton diamonCounter,coinCounter,spinsCounter;
 
     //Name windows
     private boolean isNameWindowOn,playPressed,isWelcomeWindowOn,isInitalStart;
@@ -78,6 +86,35 @@ public class MainMenuScreen extends ScreenWithPopUps {
         optionsBtn = new Image(manager.get("images/settings.png",Texture.class));
         leaderBoardBtn = new Image(manager.get("images/highscore.png",Texture.class));
         menuTitle  = new Image(manager.get("images/mainscreentitle.png",Texture.class));
+        spinBtn = new Image(manager.get("images/spinbtn.png",Texture.class));
+        spinBtn.setOrigin(spinBtn.getWidth()/4,spinBtn.getHeight()/4);
+        freeSpinBtn = new Image(manager.get("images/freespinbtn.png",Texture.class));
+        spinTheWheel = new Image(manager.get("images/spinthewheelmenubtn.png",Texture.class));
+        spinTheWheel.setOrigin(spinTheWheel.getWidth()/8,spinTheWheel.getHeight()/8);
+
+        coinCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/coincounter.png",Texture.class)));
+        dimondCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/dimondcounter.png",Texture.class)));
+        wheelCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/spincounterimage.png",Texture.class)));
+
+        TextButton.TextButtonStyle coinCounterStyle = new TextButton.TextButtonStyle(coinCounterImage,coinCounterImage,coinCounterImage,skin.getFont("font"));
+        TextButton.TextButtonStyle dimonCounterStyle = new TextButton.TextButtonStyle(dimondCounterImage,dimondCounterImage,dimondCounterImage,skin.getFont("font"));
+        TextButton.TextButtonStyle spinsCounterStyle = new TextButton.TextButtonStyle(wheelCounterImage,wheelCounterImage,wheelCounterImage,skin.getFont("font"));
+
+        coinCounter = new MyCurrencyTextButton(FlappyPug.MONEY+"",coinCounterStyle);
+        diamonCounter = new MyCurrencyTextButton(FlappyPug.DIAMONDS+"",dimonCounterStyle);
+        spinsCounter = new MyCurrencyTextButton(FlappyPug.SPINS+"",spinsCounterStyle);
+
+        countersTable = new Table();
+        //countersTable.top().center();
+        //countersTable.setFillParent(true);
+
+        countersTable.add(diamonCounter).width(100f).height(30);
+        //countersTable.row();
+        countersTable.add(coinCounter).width(100f).height(30);
+       // countersTable.row();
+     //   countersTable.add(spinsCounter).expand().fill();
+        countersTable.setOrigin(Align.center);
+
 
         /*
         if(FlappyPug.NAME.compareTo("No name stored")!=0) {
@@ -92,16 +129,20 @@ public class MainMenuScreen extends ScreenWithPopUps {
 
         table.center();
         table.setFillParent(true);
-
-        table.add(menuTitle);
+        table.add(menuTitle).colspan(3).height(150f).expandX().top();
         table.row();
-        table.add(hiLabel);
+        table.add().width(50f);
+        table.add();
+        table.add();
         table.row();
-        table.add(playBtn);
+        table.add(playBtn).colspan(2).height(70f).width(200);
+        table.add(spinBtn).width(50f).height(50f);
         table.row();
-        table.add(optionsBtn);
+        table.add(optionsBtn).colspan(2).height(70f).width(200);
+        table.add(freeSpinBtn).width(50f).height(50f).padRight(10f);
         table.row();
-        table.add(leaderBoardBtn);
+        table.add(leaderBoardBtn).colspan(2).height(70f).width(200);
+        table.add(spinTheWheel).width(50f).height(50f).padRight(10f);
 
     }
     public void initBackground(){
@@ -166,14 +207,52 @@ public class MainMenuScreen extends ScreenWithPopUps {
             }
         });
 
+        spinBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                //Add leaderbaord Screen
+                game.setScreen(new SpeenWheelScreen((FlappyPug)game));
+                dispose();
+            }
+        });
+
+        spinTheWheel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                //Add leaderbaord Screen
+                game.setScreen(new SpeenWheelScreen((FlappyPug)game));
+                dispose();
+            }
+        });
+
+        freeSpinBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                FlappyPug.SPINS+=5;
+            }
+        });
+
     }
 
 
     @Override
     public void show() {
+        final float width = stage.getWidth();
+        final float height = stage.getHeight();
+
+        countersTable.setBounds(0,0,width,height/9);
+        countersTable.setPosition(width-countersTable.getWidth()/2,height-countersTable.getHeight()/2,Align.center);
 
         Gdx.input.setInputProcessor(stage);
+        spinBtn.addAction(forever(sequence(scaleTo(1.25F, 1.25F, 0.30F), scaleTo(1F, 1F, 0.30F))));
+        spinTheWheel.addAction(forever(sequence(rotateBy(360, 1),
+                        rotateTo(0),delay(5f))));
+
         backStage.addActor(backgroundTexture);
+        stage.addActor(countersTable);
         stage.addActor(table);
         stage.addActor(dog);
 
@@ -190,7 +269,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         backStage.draw();
         stage.draw();
-
+        stage.act(delta);
         dog.act(delta);
 /*
         if(FlappyPug.NAME.compareTo("No name stored")==0 || nameWindow.isStatus()|| isNameWindowOn){
@@ -223,12 +302,11 @@ public class MainMenuScreen extends ScreenWithPopUps {
             Gdx.input.setInputProcessor(stage);
         }
         Gdx.app.log("CheckHere","Name Status "+ !nameWindow.isStatus() + " Welcome Status " +!welcomeWindow.isStatus() +" playPressdStatus "+ !playPressed );
-
+        //countersTable.debug();
     }
 
     @Override
     public void resize(int width, int height) {
-
         viewPort.update(width,height);
         backViewPort.update(width,height);
 

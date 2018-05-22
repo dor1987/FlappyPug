@@ -77,6 +77,9 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/settings.png", Texture.class);
         manager.load("images/highscore.png", Texture.class);
         manager.load("images/windowpanel.png", Texture.class);
+        manager.load("images/spinbtn.png", Texture.class);
+        manager.load("images/freespinbtn.png", Texture.class);
+        manager.load("images/spinthewheelmenubtn.png", Texture.class);
 
 
         manager.load("atlas/animations", TextureAtlas.class);
@@ -107,6 +110,16 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/testscoreline.png", Texture.class);
         manager.load("images/currencypowerup.png", Texture.class);
 
+        //spinning wheel
+        manager.load("atlas/spin_wheel_ui.atlas", TextureAtlas.class);
+        manager.load("images/dimondcounter.png", Texture.class);
+        manager.load("images/coincounter.png", Texture.class);
+        manager.load("images/spincounterimage.png", Texture.class);
+        manager.load("images/bigbtnnotpush.png", Texture.class);
+        manager.load("images/bigbtnpushed.png", Texture.class);
+        manager.load("images/diamond.png", Texture.class);
+        manager.load("images/money.png", Texture.class);
+        manager.load("images/wheel.png", Texture.class);
     }
 
     @Override

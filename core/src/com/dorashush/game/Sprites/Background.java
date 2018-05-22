@@ -34,12 +34,14 @@ public class Background extends Sprite{
     private BodyUserData bodyUserData;
     private AssetManager manager;
     public World world;
-    public float offSet,timer,gameTimer;
+    private PlayScreen screen;
+    public float offSet,timer,gameTimer,tempVelocity;
 
     public Background(PlayScreen screen, float offSet){
         this.world = screen.getWorld();
         this.manager=  screen.getManager();
         this.offSet = offSet;
+        this.screen = screen;
         backGround = new TextureRegion(manager.get("images/backgroundfull.png",Texture.class));
         defineBackground();
 
@@ -69,15 +71,20 @@ public class Background extends Sprite{
         gameTimer+=dt;
        // setPosition(b2body.getPosition().x , b2body.getPosition().y);
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
-
+/*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
             b2body.setLinearVelocity(velocity);
             timer=0;
         }
+*/
 
   //      b2body.setLinearVelocity(velocity);
-
+        tempVelocity = screen.getGameSpeed();
+        if(tempVelocity!=velocity.x) {
+            velocity.x = screen.getGameSpeed();
+            b2body.setLinearVelocity(velocity);
+        }
     }
 
 
@@ -110,8 +117,10 @@ public class Background extends Sprite{
     public void setSpeed(float speedX){
         velocity.x = speedX;
     }
+    /*
     public void speedReducePowerUpTaken(){
         velocity.x*=0.8;
         b2body.setLinearVelocity(velocity);
     }
+    */
 }

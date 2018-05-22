@@ -23,6 +23,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -143,6 +144,7 @@ dependencies {
     compile 'com.android.support:support-annotations:25.3.1'
     compile 'com.google.firebase:firebase-database:11.8.0'
     compile 'com.firebase:firebase-client-android:2.3.1'
+    compile 'com.android.support:multidex:1.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

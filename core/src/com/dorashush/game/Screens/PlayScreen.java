@@ -216,7 +216,6 @@ public class PlayScreen implements Screen ,InputProcessor{
         if(dog.currentState!=Dog.State.DEAD){
             Gdx.input.setInputProcessor(this);
             if(dog.CheckIfSpeedrecudeCought()){ //Speed powerup Implment
-                //gameSpeed*=0.8;
             onSpeedReducePowerUpTaken();
             }
             speedControl(delta);
@@ -270,6 +269,8 @@ public class PlayScreen implements Screen ,InputProcessor{
     }
 
     private void onSpeedReducePowerUpTaken() {
+        gameSpeed*=0.8;
+        /*
         //hud.setSpeed(gameSpeed);
         sky1.speedReducePowerUpTaken();
         sky2.speedReducePowerUpTaken();
@@ -282,6 +283,7 @@ public class PlayScreen implements Screen ,InputProcessor{
             (topObstacles.get(i)).speedReducePowerUpTaken();
             (bottomObstacles.get(i)).speedReducePowerUpTaken();
         }
+        */
     }
 
     private void handleMenuTouch(){
