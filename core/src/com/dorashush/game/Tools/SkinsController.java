@@ -22,6 +22,8 @@ public class SkinsController {
         wall3 = new TextureRegion(manager.get("images/wall3.png",Texture.class));
         wall4 = new TextureRegion(manager.get("images/wall4.png",Texture.class));
         wall5 = new TextureRegion(manager.get("images/wall5.png",Texture.class));
+        wall6 = new TextureRegion(manager.get("images/wall6.png",Texture.class));
+
         CurrentobstacleTexture = wall1;
 
 

@@ -53,6 +53,8 @@ public class SpinWheel implements Disposable {
     private final int nPegs;              // number of pegs
     private float farNeedle;              // distance of needle from the wheel
     private boolean spinned = false;      // to ensure a spinning is one time only.
+    private boolean isBeforeFirstSpin = true;
+    private boolean isDoubleSpin = false;
 
     /**
      * All dimensions parameters's dividing on 100 to equivalent Newton's laws according Box2D physics.
@@ -416,6 +418,8 @@ public class SpinWheel implements Disposable {
 //            return;
         wheelCore.setAngularVelocity(MathUtils.clamp(omega, 0, 30));
         spinned = true;
+        isBeforeFirstSpin = false;
+        isDoubleSpin =false;
     }
 
     /**
@@ -423,19 +427,37 @@ public class SpinWheel implements Disposable {
      */
 
     public boolean spinningStopped() {
-        if(wheelCore.getAngularVelocity()>=0.05){
+        if(wheelCore.getAngularVelocity()>=0.04 || wheelCore.getAngularVelocity()<=-0.04){
             return false;
         }
-        else {
-            wheelCore.setAngularVelocity(0f);
+        else if(wheelCore.getAngularVelocity()<0.04 && wheelCore.getAngularVelocity()>=-0.04){
+            wheelCore.setAngularVelocity(wheelCore.getAngularVelocity()/2);
+           isDoubleSpin = true;
             return true;
         }
+
+        else{
+            return false;
+        }
     }
-    /*
+
+
+/*
     public boolean spinningStopped() {
+        //if(wheelCore.getAngularVelocity()<=0.05)
+           // wheelCore.setAngularVelocity(0f);
         return !wheelCore.isAwake();
     }
-    */
+*/
+
+    public boolean isBeforeFirstSpin() {
+        return isBeforeFirstSpin;
+    }
+
+    public boolean isDoubleSpin() {
+        return isDoubleSpin;
+    }
+
     public void setWorldContactListener(ContactListener listener) {
         world.setContactListener(listener);
     }
@@ -502,6 +524,7 @@ public class SpinWheel implements Disposable {
                     return elements.get(array);
         return null;
     }
+    /*
     public boolean isSpining(){
         Gdx.app.log("Angular velocity ",""+wheelCore.getAngularVelocity());
 
@@ -510,7 +533,10 @@ public class SpinWheel implements Disposable {
         }
         else
             return false;
+
+        //return isSpining;
     }
+*/
 
     @Override
     public void dispose() {

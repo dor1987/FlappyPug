@@ -90,14 +90,23 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/wall3.png", Texture.class);
         manager.load("images/wall4.png", Texture.class);
         manager.load("images/wall5.png", Texture.class);
+        manager.load("images/wall6.png", Texture.class);
+
+        manager.load("images/touch.png", Texture.class);
+
 
         manager.load("images/background.png", Texture.class);
         manager.load("images/replaybtn.png", Texture.class);
         manager.load("images/score.png", Texture.class);
         manager.load("images/homebtn.png", Texture.class);
         manager.load("images/backgroundfull.png", Texture.class);
-        manager.load("images/coulds.png", Texture.class);
-        manager.load("images/ground.png", Texture.class);
+      //  manager.load("images/coulds.png", Texture.class);
+     //   manager.load("images/ground.png", Texture.class);
+        manager.load("images/topbar.png", Texture.class);
+        manager.load("images/botbar.png", Texture.class);
+        manager.load("images/avatar.png", Texture.class);
+
+
         manager.load("images/p.png", Texture.class);
         manager.load("images/u.png", Texture.class);
         manager.load("images/g.png", Texture.class);

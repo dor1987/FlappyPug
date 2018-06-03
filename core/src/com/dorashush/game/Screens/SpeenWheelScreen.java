@@ -159,12 +159,13 @@ public class SpeenWheelScreen extends BaseScreen {
         stage.addActor(rewardTable);
 
         // add listener to spin button.
+        /*
         btnSpin.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
                     btnSpin.addAction(sequence(scaleTo(1.25F, 1.25F, 0.10F), scaleTo(1F, 1F, 0.10F)));
-                if(!spinWheel.isSpining() && FlappyPug.SPINS > 0 && !showReward) {
+                if(!spinWheel.spinningStopped() && FlappyPug.SPINS > 0 && !showReward) {
                     spinWheel.spin(MathUtils.random(5F, 30F));
                     FlappyPug.SPINS-=1;
                     FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
@@ -175,12 +176,13 @@ public class SpeenWheelScreen extends BaseScreen {
                 Gdx.app.debug(TAG, "Spinning.");
             }
         });
-
+        */
 
         bigButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(!spinWheel.isSpining() && FlappyPug.SPINS > 0 && !showReward) {
+                boolean temp = spinWheel.spinningStopped();
+                if(spinWheel.spinningStopped() && FlappyPug.SPINS > 0 && !showReward) {
                     spinWheel.spin(MathUtils.random(5F, 28F));
                     FlappyPug.SPINS-=1;
                     FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
@@ -240,7 +242,8 @@ public class SpeenWheelScreen extends BaseScreen {
         spinWheel.addElementData("8", getData(8, 9));
         spinWheel.addElementData("9", getData(9, 10));
         spinWheel.addElementData("10", getData(10, 11));
-        spinWheel.addElementData("11", getData(12, 1));
+        spinWheel.addElementData("11", getData(11, 12));
+        spinWheel.addElementData("12", getData(12, 1));
 
     }
 
@@ -265,10 +268,11 @@ public class SpeenWheelScreen extends BaseScreen {
             // update needle
             updateCoordinates(spinWheel.getNeedleBody(), needleImage, 0, -25F);
 
-            showReward = true;
+            if(!spinWheel.isBeforeFirstSpin() && !spinWheel.isDoubleSpin())
+                showReward = true;
         }
 
-        else {
+        else if(spinWheel.spinningStopped()){
             System.out.println("lucky element is: " + spinWheel.getLuckyWinElement());
             if(spinWheel.getLuckyWinElement()!=null && showReward && rewardFirstShow) {
                 rewardTable.addAction(sequence(scaleTo(.1f, .1f), parallel( scaleTo(1f, 1f, 0.5f, Interpolation.pow5)), delay(0.2F)));

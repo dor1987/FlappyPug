@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Array;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.EndGameMenu;
@@ -54,7 +55,6 @@ public class PlayScreen implements Screen ,InputProcessor{
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
     private Background background1,background2;
-
     private OrthographicCamera gameCam;
     //private TextureRegion backGround;
 
@@ -113,11 +113,11 @@ public class PlayScreen implements Screen ,InputProcessor{
         dog  = new Dog(this);
         ground1 = new Ground(this,0);
 //        ground2 = new Ground(this,480/FlappyPug.PPM);
-        ground2 = new Ground(this,769/FlappyPug.PPM);
+      //  ground2 = new Ground(this,769/FlappyPug.PPM);
 
         sky1 = new Sky(this,0);
 //        sky2 = new Sky(this,480/FlappyPug.PPM);
-        sky2 = new Sky(this,769/FlappyPug.PPM);
+        //sky2 = new Sky(this,769/FlappyPug.PPM);
 
 
 
@@ -148,11 +148,14 @@ public class PlayScreen implements Screen ,InputProcessor{
         speedReducePowerUp = new SpeedReducePowerUp(this);
         timeAddPowerUp = new TimeAddPowerUp(this);
         moneyPowerUp = new MoneyPowerUp(this);
+
         random = new Random();
 
 
         b2dr = new Box2DDebugRenderer();
         lastPowerUpChoose = -1;
+
+
     }
 
 
@@ -181,8 +184,9 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         hud.update(dt);
 
-        updateGround(dt);
-        updateSky(dt);
+
+        //updateGround(dt);
+        //updateSky(dt);
 
         powerUpsAdder(dt);
         powerUpsUpdate(dt);
@@ -239,10 +243,10 @@ public class PlayScreen implements Screen ,InputProcessor{
 
             //removeObstacles();
 
-        ground1.draw(game.batch);
-        ground2.draw(game.batch);
-        sky1.draw(game.batch);
-        sky2.draw(game.batch);
+//        ground1.draw(game.batch);
+  //      ground2.draw(game.batch);
+    //    sky1.draw(game.batch);
+      //  sky2.draw(game.batch);
 
 
         dog.draw(game.batch);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -12,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -21,6 +25,7 @@ import com.dorashush.game.Screens.PlayScreen;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.repeat;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.rotateBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.scaleBy;
@@ -43,7 +48,7 @@ public class Hud implements Disposable {
     private static Label timeLabel, distanceLabel, speedLabel, testLabel;
     private static Table lettersTable;
     private Table centerOfScreenTable,table;
-    private static Image pImage, uImage, gImage;
+    private static Image pImage, uImage, gImage,touchImage,avatarImage,topBar,botBar;
     private boolean gameOver;
     private Skin skin;
     private AssetManager manager;
@@ -65,6 +70,25 @@ public class Hud implements Disposable {
         initLettersImages();
         initLabels();
         initTable();
+        final float width = stage.getWidth();
+        final float height = stage.getHeight();
+        topBar.setBounds(0,0,width,height/9);
+        //topBar.setOrigin(Align.center);
+        topBar.setPosition(0,height-topBar.getHeight());
+
+        stage.addActor(topBar);
+
+        botBar.setBounds(0,0,width,height/6f);
+        //botBar.setOrigin(Align.center);
+        botBar.setPosition(0,0);
+
+        stage.addActor(botBar);
+
+        avatarImage.setBounds(0,0,width/3.7f,width/3.7f);
+        avatarImage.setOrigin(Align.center);
+        avatarImage.setPosition(width-botBar.getWidth()/7.3f,botBar.getHeight()-avatarImage.getHeight()/1.8f,Align.center);
+
+        stage.addActor(avatarImage);
 
         //initCenterOfScreenTable();
         stage.addActor(table);
@@ -80,6 +104,10 @@ public class Hud implements Disposable {
         //group.addActor(pImage);
         //group.addActor(uImage);
         //group.addActor(gImage);
+        touchImage = new Image(manager.get("images/touch.png", Texture.class));
+        avatarImage = new Image(manager.get("images/avatar.png", Texture.class));
+        topBar = new Image(manager.get("images/topbar.png", Texture.class));
+        botBar = new Image(manager.get("images/botbar.png", Texture.class));
 
     }
 
@@ -96,10 +124,9 @@ public class Hud implements Disposable {
         table.center().top();
         table.setFillParent(true);
 
-        if (FlappyPug.SCORE_AS_TIME)
-            table.add(timeLabel).width(50f).padTop(5f);
-        else
-            table.add(distanceLabel).expandX().padBottom(25f);
+       // table.setBackground(topHud);
+        table.add(timeLabel).width(50f).padTop(15f).padRight(10f);
+
         //table.add(speedLabel).expandX().padBottom(25f);
         lettersTable = new Table();
         lettersTable.center().bottom();
@@ -112,22 +139,40 @@ public class Hud implements Disposable {
 
         lettersTable.setOrigin(lettersTable.getWidth()/2,lettersTable.getHeight()/2);
 
-        lettersTable.add(pImage).width(20f).height(20f);
-        lettersTable.add(uImage).width(20f).height(20f);
-        lettersTable.add(gImage).width(20f).height(20f);
+       // lettersTable.setBackground(botHud);
+        lettersTable.add(pImage).width(20f).height(20f).padBottom(10f).padRight(5f);
+        lettersTable.add(uImage).width(20f).height(20f).padBottom(10f).padRight(5f);
+        lettersTable.add(gImage).width(20f).height(20f).padBottom(10f).padRight(5f);
         //lettersTable.debug();
         setLettersViability();
 
         centerOfScreenTable = new Table();
         centerOfScreenTable.center().left();
         centerOfScreenTable.setFillParent(true);
+        centerOfScreenTable.setTransform(true);
+        centerOfScreenTable.add(touchImage).width(50f).height(50f);
+        centerOfScreenTable.row();
         centerOfScreenTable.add(testLabel).expandX();
-
+        Runnable transitionRunnable = new Runnable() {
+            @Override
+            public void run() {
+                touchImage.setVisible(false);
+            }
+        };
+        touchImage.addAction(sequence(repeat(4,sequence(scaleTo(1.25F, 1.25F, 0.30F), scaleTo(1F, 1F, 0.30F))),run(transitionRunnable)));
 
     }
 
 
+
     public void update(float dt) {
+
+
+
+
+
+        stage.act();
+
         if (!gameOver) {
             if (countDownTimer <= 0) {
                 timePassed += dt;

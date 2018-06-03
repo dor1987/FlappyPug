@@ -19,6 +19,8 @@ import com.dorashush.game.Tools.SkinsController;
 
 import java.util.Random;
 
+import javax.swing.plaf.synth.Region;
+
 import static com.dorashush.game.FlappyPug.SPEED_MODIFIER;
 import static com.dorashush.game.FlappyPug.SPEED_TIME_JUMP;
 import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
@@ -111,6 +113,8 @@ public class TopObstcale extends Enemy {
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
         poly.setAsBox(TUBE_WIDTH/FlappyPug.PPM,150/FlappyPug.PPM);
+        //float[] vertices = {-TUBE_WIDTH/FlappyPug.PPM , 200/FlappyPug.PPM / 4, TUBE_WIDTH/FlappyPug.PPM , 0f, 0f, -3 * 200/FlappyPug.PPM / 4};
+        //poly.set(vertices);
 
         //Bits Testing
         fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
@@ -121,6 +125,23 @@ public class TopObstcale extends Enemy {
         b2body.createFixture(fdef).setUserData(this);
     }
 
+    public void reDefineBody(){
+        b2body.destroyFixture(this.b2body.getFixtureList().first());
+
+        FixtureDef fdef = new FixtureDef();
+        PolygonShape poly = new PolygonShape();
+        float[] vertices = {-TUBE_WIDTH/FlappyPug.PPM , 200/FlappyPug.PPM / 4, TUBE_WIDTH/FlappyPug.PPM , 0f, 0f, -3 * 200/FlappyPug.PPM / 4};
+        poly.set(vertices);
+
+        fdef.filter.categoryBits = FlappyPug.ENEMY_BIT;
+        fdef.filter.maskBits = FlappyPug.DOG_BIT;
+
+        fdef.shape = poly;
+        fdef.isSensor = true;
+        b2body.createFixture(fdef).setUserData(this);
+
+
+    }
     public float getPoisitionX(){
         return b2body.getPosition().x;
     }
@@ -135,6 +156,12 @@ public class TopObstcale extends Enemy {
     public void reposition(float x){
         b2body.setTransform(new Vector2(x/FlappyPug.PPM,(rand.nextInt(FLUCTUATION) + TUBE_GAP + LOWEST_OPENING)/FlappyPug.PPM),b2body.getAngle());
         setRegion(skinsController.getCurrentobstacleTexture(gameTimer));
+
+/*
+        if(timer>=20){
+            reDefineBody();
+        }
+  */
     }
 
     public void endGameMenu(){

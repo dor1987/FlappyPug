@@ -43,30 +43,32 @@ public class Ground extends Enemy  {
         this.screen=screen;
         this.manager=  screen.getManager();
         this.offSet = offSet;
-        ground = new TextureRegion(manager.get("images/ground.png",Texture.class));
+       // ground = new TextureRegion(manager.get("images/ground.png",Texture.class));
 
         //setBounds(getX(), getY(), 480 /FlappyPug.PPM, 10/FlappyPug.PPM );
         setBounds(getX(), getY(), 769 / FlappyPug.PPM, 15/FlappyPug.PPM );
 
         defineGround();
-        setRegion(ground);
+      //  setRegion(ground);
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
 
-        velocity = new Vector2(STARTING_SPEED,0);
+        //velocity = new Vector2(STARTING_SPEED,0);
 
         bodyUserData = new BodyUserData();
         bodyUserData.collisionType = BodyUserData.CollisionType.ENEMY;
         b2body.setUserData(bodyUserData);
-        timer =0;
-        b2body.setLinearVelocity(velocity);
-        gameTimer=0;
+        //timer =0;
+        //b2body.setLinearVelocity(velocity);
+    //    gameTimer=0;
     }
 
 
     public void update(float dt){
+        /*
         timer+=dt;
         gameTimer+=dt;
         setPosition(b2body.getPosition().x, b2body.getPosition().y);
+        */
 /*
         if(timer >= SPEED_TIME_JUMP) {
             velocity.add(SPEED_MODIFIER, 0);
@@ -74,13 +76,13 @@ public class Ground extends Enemy  {
             timer=0;
         }
 */
-
+/*
         tempVelocity = screen.getGameSpeed();
         if(tempVelocity!=velocity.x) {
             velocity.x = screen.getGameSpeed();
             b2body.setLinearVelocity(velocity);
         }
-
+*/
     //    velocity.x = screen.getGameSpeed();
      //   b2body.setLinearVelocity(velocity);
 
@@ -114,10 +116,10 @@ public class Ground extends Enemy  {
         return b2body.getPosition().x;
     }
     public void setPos(float x){
-        b2body.setTransform(new Vector2(x,0),b2body.getAngle());
+        //b2body.setTransform(new Vector2(x,0),b2body.getAngle());
     }
     public void setSpeed(float speedX){
-        velocity.x = speedX;
+        //velocity.x = speedX;
     }
 
     @Override
@@ -140,7 +142,9 @@ public class Ground extends Enemy  {
 
     }
     public void speedReducePowerUpTaken(){
+        /*
         velocity.x*=0.8;
         b2body.setLinearVelocity(velocity);
+        */
     }
 }

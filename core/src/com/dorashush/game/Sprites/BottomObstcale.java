@@ -29,6 +29,7 @@ import static com.dorashush.game.Screens.PlayScreen.STARTING_SPEED;
 public class BottomObstcale extends Enemy {
     public static final int TUBE_WIDTH = 30;
     private static final int TUBE_GAP = 250;
+    private int tubeStartingGap = 300;
 
     private Vector2 velocity;
     //private Rectangle bounds;
@@ -102,7 +103,7 @@ public class BottomObstcale extends Enemy {
 
     public void defineObstcale(){
         BodyDef bdef = new BodyDef();
-        bdef.position.set(x/ FlappyPug.PPM,topObstcaleY -(TUBE_GAP + 150)/FlappyPug.PPM); //temp need to think of better way
+        bdef.position.set(x/ FlappyPug.PPM,topObstcaleY -(tubeStartingGap + 150)/FlappyPug.PPM); //temp need to think of better way
         bdef.type = BodyDef.BodyType.KinematicBody;
         b2body = world.createBody(bdef);
 
@@ -138,7 +139,10 @@ public class BottomObstcale extends Enemy {
     }
 
     public void reposition(float x,float y){
-        b2body.setTransform(new Vector2(x/FlappyPug.PPM,y - (TUBE_GAP + 150)/FlappyPug.PPM),b2body.getAngle());
+        if(tubeStartingGap>=TUBE_GAP){
+            tubeStartingGap-=5;
+        }
+        b2body.setTransform(new Vector2(x/FlappyPug.PPM,y - (tubeStartingGap + 150)/FlappyPug.PPM),b2body.getAngle());
         setRegion(skinsController.getCurrentobstacleTexture(gameTimer));
     }
     public void setSpeed(float speedX){

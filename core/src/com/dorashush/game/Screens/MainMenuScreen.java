@@ -2,7 +2,6 @@ package com.dorashush.game.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,14 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
@@ -42,7 +39,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
     private OrthographicCamera camera;
     private Stage stage,backStage;
     private Table table,nameTable,countersTable;
-    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog,spinBtn,freeSpinBtn,spinTheWheel;
+    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog, dailySpinBtn,freeSpinBtn,spinTheWheel;
     private Label hiLabel;
     private AssetManager manager;
     private ExtendViewport viewPort,backViewPort;
@@ -86,8 +83,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
         optionsBtn = new Image(manager.get("images/settings.png",Texture.class));
         leaderBoardBtn = new Image(manager.get("images/highscore.png",Texture.class));
         menuTitle  = new Image(manager.get("images/mainscreentitle.png",Texture.class));
-        spinBtn = new Image(manager.get("images/spinbtn.png",Texture.class));
-        spinBtn.setOrigin(spinBtn.getWidth()/4,spinBtn.getHeight()/4);
+        dailySpinBtn = new Image(manager.get("images/spinbtn.png",Texture.class));
+        dailySpinBtn.setOrigin(dailySpinBtn.getWidth()/4, dailySpinBtn.getHeight()/4);
         freeSpinBtn = new Image(manager.get("images/freespinbtn.png",Texture.class));
         spinTheWheel = new Image(manager.get("images/spinthewheelmenubtn.png",Texture.class));
         spinTheWheel.setOrigin(spinTheWheel.getWidth()/8,spinTheWheel.getHeight()/8);
@@ -136,7 +133,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         table.add();
         table.row();
         table.add(playBtn).colspan(2).height(70f).width(200);
-        table.add(spinBtn).width(50f).height(50f);
+        table.add(dailySpinBtn).width(50f).height(50f);
         table.row();
         table.add(optionsBtn).colspan(2).height(70f).width(200);
         table.add(freeSpinBtn).width(50f).height(50f).padRight(10f);
@@ -207,11 +204,14 @@ public class MainMenuScreen extends ScreenWithPopUps {
             }
         });
 
-        spinBtn.addListener(new ClickListener() {
+        dailySpinBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //Add leaderbaord Screen
+                FlappyPug.SPINS+=1;
+                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
+                FlappyPug.flappyDogPreferences.flush();
+
                 game.setScreen(new SpeenWheelScreen((FlappyPug)game));
                 dispose();
             }
@@ -221,7 +221,6 @@ public class MainMenuScreen extends ScreenWithPopUps {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //Add leaderbaord Screen
                 game.setScreen(new SpeenWheelScreen((FlappyPug)game));
                 dispose();
             }
@@ -247,7 +246,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         countersTable.setPosition(width-countersTable.getWidth()/2,height-countersTable.getHeight()/2,Align.center);
 
         Gdx.input.setInputProcessor(stage);
-        spinBtn.addAction(forever(sequence(scaleTo(1.25F, 1.25F, 0.30F), scaleTo(1F, 1F, 0.30F))));
+        dailySpinBtn.addAction(forever(sequence(scaleTo(1.25F, 1.25F, 0.30F), scaleTo(1F, 1F, 0.30F))));
         spinTheWheel.addAction(forever(sequence(rotateBy(360, 1),
                         rotateTo(0),delay(5f))));
 
