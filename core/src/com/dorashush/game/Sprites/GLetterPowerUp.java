@@ -1,5 +1,6 @@
 package com.dorashush.game.Sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -32,13 +33,14 @@ public class GLetterPowerUp  extends PowerUp {
             velocity.y = (float) (powerUpVelocity * Math.sin(powerUpAngle));
         }
 */
+/*
         if(!coughtByPlayer) {
             if (b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 30 / FlappyPug.PPM
                     || b2body.getPosition().y <= 20 / FlappyPug.PPM)
                 reverseVelocity(false, true);
         }
-
-        else if(coughtByPlayer){
+*/
+         if(coughtByPlayer){
             setScale(0.8f);
 
             if(b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 20 / FlappyPug.PPM) {
@@ -46,8 +48,12 @@ public class GLetterPowerUp  extends PowerUp {
                 removed = true;
             }
         }
-
-        b2body.setLinearVelocity(velocity);
+         else{
+             if(gameCam.position.x - (gameCam.viewportWidth / 2) > b2body.getPosition().x && !removed) {
+                 Gdx.app.log("PowerUp","M Removed");
+                 setToRemove();
+             }
+         }        b2body.setLinearVelocity(velocity);
 
 
     }

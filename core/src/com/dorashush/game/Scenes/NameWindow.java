@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Tools.UserProfile;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
@@ -48,6 +49,8 @@ public class NameWindow implements Disposable {
     private Image backGroundPanel;
     private ScreenWithPopUps screen;
 
+    private UserProfile userProfile;
+
     public NameWindow(ScreenWithPopUps screen, SpriteBatch sb){
         this.manager=  screen.getManager();
         this.screen = screen;
@@ -56,6 +59,8 @@ public class NameWindow implements Disposable {
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
         firstdraw = true;
         status = false;
+        userProfile = UserProfile.getInstance();
+
         // Gdx.input.setInputProcessor(stage);
         initNameWindow();
         initStage();
@@ -79,9 +84,7 @@ public class NameWindow implements Disposable {
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
                     if(userNameTextArea.getText().compareTo("Click Here!")!=0) {
-                        FlappyPug.NAME = userNameTextArea.getText();
-                        FlappyPug.flappyDogPreferences.putString("name", FlappyPug.NAME);
-                        FlappyPug.flappyDogPreferences.flush();
+                        userProfile.setName(userNameTextArea.getText());
 
                         Gdx.input.setOnscreenKeyboardVisible(false);
                     }

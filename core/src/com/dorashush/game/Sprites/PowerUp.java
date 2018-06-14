@@ -2,6 +2,7 @@ package com.dorashush.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -30,10 +31,12 @@ public abstract class PowerUp extends Sprite{
     protected float stateTime;
     protected boolean coughtByPlayer;
     public boolean removed;
+    public OrthographicCamera gameCam;
 
     public PowerUp(PlayScreen screen){
         this.world = screen.getWorld();
         this.manager = screen.getManager();
+        this.gameCam = screen.gameCam;
 
         stateTime = 0;
         definePowerUp();
@@ -59,7 +62,7 @@ public abstract class PowerUp extends Sprite{
     public abstract void update(float dt);
     protected abstract void definePowerUp();
     public abstract void setToRemove();
-
+/*
     public void reverseVelocity(boolean x,boolean y){
         Gdx.app.log("Inside Reverse","inside Revreser");
 
@@ -72,7 +75,7 @@ public abstract class PowerUp extends Sprite{
             velocity.y = -velocity.y;
         }
     }
-
+*/
     public char getPowerUpValue() {
         return value;
     }

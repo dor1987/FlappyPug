@@ -1,5 +1,7 @@
 package com.dorashush.game.Sprites;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -22,21 +24,20 @@ public class PLetterPowerUp extends PowerUp{
         powerUpSymbol = new TextureRegion(manager.get("images/p.png",Texture.class));
         value = 'p';
         setRegion(powerUpSymbol);
-
     }
 
     @Override
     public void update(float dt) {
         stateTime += dt;
         setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
-
+/*
         if(!coughtByPlayer) {
             if (b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 30 / FlappyPug.PPM
                     || b2body.getPosition().y <= 20 / FlappyPug.PPM)
                 reverseVelocity(false, true);
         }
-
-        else if(coughtByPlayer){
+*/
+         if(coughtByPlayer){
             setScale(0.8f);
 
             if(b2body.getPosition().y >= FlappyPug.HEIGHT / 2 / FlappyPug.PPM - 20 / FlappyPug.PPM) {
@@ -44,6 +45,13 @@ public class PLetterPowerUp extends PowerUp{
                 removed = true;
             }
             }
+            else{
+
+             if(gameCam.position.x - (gameCam.viewportWidth / 2) > b2body.getPosition().x && !removed) {
+                 Gdx.app.log("PowerUp","P Removed");
+                setToRemove();
+             }
+         }
 
         b2body.setLinearVelocity(velocity);
 

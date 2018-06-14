@@ -23,6 +23,7 @@ public class SkinsController {
         wall4 = new TextureRegion(manager.get("images/wall4.png",Texture.class));
         wall5 = new TextureRegion(manager.get("images/wall5.png",Texture.class));
         wall6 = new TextureRegion(manager.get("images/wall6.png",Texture.class));
+        //wall2 = new TextureRegion(manager.get("images/icewall.png",Texture.class));
 
         CurrentobstacleTexture = wall1;
 
@@ -31,53 +32,53 @@ public class SkinsController {
 
     public TextureRegion getCurrentobstacleTexture(float gameTime){
 
-    if(gameTime<=20){
+    if(gameTime<=30){
         //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
         CurrentobstacleTexture = wall1;
     }
-    else if(gameTime<=40){
+    else if(gameTime<=60){
         //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall2.png",Texture.class));
         CurrentobstacleTexture = wall2;
     }
-    else if(gameTime<=60){
+    else if(gameTime<=90){
         //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall3.png",Texture.class));
         CurrentobstacleTexture = wall3;
 
     }
-    else if(gameTime<=80){
+    else if(gameTime<=120){
      //   CurrentobstacleTexture = new TextureRegion(manager.get("images/wall4.png",Texture.class));
         CurrentobstacleTexture = wall4;
 
     }
-    else if(gameTime<=100){
+    else if(gameTime<=150){
        // CurrentobstacleTexture = new TextureRegion(manager.get("images/wall5.png",Texture.class));
         CurrentobstacleTexture = wall5;
 
     }
-    else if(gameTime<=120){
-     //   CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
-        CurrentobstacleTexture = wall1;
-
-    }
-    else if(gameTime<=140){
-        //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
-        CurrentobstacleTexture = wall1;
-
-    }
-    else if(gameTime<=160){
-     //   CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
-        CurrentobstacleTexture = wall1;
-
-    }
     else if(gameTime<=180){
+     //   CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        CurrentobstacleTexture = wall6;
+
+    }
+    else if(gameTime<=210){
         //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
         CurrentobstacleTexture = wall1;
 
     }
+    else if(gameTime<=240){
+     //   CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        CurrentobstacleTexture = wall2;
 
-    else if(gameTime<=200){
+    }
+    else if(gameTime<=270){
         //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
-        CurrentobstacleTexture = wall1;
+        CurrentobstacleTexture = wall3;
+
+    }
+
+    else if(gameTime<=300){
+        //CurrentobstacleTexture = new TextureRegion(manager.get("images/wall.png",Texture.class));
+        CurrentobstacleTexture = wall4;
 
     }
     else{

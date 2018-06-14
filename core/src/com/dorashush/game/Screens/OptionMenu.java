@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.NameWindow;
+import com.dorashush.game.Tools.UserProfile;
 
 /**
  * Created by Dor on 04/01/18.
@@ -44,6 +45,7 @@ public class OptionMenu extends ScreenWithPopUps{
     private Slider volumeControlSlider;
     private NameWindow nameWindow;
     private boolean isNameWindowOn;
+    private UserProfile userProfile;
 
     public OptionMenu(FlappyPug game){
         this.game = game;
@@ -52,6 +54,7 @@ public class OptionMenu extends ScreenWithPopUps{
         stage = new Stage(viewPort,(game.batch));
         skin = new Skin(Gdx.files.internal("textSkin/uiskin.json"));
 
+        userProfile = UserProfile.getInstance();
         //nameWindow = new NameWindow(this, game.batch,manager);
         initBackground();
         initBackGroundPanel();
@@ -91,9 +94,8 @@ public class OptionMenu extends ScreenWithPopUps{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FlappyPug.SCORE_AS_TIME=true;
-                FlappyPug.flappyDogPreferences.putBoolean("scoreAsTime",true);
-                FlappyPug.flappyDogPreferences.flush();
+        //todo Add vibration control
+
 
             }
         });
@@ -102,9 +104,7 @@ public class OptionMenu extends ScreenWithPopUps{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FlappyPug.SCORE_AS_TIME=false;
-                FlappyPug.flappyDogPreferences.putBoolean("scoreAsTime",false);
-                FlappyPug.flappyDogPreferences.flush();
+
             }
         });
     }
@@ -143,7 +143,7 @@ public class OptionMenu extends ScreenWithPopUps{
         nameCheckTable.setSize(197,50);
         nameCheckTable.setPosition(mainTitleTable.getX(),mainTitleTable.getY()-nameCheckTable.getHeight());
 
-        nameCheckLabel = new Label("Not "+FlappyPug.NAME+"?", skin);
+        nameCheckLabel = new Label("Not "+userProfile.getName()+"?", skin);
         changeNameBtn = new TextButton("Change Name",skin);
 
         nameCheckTable.add(nameCheckLabel).padRight(5f);
@@ -161,7 +161,7 @@ public class OptionMenu extends ScreenWithPopUps{
 
         volumeLabel = new Label("Volume", skin);
         volumeControlSlider = new Slider(0,1,0.1f,false,skin);
-        volumeControlSlider.setValue(FlappyPug.VOLUME);
+        volumeControlSlider.setValue(userProfile.getVolume());
 
         volumePercentLabel = new Label((volumeControlSlider.getValue()*100)+"%", skin);
 
@@ -180,16 +180,16 @@ public class OptionMenu extends ScreenWithPopUps{
         vibrationTable.setSize(197,75);
         vibrationTable.setPosition(volumeTable.getX(),volumeTable.getY()-vibrationTable.getHeight());
 
-        vibrationLabel = new Label("Score As Time", skin);
+        vibrationLabel = new Label("Vibration", skin);
 
         vibreationOnButton = new TextButton("ON", skin,"toggle");
         vibreationOffButton = new TextButton("OFF", skin,"toggle");
         vibreationButtonGroup = new ButtonGroup(vibreationOnButton, vibreationOffButton);
 
 
-        if(FlappyPug.SCORE_AS_TIME==true)
+        if(userProfile.isVibration()==true)
             vibreationButtonGroup.setChecked("ON");
-        else if(FlappyPug.SCORE_AS_TIME==false){
+        else if(userProfile.isVibration()==false){
             vibreationButtonGroup.setChecked("OFF");
         }
 
@@ -258,7 +258,7 @@ public class OptionMenu extends ScreenWithPopUps{
         }
 
         else{
-            nameCheckLabel.setText("Not "+FlappyPug.NAME+"?");
+            nameCheckLabel.setText("Not "+userProfile.getName()+"?");
         }
 
         if(!nameWindow.isStatus()){
@@ -303,7 +303,7 @@ public class OptionMenu extends ScreenWithPopUps{
     public void setVolumeLabel(){
         float temp = (volumeControlSlider.getValue()*100);
         volumePercentLabel.setText(String.format("%3.0f",temp)+"%");
-        FlappyPug.VOLUME = temp/100;
+        userProfile.setVolume(temp/100);
     }
 
 

@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Screens.PlayScreen;
+import com.dorashush.game.Tools.UserProfile;
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 /**
  * Created by Dor on 04/24/18.
@@ -36,7 +38,7 @@ public class EndGameMenu implements Disposable{
     private AssetManager manager;
     private static Label scoreLabel,currentHighScore,currentHighScoreTitle;
     private Skin skin;
-
+    private UserProfile userProfile;
     public EndGameMenu(PlayScreen screen,SpriteBatch sb){
         this.manager=  screen.getManager();
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2,FlappyPug.HEIGHT / 2,new OrthographicCamera());
@@ -44,6 +46,7 @@ public class EndGameMenu implements Disposable{
         skin = new Skin(Gdx.files.internal("textSkin/comic-ui.json"));
         firstdraw = true;
         scoreUpdated = false;
+        userProfile = UserProfile.getInstance();
        // Gdx.input.setInputProcessor(stage);
         initPauseMenu();
         initStage();
@@ -133,7 +136,9 @@ public class EndGameMenu implements Disposable{
 
     public void updateOnlineDataBase(float score){
         if(!scoreUpdated) {
-            FlappyPug.handler.addPlayerScoreToDataBase(FlappyPug.NAME, score);
+            //FlappyPug.handler.addPlayerScoreToDataBase(FlappyPug.NAME, score);
+            FlappyPug.handler.addPlayerScoreToDataBase(userProfile.getName(), score);
+
             scoreUpdated = true;
         }
     }
@@ -189,9 +194,10 @@ public class EndGameMenu implements Disposable{
 
     public void initHighScoreLabels(){
         currentHighScoreTitle = new Label("highest Score:",skin,"alt");
-        currentHighScore = new Label(FlappyPug.HIGH_SCORE_NAME+ " "+ FlappyPug.HIGH_SCORE,skin,"alt");
+        currentHighScore = new Label(userProfile.getLocalHighScoreName()+ " "+ userProfile.getLocalHighScore(),skin,"alt");
     }
     public void checkAndUpdateHighScore(float score){
+        /*
         if(score>FlappyPug.HIGH_SCORE){
             currentHighScore.setText(FlappyPug.NAME+ " "+ String.format("%06.4f", score));
 
@@ -203,6 +209,14 @@ public class EndGameMenu implements Disposable{
             FlappyPug.flappyDogPreferences.putFloat("highScore",FlappyPug.HIGH_SCORE);
             FlappyPug.flappyDogPreferences.flush();
 
+        }
+
+        */
+
+        if(score>userProfile.getLocalHighScore()){
+            currentHighScore.setText(userProfile.getName()+ " "+ String.format("%06.4f", score));
+            userProfile.setLocalHighScoreName(userProfile.getName());
+            userProfile.setLocalHighScore(score);
         }
 
     }

@@ -21,6 +21,7 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.Hud;
 import com.dorashush.game.Screens.PlayScreen;
 import com.dorashush.game.Tools.BodyUserData;
+import com.dorashush.game.Tools.UserProfile;
 
 import javax.swing.plaf.synth.Region;
 
@@ -52,11 +53,12 @@ public class Dog extends Sprite{
     private Animation flyAnim,fallAnim,deathAnim,startingAnim;
     private Array<TextureRegion> frames;
     private float alpha;
+    private UserProfile userProfile;
 
     public Dog(PlayScreen screen) {
         this.world = screen.getWorld();
         this.manager = screen.getManager();
-
+        userProfile = UserProfile.getInstance();
 
         //animations
         frames = new Array<TextureRegion>();
@@ -254,7 +256,7 @@ public class Dog extends Sprite{
 
       if(isInvisable) {
           //Will be used as a powerup
-          invisibaleTimer = 10;
+          invisibaleTimer = 10+(userProfile.getInvinciblityLevel()*2);
           this.setAlpha(0.5f);
           filter.maskBits =  FlappyPug.BORDERS_BIT;
       }

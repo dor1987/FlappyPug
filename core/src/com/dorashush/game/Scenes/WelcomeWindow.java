@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.Abstract.ScreenWithPopUps;
 import com.dorashush.game.FlappyPug;
+import com.dorashush.game.Tools.UserProfile;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
@@ -43,6 +44,7 @@ public class WelcomeWindow implements Disposable {
     private boolean firstdraw,status,openNameWindow;
     private Image backGroundPanel;
     private ScreenWithPopUps screen;
+    private UserProfile userProfile;
 
     public WelcomeWindow(ScreenWithPopUps screen, SpriteBatch sb){
         this.manager=  screen.getManager();
@@ -53,6 +55,8 @@ public class WelcomeWindow implements Disposable {
         firstdraw = true;
         status = false;
         openNameWindow = false;
+        userProfile = UserProfile.getInstance();
+
         // Gdx.input.setInputProcessor(stage);
         initNameWindow();
         initStage();
@@ -111,9 +115,9 @@ public class WelcomeWindow implements Disposable {
 
     public void initNameWindowBtnsAndLabels(){
         welcomeLabel = new Label("Welcome back", skin);
-        nameLabel = new Label(FlappyPug.NAME, skin,"big");
+        nameLabel = new Label(userProfile.getName(), skin,"big");
         continueBtn = new TextButton("Continue",skin);
-        changeNameBtn = new TextButton("Not "+FlappyPug.NAME,skin);
+        changeNameBtn = new TextButton("Not "+userProfile.getName(),skin);
     }
     public void initBackGroundPanel(){
         backGroundPanel = new Image(manager.get("images/windowpanel.png",Texture.class));

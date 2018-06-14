@@ -29,6 +29,7 @@ import com.dorashush.game.Sprites.TimeAddPowerUp;
 import com.dorashush.game.Sprites.TopObstcale;
 import com.dorashush.game.Sprites.Sky;
 import com.dorashush.game.Sprites.ULetterPowerUp;
+import com.dorashush.game.Tools.UserProfile;
 import com.dorashush.game.Tools.WorldContactListener;
 
 import java.util.Random;
@@ -49,13 +50,14 @@ public class PlayScreen implements Screen ,InputProcessor{
     public static final float STARTING_SPEED = (float)-1;
     public static final float POWERUPS_DELAY = 2f;
     public static boolean SPEED_BOOST = false;
+
     private World world;
     private Box2DDebugRenderer b2dr;
     private Dog dog;
     private Ground ground1 , ground2;
     private Sky sky1, sky2;
-    private Background background1,background2;
-    private OrthographicCamera gameCam;
+    //private Background background1,background2;
+    public OrthographicCamera gameCam;
     //private TextureRegion backGround;
 
     private Array<Enemy> topObstacles;
@@ -86,6 +88,7 @@ public class PlayScreen implements Screen ,InputProcessor{
     private PowerUp pLetterPowerUp,uLetterPowerUp,gLetterPowerUp,speedReducePowerUp,timeAddPowerUp,moneyPowerUp;
     private Random random;
     private int lastPowerUpChoose;
+    private UserProfile userProfile;
 
 
     public PlayScreen(FlappyPug game) {
@@ -93,6 +96,7 @@ public class PlayScreen implements Screen ,InputProcessor{
         atlas = manager.get("atlas/animations",TextureAtlas.class);
 
         this.game = game;
+        userProfile= UserProfile.getInstance();
 
         //skin = manager.get("assets/textSkin/glassy-ui.json");
         gameCam = new OrthographicCamera();
@@ -122,9 +126,10 @@ public class PlayScreen implements Screen ,InputProcessor{
 
 
         //backGround = new TextureRegion(manager.get("images/background1.png",Texture.class));
+      /*
         background1 = new Background(this,0);
-        background2 = new Background(this,769/FlappyPug.PPM);
-
+        background2 = new Background(this,background1.getWidth());
+*/
 
         topObstacles = new Array<Enemy>();
         bottomObstacles = new Array<Enemy>();
@@ -179,16 +184,22 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     }
 
-    public void update(float dt){
-        updateBackground(dt);
+    public void update(final float dt){
+      //  updateBackground(dt);
 
         hud.update(dt);
 
 
         //updateGround(dt);
         //updateSky(dt);
+        final Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                powerUpsAdder(dt);
+            }
+        });
+        t.start();
 
-        powerUpsAdder(dt);
         powerUpsUpdate(dt);
 
         if(hud.getCountDownTimer()<=0) {
@@ -230,9 +241,10 @@ public class PlayScreen implements Screen ,InputProcessor{
         game.batch.begin();
 
        // game.batch.draw(backGround,0,0,FlappyPug.WIDTH/2f/FlappyPug.PPM,FlappyPug.HEIGHT/2f/FlappyPug.PPM);
+       /*
         background1.draw(game.batch);
         background2.draw(game.batch);
-
+*/
 
         for(int i  = 0 ; i<topObstacles.size ; i++) {
             (topObstacles.get(i)).draw(game.batch);
@@ -259,7 +271,7 @@ public class PlayScreen implements Screen ,InputProcessor{
 
         hud.stage.draw();
 
-        //b2dr.render(world,gameCam.combined);
+        b2dr.render(world,gameCam.combined);
 
 
         if(gameOver()){
@@ -273,7 +285,7 @@ public class PlayScreen implements Screen ,InputProcessor{
     }
 
     private void onSpeedReducePowerUpTaken() {
-        gameSpeed*=0.8;
+        gameSpeed*=(0.9-(userProfile.getSpeedReduceLevel()/10));
         /*
         //hud.setSpeed(gameSpeed);
         sky1.speedReducePowerUpTaken();
@@ -375,18 +387,19 @@ public class PlayScreen implements Screen ,InputProcessor{
             sky2.setPos(sky1.getX()+sky1.getWidth());
     }
 
-
+/*
     private void updateBackground(float dt){
         background1.update(dt);
         background2.update(dt);
 
         if(gameCam.position.x  - (gameCam.viewportWidth/2) > background1.getPoisition() + background1.getWidth()) {
-            background1.setPos(background2.getX()+background2.getWidth());
+            background1.setPos(background2.getX()+background2.getWidth()*0.99f);
         }
 
         if(gameCam.position.x - (gameCam.viewportWidth/2 ) > background2.getPoisition() + background2.getWidth())
             background2.setPos(background1.getX()+background1.getWidth());
     }
+  */
     private void updateObstcale(float dt){
         phaseTimer+=dt;
 
@@ -491,13 +504,28 @@ public class PlayScreen implements Screen ,InputProcessor{
 
     public void powerUpsAdder(float dt){
         powerUpTimeCount += dt;
-        if (powerUpTimeCount >= timeBetweenPowerUps) {
-            powerUpArray.add(initlizePowerUp());
-            powerUpTimeCount = 0;
-            timeBetweenPowerUps = POWERUPS_DELAY+generateNumber(15);
-        }
+
+                if (powerUpTimeCount >= timeBetweenPowerUps) {
+                    powerUpTimeCount = 0;
+//                    Thread t = new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+                            PowerUp tempPowerUp = initlizePowerUp();
+
+                            while (tempPowerUp == null) {
+                                tempPowerUp = initlizePowerUp();
+                            }
+
+                            powerUpArray.add(tempPowerUp);
+                            timeBetweenPowerUps = POWERUPS_DELAY + generateNumber(15);
+                        }
+//                       });
+//                        t.start();
+//                    }
 
     }
+
+
     public void powerUpsUpdate(float dt){
         for (PowerUp powerUp : powerUpArray) {
             if(gameCam.position.x - (gameCam.viewportWidth / 2) > powerUp.getX() + powerUp.getWidth())
@@ -538,35 +566,52 @@ public class PlayScreen implements Screen ,InputProcessor{
             case 0:
                 pLetterPowerUp.setToAppear();
                 powerUp = pLetterPowerUp;
+                Gdx.app.log("PowerUp","P has been made");
+
                 break;
             case 1:
                 uLetterPowerUp.setToAppear();
                 powerUp = uLetterPowerUp;
+                Gdx.app.log("PowerUp","U has been made");
+
                 break;
 
             case 2:
                 gLetterPowerUp.setToAppear();
                 powerUp = gLetterPowerUp;
+                Gdx.app.log("PowerUp","G has been made");
+
                 break;
 
             case 3:
                 speedReducePowerUp.setToAppear();
                 powerUp = speedReducePowerUp;
+                Gdx.app.log("PowerUp","SR has been made");
+
                 break;
 
             case 4:
                 timeAddPowerUp.setToAppear();
                 powerUp = timeAddPowerUp;
+                Gdx.app.log("PowerUp","TA has been made");
+
                 break;
             case 5:
                 moneyPowerUp.setToAppear();
                 powerUp = moneyPowerUp;
+                Gdx.app.log("PowerUp","M has been made");
+
                 break;
 
 
             default:
+                /*
                 pLetterPowerUp.setToAppear();
                 powerUp = pLetterPowerUp;
+                */
+                powerUp = null;
+                Gdx.app.log("PowerUp","DEF has been made");
+
                 break;
         }
 

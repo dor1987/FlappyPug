@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.dorashush.game.FlappyPug;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.dorashush.game.Screens.PlayScreen;
+import com.dorashush.game.Tools.UserProfile;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.parallel;
@@ -46,20 +47,24 @@ public class Hud implements Disposable {
     private float distance;
     private Integer countDownTimer;
     private static Label timeLabel, distanceLabel, speedLabel, testLabel;
-    private static Table lettersTable;
+    private static Table lettersTable,lettersOffTable;
     private Table centerOfScreenTable,table;
-    private static Image pImage, uImage, gImage,touchImage,avatarImage,topBar,botBar;
+    private static Image pImage, uImage, gImage, pImageNoTake, uImageNoTake, gImageNoTake,touchImage,avatarImage,topBar,botBar;
     private boolean gameOver;
     private Skin skin;
     private AssetManager manager;
+    private static int bonusTimeLevel;
+    private UserProfile userProfile;
     //private static Group group;
 
     public Hud(SpriteBatch sb, PlayScreen screen) {
         this.manager = screen.getManager();
-
+        userProfile = UserProfile.getInstance();
+        bonusTimeLevel = userProfile.getTimeBonusLevel();
         distance = 0;
         speed = 0;
-        timePassed = 0;
+        timePassed = userProfile.getStartingTimeLevel()*10;
+
         //group = new Group();
         viewPort = new ExtendViewport(FlappyPug.WIDTH / 2, FlappyPug.HEIGHT / 2, new OrthographicCamera());
         stage = new Stage(viewPort, sb);
@@ -92,15 +97,28 @@ public class Hud implements Disposable {
 
         //initCenterOfScreenTable();
         stage.addActor(table);
+        stage.addActor(lettersOffTable);
         stage.addActor(lettersTable);
         stage.addActor(centerOfScreenTable);
         gameOver = false;
     }
 
     public void initLettersImages() {
-        pImage = new Image(manager.get("images/pnobubble.png", Texture.class));
-        uImage = new Image(manager.get("images/unobubble.png", Texture.class));
-        gImage = new Image(manager.get("images/gnobbuble.png", Texture.class));
+        pImage = new Image(manager.get("images/pcircle.png", Texture.class));
+        uImage = new Image(manager.get("images/ucircle.png", Texture.class));
+        gImage = new Image(manager.get("images/gcircle.png", Texture.class));
+        pImageNoTake = new Image(manager.get("images/nopcircle.png", Texture.class));
+        uImageNoTake = new Image(manager.get("images/noucircle.png", Texture.class));
+        gImageNoTake = new Image(manager.get("images/nogcircle.png", Texture.class));
+
+        pImage.setOrigin(pImage.getWidth()/8,pImage.getHeight()/8);
+        uImage.setOrigin(uImage.getWidth()/8,uImage.getHeight()/8);
+        gImage.setOrigin(gImage.getWidth()/8,gImage.getHeight()/8);
+        pImageNoTake.setOrigin(Align.center);
+        uImageNoTake.setOrigin(Align.center);
+        gImageNoTake.setOrigin(Align.center);
+
+
         //group.addActor(pImage);
         //group.addActor(uImage);
         //group.addActor(gImage);
@@ -129,7 +147,7 @@ public class Hud implements Disposable {
 
         //table.add(speedLabel).expandX().padBottom(25f);
         lettersTable = new Table();
-        lettersTable.center().bottom();
+        lettersTable.center().bottom().padRight(60f);
         lettersTable.setFillParent(true);
 
         //lettersTable.setBounds(FlappyPug.WIDTH/3-lettersTable.getWidth()*1.5f,Gdx.graphics.getHeight()/6,60f,20f);
@@ -140,9 +158,9 @@ public class Hud implements Disposable {
         lettersTable.setOrigin(lettersTable.getWidth()/2,lettersTable.getHeight()/2);
 
        // lettersTable.setBackground(botHud);
-        lettersTable.add(pImage).width(20f).height(20f).padBottom(10f).padRight(5f);
-        lettersTable.add(uImage).width(20f).height(20f).padBottom(10f).padRight(5f);
-        lettersTable.add(gImage).width(20f).height(20f).padBottom(10f).padRight(5f);
+        lettersTable.add(pImage).width(54f).height(40.5f);
+        lettersTable.add(uImage).width(54f).height(40.5f);
+        lettersTable.add(gImage).width(54f).height(40.5f);
         //lettersTable.debug();
         setLettersViability();
 
@@ -161,6 +179,18 @@ public class Hud implements Disposable {
         };
         touchImage.addAction(sequence(repeat(4,sequence(scaleTo(1.25F, 1.25F, 0.30F), scaleTo(1F, 1F, 0.30F))),run(transitionRunnable)));
 
+
+        lettersOffTable = new Table();
+        lettersOffTable.center().bottom().padRight(60f);
+        lettersOffTable.setFillParent(true);
+
+        lettersOffTable.setOrigin(lettersOffTable.getWidth()/2,lettersOffTable.getHeight()/2);
+
+        // lettersTable.setBackground(botHud);
+        lettersOffTable.add(pImageNoTake).width(54f).height(40.5f);
+        lettersOffTable.add(uImageNoTake).width(54f).height(40.5f);
+        lettersOffTable.add(gImageNoTake).width(54f).height(40.5f);
+        //lettersTable.debug();
     }
 
 
@@ -246,7 +276,7 @@ public class Hud implements Disposable {
                 letterVisualControl(visible,gImage);
                 break;
             case 't':
-                timePassed+=5;
+                timePassed+=5*bonusTimeLevel;
                 break;
         }
 
@@ -279,9 +309,9 @@ public class Hud implements Disposable {
         };
 
         //group.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable)));
-        uImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
-        gImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
-        pImage.addAction(sequence(parallel(sequence(scaleTo(1.4f,1.4f,0.5f),scaleTo(.1f,.1f,0.5f)),rotateBy(360,1f)),run(transitionRunnable),scaleTo(1f,1f)));
+        uImage.addAction(sequence(sequence(scaleTo(1.25F, 1.25F, 0.40F), scaleTo(1F, 1F, 0.40F)),run(transitionRunnable),scaleTo(1f,1f)));
+        gImage.addAction(sequence(sequence(scaleTo(1.25F, 1.25F, 0.40F), scaleTo(1F, 1F, 0.40F)),run(transitionRunnable),scaleTo(1f,1f)));
+        pImage.addAction(sequence(sequence(scaleTo(1.25F, 1.25F, 0.40F), scaleTo(1F, 1F, 0.40F)),run(transitionRunnable),scaleTo(1f,1f)));
 
     }
     public static void letterVisualControl(boolean visible, Actor actor) {

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.dorashush.game.Screens.BeforeLoadingScreen;
 import com.dorashush.game.Screens.LoadingScreen;
 import com.dorashush.game.Screens.PlayScreen;
+import com.dorashush.game.Tools.UserProfile;
 
 public class FlappyPug extends Game {
 	public static final int WIDTH = 480;
@@ -34,16 +35,16 @@ public class FlappyPug extends Game {
 	public static final short BORDERS_BIT = 32;
 
 	//Preferencses
-	public static Preferences flappyDogPreferences;
-	public static String NAME;
-	public static float VOLUME = 1;
-	public static boolean VIBRATION = true;
-	public static float HIGH_SCORE;
-	public static String HIGH_SCORE_NAME;
-	public static boolean SCORE_AS_TIME;
-	public static int DIAMONDS = 0;
-	public static int MONEY = 0;
-	public static int SPINS = 0;
+	//public static Preferences flappyDogPreferences;
+	//public static String NAME;
+	//public static float VOLUME = 1;
+	//public static boolean VIBRATION = true;
+	//public static float HIGH_SCORE;
+	//public static String HIGH_SCORE_NAME;
+	//public static boolean SCORE_AS_TIME;
+	//public static int DIAMONDS = 0;
+	//public static int MONEY = 0;
+	//public static int SPINS = 0;
 
 
 	public AssetManager manager = new AssetManager();
@@ -52,6 +53,11 @@ public class FlappyPug extends Game {
 	public OrthographicCamera camera;
 
 	public static LeaderBoardHandler handler;
+
+
+
+	//User profile
+	public UserProfile userProfile;
 
 	public FlappyPug(LeaderBoardHandler handler) {
 		this.handler = handler;
@@ -75,16 +81,20 @@ public class FlappyPug extends Game {
 		//setScreen(new LoadingScreen(this));
 		setScreen(new BeforeLoadingScreen(this));
 
-		loadPreferences();
+		userProfile = UserProfile.getInstance();
+		userProfile.userProfileInit();
+		//loadPreferences();
 
 	}
 
 	@Override
 	public void render () {
 		super.render();
+		/*
 		if(manager.update()){
 			Gdx.app.log("manager status"," loaded");
 		}
+		*/
 	}
 
 
@@ -94,50 +104,12 @@ public class FlappyPug extends Game {
 		manager.dispose();
 	}
 
-	public void AssetsLoad(){
-		manager.load("images/openingscreen.png", Texture.class);
-		manager.load("images/mainscreentitle.png", Texture.class);
-		manager.load("images/play.png", Texture.class);
-		manager.load("images/settings.png", Texture.class);
-		manager.load("images/highscore.png", Texture.class);
-		manager.load("images/windowpanel.png", Texture.class);
 
-
-		manager.load("atlas/animations", TextureAtlas.class);
-		manager.load("images/fireon.png", Texture.class);
-		manager.load("images/fireoff.png", Texture.class);
-		manager.load("images/wall.png", Texture.class);
-		manager.load("images/wall2.png", Texture.class);
-		manager.load("images/wall3.png", Texture.class);
-		manager.load("images/wall4.png", Texture.class);
-		manager.load("images/wall5.png", Texture.class);
-
-		manager.load("images/background.png", Texture.class);
-		manager.load("images/replaybtn.png", Texture.class);
-		manager.load("images/score.png", Texture.class);
-		manager.load("images/homebtn.png", Texture.class);
-		manager.load("images/backgroundfull.png", Texture.class);
-		manager.load("images/coulds.png", Texture.class);
-		manager.load("images/ground.png", Texture.class);
-		manager.load("images/p.png", Texture.class);
-		manager.load("images/u.png", Texture.class);
-		manager.load("images/g.png", Texture.class);
-		manager.load("images/pnobubble.png", Texture.class);
-		manager.load("images/unobubble.png", Texture.class);
-		manager.load("images/gnobbuble.png", Texture.class);
-		manager.load("images/sandclock.png", Texture.class);
-		manager.load("images/speeddown.png", Texture.class);
-		manager.load("images/timeaddtion.png", Texture.class);
-		manager.load("images/testscoreline.png", Texture.class);
-		manager.load("images/currencypowerup.png", Texture.class);
-
-
-	}
 
 	public AssetManager getManager() {
 		return manager;
 	}
-
+/*
 
 	public void loadPreferences(){
 		flappyDogPreferences = Gdx.app.getPreferences("flappyDogPreferences");
@@ -152,4 +124,5 @@ public class FlappyPug extends Game {
 		SPINS = flappyDogPreferences.getInteger("spins",00000);
 
 	}
+*/
 }

@@ -91,6 +91,7 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/wall4.png", Texture.class);
         manager.load("images/wall5.png", Texture.class);
         manager.load("images/wall6.png", Texture.class);
+        //manager.load("images/icewall.png", Texture.class);
 
         manager.load("images/touch.png", Texture.class);
 
@@ -105,6 +106,12 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/topbar.png", Texture.class);
         manager.load("images/botbar.png", Texture.class);
         manager.load("images/avatar.png", Texture.class);
+        manager.load("images/gcircle.png", Texture.class);
+        manager.load("images/nogcircle.png", Texture.class);
+        manager.load("images/ucircle.png", Texture.class);
+        manager.load("images/noucircle.png", Texture.class);
+        manager.load("images/pcircle.png", Texture.class);
+        manager.load("images/nopcircle.png", Texture.class);
 
 
         manager.load("images/p.png", Texture.class);
@@ -129,6 +136,22 @@ public class LoadingScreenTesting implements Screen {
         manager.load("images/diamond.png", Texture.class);
         manager.load("images/money.png", Texture.class);
         manager.load("images/wheel.png", Texture.class);
+
+        //store
+        manager.load("images/store/storepanel.png", Texture.class);
+        manager.load("images/store/storetogglebtn.png", Texture.class);
+        manager.load("images/store/itemupgradeframe.png", Texture.class);
+        manager.load("images/store/buybtnnoclick.png", Texture.class);
+        manager.load("images/store/buybtnclick.png", Texture.class);
+        manager.load("images/store/upgradeyes.png", Texture.class);
+        manager.load("images/store/upgradeno.png", Texture.class);
+        manager.load("images/store/invinciblityframe.png", Texture.class);
+        manager.load("images/store/timebonusfarme.png", Texture.class);
+        manager.load("images/store/speedreduceframe.png", Texture.class);
+        manager.load("images/store/startingtimeframe.png", Texture.class);
+
+
+
     }
 
     @Override
@@ -170,6 +193,7 @@ public class LoadingScreenTesting implements Screen {
 
 
             game.setScreen(new MainMenuScreen(game,true));
+            //game.setScreen(new Store(game));
 
 
         }

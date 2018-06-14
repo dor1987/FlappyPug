@@ -29,6 +29,7 @@ import com.dorashush.game.FlappyPug;
 import com.dorashush.game.Scenes.SpinWheel;
 import com.dorashush.game.Tools.BaseScreen;
 import com.dorashush.game.Tools.MyCurrencyTextButton;
+import com.dorashush.game.Tools.UserProfile;
 
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
@@ -60,10 +61,13 @@ public class SpeenWheelScreen extends BaseScreen {
     private Skin skin;
     private TextButton continueBtn;
     private boolean showReward,rewardFirstShow;
+    private UserProfile userProfile;
 
     public SpeenWheelScreen(FlappyPug game) {
         this.manager = game.getManager();
         this.game = game;
+        this.userProfile = UserProfile.getInstance();
+
         atlas = manager.get("atlas/spin_wheel_ui.atlas",TextureAtlas.class);
         background  = new Image(manager.get("images/loadingbackground.png",Texture.class));
         background.setFillParent(true);
@@ -77,9 +81,9 @@ public class SpeenWheelScreen extends BaseScreen {
         TextButton.TextButtonStyle dimonCounterStyle = new TextButton.TextButtonStyle(dimondCounterImage,dimondCounterImage,dimondCounterImage,skin.getFont("title"));
         TextButton.TextButtonStyle spinsCounterStyle = new TextButton.TextButtonStyle(wheelCounterImage,wheelCounterImage,wheelCounterImage,skin.getFont("title"));
 
-        coinCounter = new MyCurrencyTextButton(FlappyPug.MONEY+"",coinCounterStyle);
-        diamonCounter = new MyCurrencyTextButton(FlappyPug.DIAMONDS+"",dimonCounterStyle);
-        spinsCounter = new MyCurrencyTextButton(FlappyPug.SPINS+"",spinsCounterStyle);
+        coinCounter = new MyCurrencyTextButton(userProfile.getMoney()+"",coinCounterStyle);
+        diamonCounter = new MyCurrencyTextButton(userProfile.getDiamonds()+"",dimonCounterStyle);
+        spinsCounter = new MyCurrencyTextButton(userProfile.getSpins()+"",spinsCounterStyle);
 
         countersTable = new Table();
         //countersTable.top().center();
@@ -182,12 +186,10 @@ public class SpeenWheelScreen extends BaseScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 boolean temp = spinWheel.spinningStopped();
-                if(spinWheel.spinningStopped() && FlappyPug.SPINS > 0 && !showReward) {
+                if(spinWheel.spinningStopped() && userProfile.getSpins() > 0 && !showReward) {
                     spinWheel.spin(MathUtils.random(5F, 28F));
-                    FlappyPug.SPINS-=1;
-                    FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                    FlappyPug.flappyDogPreferences.flush();
-                    spinsCounter.setText(FlappyPug.SPINS+"");
+                    userProfile.setSpins(userProfile.getSpins()-1);
+                    spinsCounter.setText(userProfile.getSpins()+"");
                 }
 
                 Gdx.app.debug(TAG, "Spinning.");
@@ -318,76 +320,52 @@ public class SpeenWheelScreen extends BaseScreen {
 
         switch(reward){
             case 1:
-                FlappyPug.DIAMONDS += 5;
-                FlappyPug.flappyDogPreferences.putInteger("diamonds",FlappyPug.DIAMONDS);
-                FlappyPug.flappyDogPreferences.flush();
-                diamonCounter.setText(FlappyPug.DIAMONDS+"");
+                userProfile.setDiamonds(userProfile.getDiamonds()+5);
+                diamonCounter.setText(userProfile.getDiamonds()+"");
                 break;
             case 2:
-                FlappyPug.MONEY += 10;
-                FlappyPug.flappyDogPreferences.putInteger("money",FlappyPug.MONEY);
-                FlappyPug.flappyDogPreferences.flush();
-                coinCounter.setText(FlappyPug.MONEY+"");
+                userProfile.setMoney(userProfile.getMoney()+100);
+                coinCounter.setText(userProfile.getMoney()+"");
                 break;
             case 3:
-                FlappyPug.SPINS += 5;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-                spinsCounter.setText(FlappyPug.SPINS+"");
+                userProfile.setSpins(userProfile.getSpins()+5);
+                spinsCounter.setText(userProfile.getSpins()+"");
                 break;
             case 4:
-                FlappyPug.MONEY += 10;
-                FlappyPug.flappyDogPreferences.putInteger("money",FlappyPug.MONEY);
-                FlappyPug.flappyDogPreferences.flush();
-                coinCounter.setText(FlappyPug.MONEY+"");
+                userProfile.setMoney(userProfile.getMoney()+100);
+                coinCounter.setText(userProfile.getMoney()+"");
                 break;
             case 5:
-                FlappyPug.SPINS += 2;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-                spinsCounter.setText(FlappyPug.SPINS+"");
+                userProfile.setSpins(userProfile.getSpins()+2);
+                spinsCounter.setText(userProfile.getSpins()+"");
                 break;
             case 6:
-                FlappyPug.DIAMONDS += 5;
-                FlappyPug.flappyDogPreferences.putInteger("diamonds",FlappyPug.DIAMONDS);
-                FlappyPug.flappyDogPreferences.flush();
-                diamonCounter.setText(FlappyPug.DIAMONDS+"");
+                userProfile.setDiamonds(userProfile.getDiamonds()+5);
+                diamonCounter.setText(userProfile.getDiamonds()+"");
                 break;
             case 7:
-                FlappyPug.SPINS += 3;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-                spinsCounter.setText(FlappyPug.SPINS+"");
+                userProfile.setSpins(userProfile.getSpins()+3);
+                spinsCounter.setText(userProfile.getSpins()+"");
                 break;
             case 8:
-                FlappyPug.MONEY += 20;
-                FlappyPug.flappyDogPreferences.putInteger("money",FlappyPug.MONEY);
-                FlappyPug.flappyDogPreferences.flush();
-                coinCounter.setText(FlappyPug.MONEY+"");
+                userProfile.setMoney(userProfile.getMoney()+200);
+                coinCounter.setText(userProfile.getMoney()+"");
                 break;
             case 9:
-                FlappyPug.SPINS += 2;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-                spinsCounter.setText(FlappyPug.SPINS+"");
+                userProfile.setSpins(userProfile.getSpins()+2);
+                spinsCounter.setText(userProfile.getSpins()+"");
                 break;
             case 10:
-                FlappyPug.MONEY += 15;
-                FlappyPug.flappyDogPreferences.putInteger("money",FlappyPug.MONEY);
-                FlappyPug.flappyDogPreferences.flush();
-                coinCounter.setText(FlappyPug.MONEY+"");
+                userProfile.setMoney(userProfile.getMoney()+150);
+                coinCounter.setText(userProfile.getMoney()+"");
                 break;
             case 11:
-                FlappyPug.SPINS += 1;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-                spinsCounter.setText(FlappyPug.SPINS+"");
+                userProfile.setSpins(userProfile.getSpins()+1);
+                spinsCounter.setText(userProfile.getSpins()+"");
                 break;
             case 12:
-                FlappyPug.MONEY += 5;
-                FlappyPug.flappyDogPreferences.putInteger("money",FlappyPug.MONEY);
-                FlappyPug.flappyDogPreferences.flush();
-                coinCounter.setText(FlappyPug.MONEY+"");
+                userProfile.setMoney(userProfile.getMoney()+500);
+                coinCounter.setText(userProfile.getMoney()+"");
                 break;
         }
     }

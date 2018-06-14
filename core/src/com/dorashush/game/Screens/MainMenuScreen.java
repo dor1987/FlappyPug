@@ -26,6 +26,7 @@ import com.dorashush.game.Scenes.NameWindow;
 import com.dorashush.game.Scenes.WelcomeWindow;
 import com.dorashush.game.Tools.ActionMoveCircular;
 import com.dorashush.game.Tools.MyCurrencyTextButton;
+import com.dorashush.game.Tools.UserProfile;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
@@ -39,7 +40,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
     private OrthographicCamera camera;
     private Stage stage,backStage;
     private Table table,nameTable,countersTable;
-    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog, dailySpinBtn,freeSpinBtn,spinTheWheel;
+    private Image playBtn,optionsBtn,leaderBoardBtn,menuTitle,backgroundTexture,dog, dailySpinBtn,freeSpinBtn,spinTheWheel,storeBtn;
     private Label hiLabel;
     private AssetManager manager;
     private ExtendViewport viewPort,backViewPort;
@@ -52,6 +53,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
     private WelcomeWindow welcomeWindow;
     private Skin skin;
 
+    //user profile
+    UserProfile userProfile;
 
     public MainMenuScreen(FlappyPug game,boolean isInitalStart) {
 
@@ -64,6 +67,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
         //camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
 
         stage = new Stage(viewPort, game.batch);
+        userProfile = UserProfile.getInstance();
+
         initDog();
         initBackground();
         menuInit();
@@ -89,6 +94,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
         spinTheWheel = new Image(manager.get("images/spinthewheelmenubtn.png",Texture.class));
         spinTheWheel.setOrigin(spinTheWheel.getWidth()/8,spinTheWheel.getHeight()/8);
 
+        storeBtn = new Image(manager.get("images/play.png",Texture.class));
+
         coinCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/coincounter.png",Texture.class)));
         dimondCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/dimondcounter.png",Texture.class)));
         wheelCounterImage = new TextureRegionDrawable(new TextureRegion(manager.get("images/spincounterimage.png",Texture.class)));
@@ -97,9 +104,9 @@ public class MainMenuScreen extends ScreenWithPopUps {
         TextButton.TextButtonStyle dimonCounterStyle = new TextButton.TextButtonStyle(dimondCounterImage,dimondCounterImage,dimondCounterImage,skin.getFont("font"));
         TextButton.TextButtonStyle spinsCounterStyle = new TextButton.TextButtonStyle(wheelCounterImage,wheelCounterImage,wheelCounterImage,skin.getFont("font"));
 
-        coinCounter = new MyCurrencyTextButton(FlappyPug.MONEY+"",coinCounterStyle);
-        diamonCounter = new MyCurrencyTextButton(FlappyPug.DIAMONDS+"",dimonCounterStyle);
-        spinsCounter = new MyCurrencyTextButton(FlappyPug.SPINS+"",spinsCounterStyle);
+        coinCounter = new MyCurrencyTextButton(userProfile.getMoney()+"",coinCounterStyle);
+        diamonCounter = new MyCurrencyTextButton(userProfile.getDiamonds()+"",dimonCounterStyle);
+        spinsCounter = new MyCurrencyTextButton(userProfile.getSpins()+"",spinsCounterStyle);
 
         countersTable = new Table();
         //countersTable.top().center();
@@ -140,6 +147,8 @@ public class MainMenuScreen extends ScreenWithPopUps {
         table.row();
         table.add(leaderBoardBtn).colspan(2).height(70f).width(200);
         table.add(spinTheWheel).width(50f).height(50f).padRight(10f);
+        table.row();
+        table.add(storeBtn).colspan(2).height(70f).width(200);
 
     }
     public void initBackground(){
@@ -208,10 +217,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FlappyPug.SPINS+=1;
-                FlappyPug.flappyDogPreferences.putInteger("spins",FlappyPug.SPINS);
-                FlappyPug.flappyDogPreferences.flush();
-
+                userProfile.setSpins(userProfile.getSpins()+1);
                 game.setScreen(new SpeenWheelScreen((FlappyPug)game));
                 dispose();
             }
@@ -230,7 +236,18 @@ public class MainMenuScreen extends ScreenWithPopUps {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                FlappyPug.SPINS+=5;
+                userProfile.setSpins(userProfile.getSpins()+5);
+            }
+        });
+
+        storeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                //Add option Screen
+                game.setScreen(new Store((FlappyPug) game));
+
+                dispose();
             }
         });
 
@@ -251,7 +268,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
                         rotateTo(0),delay(5f))));
 
         backStage.addActor(backgroundTexture);
-        stage.addActor(countersTable);
+        //stage.addActor(countersTable);
         stage.addActor(table);
         stage.addActor(dog);
 
@@ -284,7 +301,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         }
 */
 
-        if(FlappyPug.NAME.compareTo("No name stored")==0 || nameWindow.isStatus() || welcomeWindow.openNameWindow()){
+        if(userProfile.getName().compareTo("No name stored")==0 || nameWindow.isStatus() || welcomeWindow.openNameWindow()){
             nameWindow.draw(delta);
             welcomeWindow.openNameWindowControl();
             //nameWindow.setStatus(true);
@@ -300,7 +317,7 @@ public class MainMenuScreen extends ScreenWithPopUps {
         else if(!nameWindow.isStatus()&& !welcomeWindow.isStatus() && !playPressed){
             Gdx.input.setInputProcessor(stage);
         }
-        Gdx.app.log("CheckHere","Name Status "+ !nameWindow.isStatus() + " Welcome Status " +!welcomeWindow.isStatus() +" playPressdStatus "+ !playPressed );
+        //Gdx.app.log("CheckHere","Name Status "+ !nameWindow.isStatus() + " Welcome Status " +!welcomeWindow.isStatus() +" playPressdStatus "+ !playPressed );
         //countersTable.debug();
     }
 

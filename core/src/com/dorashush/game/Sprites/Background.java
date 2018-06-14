@@ -97,7 +97,7 @@ public class Background extends Sprite{
 
         FixtureDef fdef = new FixtureDef();
         PolygonShape poly = new PolygonShape();
-        poly.setAsBox(768/FlappyPug.PPM,400/FlappyPug.PPM);
+        poly.setAsBox(769/FlappyPug.PPM,400/FlappyPug.PPM);
 
         //Bits Testing
         fdef.filter.categoryBits = FlappyPug.NOTHING_BIT;
